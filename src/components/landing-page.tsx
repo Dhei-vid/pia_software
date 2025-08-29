@@ -2,6 +2,7 @@ import { Button } from "./ui/button";
 import { Card, CardContent } from "./ui/card";
 import { ArrowRight, BarChart3, Brain, Database, Shield } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 const LandingPage = () => {
   return (
@@ -14,16 +15,7 @@ const LandingPage = () => {
         <div className={"container mx-auto px-6 py-4"}>
           <div className={"flex items-center justify-between"}>
             <div className={"flex items-center space-x-2"}>
-              <div
-                className={
-                  "w-8 h-8 rounded-lg bg-gradient-to-r from-primary to-primary-glow flex items-center justify-center"
-                }
-              >
-                <Brain
-                  size={20}
-                  className={"w-4 h-4 text-primary-foreground"}
-                />
-              </div>
+              <Image src={"/logo.png"} alt={"Logo"} width={30} height={30} />
               <h1 className={"text-xl font-semibold text-foreground"}>
                 WRIGHT PIA SOFTWARE
               </h1>

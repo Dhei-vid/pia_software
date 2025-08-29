@@ -1,5 +1,7 @@
 export default function Page() {
-  <div>
-    <div>Preferences</div>
-  </div>;
+  return (
+    <div>
+      <div>Preferences</div>
+    </div>
+  );
 }

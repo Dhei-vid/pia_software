@@ -1,5 +1,7 @@
 export default function Page() {
-  <div>
-    <div>Notification</div>
-  </div>;
+  return (
+    <div>
+      <div>Notification</div>
+    </div>
+  );
 }

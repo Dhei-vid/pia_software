@@ -2,7 +2,7 @@ import Image from "next/image";
 
 const Header = () => {
   return (
-    <div className="flex flex-row gap-2 items-center bg-black w-full py-4 px-15">
+    <div className="flex flex-row gap-2 items-center bg-dark w-full py-4 px-15">
       <Image
         src="/logo.png"
         alt="Wright PIA Logo"
