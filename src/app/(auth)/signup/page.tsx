@@ -8,7 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Brain, ArrowLeft, Mail, User, Building, MapPin } from "lucide-react";
+import { ArrowLeft, Mail, User, Building, MapPin } from "lucide-react";
+import Image from "next/image";
 
 const SignUpPage = () => {
   const router = useRouter();
@@ -56,8 +57,14 @@ const SignUpPage = () => {
           </Link>
 
           <div className="flex items-center justify-center space-x-2 mb-4">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-primary to-primary-glow flex items-center justify-center">
-              <Brain className="w-6 h-6 text-primary-foreground" />
+            <div className="w-12 h-12 rounded-xl flex items-center justify-center">
+              <Image
+                src="/logo.png"
+                alt="Wright PIA Logo"
+                width={40}
+                height={40}
+                className="object-contain"
+              />
             </div>
           </div>
           <h1 className="text-2xl font-bold text-foreground mb-2">
