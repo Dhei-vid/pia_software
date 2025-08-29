@@ -25,7 +25,7 @@ const LandingPage = () => {
                 />
               </div>
               <h1 className={"text-xl font-semibold text-foreground"}>
-                My App
+                WRIGHT PIA SOFTWARE
               </h1>
             </div>
 
@@ -76,7 +76,10 @@ const LandingPage = () => {
 
             <div className="flex flex-col sm:flex-row gap-4">
               <Link href={"/signup"}>
-                <Button className="group text-lg px-8 py-6">
+                <Button
+                  variant={"default"}
+                  className="border-1 border-white group text-lg px-8 py-6"
+                >
                   <p>Start Free Trial</p>
                   <ArrowRight
                     size={20}
@@ -85,7 +88,9 @@ const LandingPage = () => {
                 </Button>
               </Link>
               <Link href={"/chat"}>
-                <Button className="text-lg px-8 py-6">Try Demo</Button>
+                <Button variant={"outline"} className="text-lg px-8 py-6">
+                  Try Demo
+                </Button>
               </Link>
             </div>
           </div>
@@ -93,7 +98,7 @@ const LandingPage = () => {
       </section>
 
       {/* Features section */}
-      <section className="py-24 bg-muted/30">
+      <section className="py-24 px-5 bg-muted/30">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
@@ -130,18 +135,17 @@ const LandingPage = () => {
             <CardContent className="p-8 text-center">
               <div
                 className={
-                  "w-16 h-16 rounded-full bg-gradient-t-br from-secondary to-yellow-500 flex items-center justify-center mx-auto mb-6"
+                  "w-16 h-16 rounded-full bg-gradient-to-br from-primary to-primary-glow flex items-center justify-center mx-auto mb-6"
                 }
               >
                 <Database size={20} className="text-primary-foreground" />
-                <h3 className="text-foreground text-xl font-semibold mb-3 text-foreground">
-                  Data Modelling
-                </h3>
-                <p className="text-muted-foreground ">
-                  Utilize AI to streamline data collection, storage, and
-                  analysis.
-                </p>
               </div>
+              <h3 className="text-foreground text-xl font-semibold mb-3 text-foreground">
+                Data Modelling
+              </h3>
+              <p className="text-muted-foreground ">
+                Utilize AI to streamline data collection, storage, and analysis.
+              </p>
             </CardContent>
           </Card>
 
@@ -153,14 +157,13 @@ const LandingPage = () => {
                 }
               >
                 <Shield size={20} className="text-primary-foreground" />
-                <h3 className="text-foreground text-xl font-semibold mb-3 text-foreground">
-                  Data Modelling
-                </h3>
-                <p className="text-muted-foreground ">
-                  Utilize AI to streamline data collection, storage, and
-                  analysis.
-                </p>
               </div>
+              <h3 className="text-foreground text-xl font-semibold mb-3 text-foreground">
+                Data Modelling
+              </h3>
+              <p className="text-muted-foreground ">
+                Utilize AI to streamline data collection, storage, and analysis.
+              </p>
             </CardContent>
           </Card>
 
@@ -168,18 +171,17 @@ const LandingPage = () => {
             <CardContent className="p-8 text-center">
               <div
                 className={
-                  "w-16 h-16 rounded-full bg-gradient-t-br from-secondary to-yellow-500 flex items-center justify-center mx-auto mb-6"
+                  "w-16 h-16 rounded-full bg-gradient-to-br from-primary to-primary-glow flex items-center justify-center mx-auto mb-6"
                 }
               >
                 <Brain size={20} className="text-primary-foreground" />
-                <h3 className="text-foreground text-xl font-semibold mb-3 text-foreground">
-                  Predictive Intelligence
-                </h3>
-                <p className="text-muted-foreground ">
-                  Utilize AI to analyze historical data and predict future
-                  trends.
-                </p>
               </div>
+              <h3 className="text-foreground text-xl font-semibold mb-3 text-foreground">
+                Predictive Intelligence
+              </h3>
+              <p className="text-muted-foreground ">
+                Utilize AI to analyze historical data and predict future trends.
+              </p>
             </CardContent>
           </Card>
         </div>

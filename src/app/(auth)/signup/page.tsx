@@ -1,12 +1,14 @@
+"use client";
+
+import Link from "next/link";
+import { toast } from "sonner";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Brain, ArrowLeft, Mail, User, Building, MapPin } from "lucide-react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
 
 const SignUpPage = () => {
   const router = useRouter();
@@ -42,7 +44,7 @@ const SignUpPage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-primary/5 flex items-center justify-center p-6">
-      <div className="w-full max-w-md">
+      <div className="w-full lg:max-w-xl 2xl:max-w-2xl">
         {/* Header */}
         <div className="text-center mb-8">
           <Link
@@ -58,8 +60,8 @@ const SignUpPage = () => {
               <Brain className="w-6 h-6 text-primary-foreground" />
             </div>
           </div>
-          <h1 className="text-3xl font-bold text-foreground mb-2">
-            Join OilGas AI Guru
+          <h1 className="text-2xl font-bold text-foreground mb-2">
+            Join WRIGHT PIA SOFTWARE
           </h1>
           <p className="text-muted-foreground">
             Get instant access to specialized AI for the energy sector
