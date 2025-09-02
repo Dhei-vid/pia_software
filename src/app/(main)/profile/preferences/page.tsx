@@ -2,11 +2,13 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Moon, Globe } from "lucide-react";
+import { Moon, Globe, Sun } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 
+import SelectComp from "@/components/general/select-component";
+
 const PreferencesPage = () => {
-  const [appearance, setAppearance] = useState("Dark Mode");
+  const [appearance, setAppearance] = useState("dark mode");
   const [language, setLanguage] = useState("English");
   const [autoSuggest, setAutoSuggest] = useState(true);
   const [referenceSearch, setReferenceSearch] = useState(true);
@@ -45,35 +47,21 @@ const PreferencesPage = () => {
               How Wright PIA Software looks on your device
             </p>
           </div>
-          <div className="ml-6">
-            <Button
-              variant="outline"
-              className="border-gray-700 text-gray-300 hover:text-white hover:bg-[#3a3a3a] min-w-[140px] justify-between"
-              onClick={() =>
-                handleAppearanceChange(
-                  appearance === "Dark Mode" ? "Light Mode" : "Dark Mode"
-                )
-              }
-            >
-              <div className="flex items-center space-x-2">
-                <Moon className="w-4 h-4" />
-                <span>{appearance}</span>
-              </div>
-              <svg
-                className="w-4 h-4 ml-2"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M19 9l-7 7-7-7"
-                />
-              </svg>
-            </Button>
-          </div>
+
+          <SelectComp
+            placeholder={appearance}
+            header={"Mode"}
+            selectItems={[
+              {
+                Icon: Moon,
+                value: "dark mode",
+              },
+              {
+                Icon: Sun,
+                value: "light mode",
+              },
+            ]}
+          />
         </div>
       </div>
 
@@ -85,33 +73,18 @@ const PreferencesPage = () => {
             <p className="text-gray-400">Preferred user language</p>
           </div>
           <div className="ml-6">
-            <Button
-              variant="outline"
-              className="border-gray-700 text-gray-300 hover:text-white hover:bg-[#3a3a3a] min-w-[140px] justify-between"
-              onClick={() =>
-                handleLanguageChange(
-                  language === "English" ? "Spanish" : "English"
-                )
-              }
-            >
-              <div className="flex items-center space-x-2">
-                <Globe className="w-4 h-4" />
-                <span>{language}</span>
-              </div>
-              <svg
-                className="w-4 h-4 ml-2"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M19 9l-7 7-7-7"
-                />
-              </svg>
-            </Button>
+            <SelectComp
+              placeholder={language}
+              header={"Language"}
+              selectItems={[
+                {
+                  value: "English",
+                },
+                {
+                  value: "French",
+                },
+              ]}
+            />
           </div>
         </div>
       </div>

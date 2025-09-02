@@ -51,7 +51,7 @@ const ProfilePage = () => {
           <Button
             size={"lg"}
             variant="outline"
-            className="border-gray-100/10 bg-transparent text-white hover:bg-transparent hover:border-green"
+            className="border-gray-100/10 bg-transparent text-white hover:bg-lightgrey hover:text-white"
           >
             Change Profile Picture
           </Button>
@@ -76,8 +76,9 @@ const ProfilePage = () => {
 
           <Button
             size={"lg"}
+            variant="outline"
             onClick={handleSaveChanges}
-            className="border border-gray-100/10 bg-transparent text-white hover:bg-transparent hover:border-green"
+            className="border-gray-100/10 bg-transparent text-white hover:bg-lightgrey hover:text-white"
           >
             Save Changes
           </Button>
@@ -138,7 +139,7 @@ const ProfilePage = () => {
               size={"lg"}
               onClick={handleContactSupport}
               variant="outline"
-              className="border border-gray-100/10 bg-transparent text-white hover:bg-transparent hover:border-green"
+              className="border-gray-100/10 bg-transparent text-white hover:bg-lightgrey hover:text-white"
             >
               Contact Support
             </Button>
@@ -155,7 +156,7 @@ const ProfilePage = () => {
               size={"lg"}
               onClick={handleSignOut}
               variant="outline"
-              className="border border-gray-100/10 bg-transparent text-white hover:bg-transparent hover:border-green"
+              className="border-gray-100/10 bg-transparent text-white hover:bg-lightgrey hover:text-white"
             >
               Sign Out
             </Button>
