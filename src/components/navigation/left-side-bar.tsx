@@ -3,6 +3,7 @@ import { Input } from "../ui/input";
 import { Search, RotateCw, User, ChevronRight, Sun } from "lucide-react";
 import { SetStateAction, Dispatch, FC } from "react";
 import { Button } from "../ui/button";
+import { Switch } from "@/components/ui/switch";
 
 interface ILeftSideBarProps {
   searchQuery: string;
@@ -97,7 +98,7 @@ export const LeftSideBar: FC<ILeftSideBarProps> = ({
       </div>
 
       {/* Light Mode Toggle */}
-      <div className="mb-8">
+      <div className="flex flex-row items-center justify-between mb-8">
         <Button
           variant="ghost"
           onClick={() => setIsLightMode(!isLightMode)}
@@ -106,10 +107,11 @@ export const LeftSideBar: FC<ILeftSideBarProps> = ({
           <Sun className="w-4 h-4 mr-3" />
           Light mode
         </Button>
+        <Switch id={"lightmode"} />
       </div>
 
       {/* User Profile */}
-      <div className="p-5 rounded-lg mt-auto pt-6 border-t border-[#3a3a3a]">
+      <div className="p-5 rounded-lg mt-auto pt-6 border-t border-[#3a3a3a] border border-gray-700">
         <div className="flex items-center space-x-3">
           <div className="w-10 h-10 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full flex items-center justify-center">
             <User className="w-5 h-5 text-white" />

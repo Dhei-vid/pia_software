@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Plus, Send, FileText, CheckSquare } from "lucide-react";
+import { Plus, SendHorizontal, FileText, CheckSquare } from "lucide-react";
 
 import { LeftSideBar } from "@/components/navigation/left-side-bar";
 import RightSideBar from "@/components/navigation/right-side-bar";
@@ -20,8 +20,8 @@ const ChatPage = () => {
   ];
 
   return (
-    <div className="min-h-screen text-white">
-      <div className="flex h-[calc(100vh-48px)]">
+    <div className="text-white">
+      <div className="flex">
         {/* Left Sidebar - Navigation */}
         <LeftSideBar
           searchQuery={searchQuery}
@@ -31,33 +31,39 @@ const ChatPage = () => {
         />
 
         {/* Main Content Area */}
-        <div className="m-12 rounded-md flex-1 bg-dark p-8">
+        <div className="m-8 rounded-md flex-1 bg-dark p-8">
           <div className="max-w-4xl mx-auto">
             {/* Greeting */}
-            <div className="mb-8">
+            <div className="mb-8 text-center">
               <h1 className="text-4xl font-serif text-white mb-2">
                 Hello, Williams
               </h1>
             </div>
 
             {/* Main Search Input */}
-            <div className="relative">
-              <Input
-                placeholder="Search for a section, upload a document, or draft a new document."
-                className="h-16 text-lg bg-[#2a2a2a] border-[#3a3a3a] text-white placeholder:text-gray-400 focus:border-yellow-400 rounded-xl"
-              />
-              <div className="absolute left-4 top-1/2 transform -translate-y-1/2">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="p-2 hover:bg-[#3a3a3a]"
-                >
-                  <Plus className="w-5 h-5 text-gray-400" />
-                </Button>
+            <div className={"border border-gray-700 rounded-xl bg-dark"}>
+              <div className={"pt-3 pb-12"}>
+                <Input
+                  placeholder="Search for a section, upload a document, or draft a new document."
+                  className={
+                    "text-lg border-none text-white placeholder:text-gray-400 focus:border-none rounded-xl"
+                  }
+                />
               </div>
-              <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
-                <Button className="bg-green-500 hover:bg-green-600 text-white p-2 rounded-lg">
-                  <Send className="w-5 h-5" />
+              <div className={"p-3 flex flex-row items-center justify-between"}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-12 h-12 hover:bg-[#3a3a3a] border border-gray-700 bg-transparent rounded-full"
+                >
+                  <Plus size={30} className="text-gray-400" />
+                </Button>
+
+                <Button className="group w-12 h-12 border border-green bg-transparent hover:bg-green text-white p-2 rounded-lg">
+                  <SendHorizontal
+                    size={30}
+                    className="text-green group-hover:text-white"
+                  />
                 </Button>
               </div>
             </div>
