@@ -28,7 +28,7 @@ const PreferencesPage = () => {
   };
 
   return (
-    <div className="h-full mx-auto p-8 space-y-8">
+    <div className="h-full p-8 space-y-8">
       {/* Header */}
       <div className={" pb-6 border-b border-lightgrey"}>
         <h1 className="text-3xl font-serif text-white">Preferences</h1>

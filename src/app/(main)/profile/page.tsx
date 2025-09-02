@@ -32,7 +32,7 @@ const ProfilePage = () => {
   };
 
   return (
-    <div className="mx-auto h-full p-8 2xl:px-12 space-y-6">
+    <div className="h-full p-8 2xl:px-12 space-y-6">
       {/* Header */}
       <div className="border-b border-lightgrey">
         <h1 className="text-3xl font-serif text-white mb-6">Account</h1>

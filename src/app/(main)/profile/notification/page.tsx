@@ -11,9 +11,8 @@ const NotificationPage = () => {
   };
 
   return (
-    <div className="mx-auto p-8">
+    <div className="h-full p-8">
       {/* Header */}
-
       <div className="border-b border-lightgrey mb-8">
         <h1 className="text-3xl font-serif text-white mb-8">Notifications</h1>
       </div>
