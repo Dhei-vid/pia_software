@@ -2,12 +2,12 @@ import Image from "next/image";
 
 const Header = () => {
   return (
-    <div className="flex flex-row gap-2 items-center bg-dark w-full py-4 px-15">
+    <div className="flex flex-row gap-2 items-center bg-grey w-full py-4 px-15">
       <Image
         src="/logo.png"
         alt="Wright PIA Logo"
-        width={40}
-        height={40}
+        width={35}
+        height={35}
         className="object-contain"
       />
       <h1 className="text-lg 2xl:text-xl text-white">Wright PIA Software</h1>

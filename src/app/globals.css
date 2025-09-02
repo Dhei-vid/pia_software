@@ -6,6 +6,7 @@
 @theme inline {
   --color-dark: var(--dark);
   --color-grey: var(--grey);
+  --color-lightgrey: var(--lightgrey);
   --color-green: var(--green);
 
   --color-background: var(--background);
@@ -50,6 +51,7 @@
 :root {
   --dark: #191a1a;
   --grey: #2a2a2a;
+  --lightgrey: #3a3a3a;
   --green: #007a48;
 
   --radius: 0.625rem;

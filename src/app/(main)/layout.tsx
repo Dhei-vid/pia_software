@@ -6,9 +6,9 @@ export default function MainLayout({
   children: React.ReactNode;
 }) {
   return (
-    <main>
+    <main className="h-screen flex flex-col overflow-hidden">
       <Header />
-      <div className={"bg-grey min-h-screen"}>{children}</div>
+      <div className="flex-1 overflow-hidden bg-grey">{children}</div>
     </main>
   );
 }

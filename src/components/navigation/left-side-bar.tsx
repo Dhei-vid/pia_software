@@ -42,15 +42,16 @@ export const LeftSideBar: FC<ILeftSideBarProps> = ({
   ];
 
   return (
-    <div className="flex flex-col w-80 p-6">
-      <div className={"space-y-8"}>
+    <div className="h-full flex flex-col overflow-hidden">
+      {/* Fixed Header Section */}
+      <div className="flex-shrink-0 p-6 space-y-6">
         {/* Logo */}
         <div>
           <Image src={"/logo.png"} alt={"Logo"} width={60} height={60} />
         </div>
 
         {/* Search Bar */}
-        <div className="space-y-3 mb-6">
+        <div className="space-y-3">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
             <Input
@@ -62,7 +63,7 @@ export const LeftSideBar: FC<ILeftSideBarProps> = ({
           </div>
 
           {/* History */}
-          <div className="mb-8">
+          <div>
             <Button
               variant="ghost"
               className="w-full justify-start text-gray-300 hover:text-white hover:bg-[#3a3a3a]"
@@ -74,51 +75,58 @@ export const LeftSideBar: FC<ILeftSideBarProps> = ({
         </div>
       </div>
 
-      {/* PIA 2021 Document */}
-      <div className="mb-8 pt-6 border-t border-[#3a3a3a]">
-        <h3 className="text-sm font-medium text-gray-400 uppercase tracking-wider mb-4">
-          PIA 2021 Document
-        </h3>
-        <div className="space-y-4">
-          {chapters.map((chapter, index) => (
-            <button
-              key={index}
-              className="flex flex-row items-center w-full justify-between text-gray-300 hover:text-white hover:bg-[#3a3a3a] text-left rounded-md cursor-pointer p-2"
-            >
-              <div className={"w-[15rem]"}>
-                <p className="text-sm truncate">{chapter.title}</p>
-                <span className="text-light text-xs truncate">
-                  {chapter.description}
-                </span>
-              </div>
-              <ChevronRight size={20} className="text-gray-400" />
-            </button>
-          ))}
+      {/* Content Section - No scrolling */}
+      <div className="flex-1 px-6 pb-6 overflow-hidden">
+        {/* PIA 2021 Document */}
+        <div className="mb-8 pt-6 border-t border-[#3a3a3a]">
+          <h3 className="text-sm font-medium text-gray-400 uppercase tracking-wider mb-4">
+            PIA 2021 Document
+          </h3>
+          <div className="space-y-4">
+            {chapters.map((chapter, index) => (
+              <button
+                key={index}
+                className="flex flex-row items-center w-full justify-between text-gray-300 hover:text-white hover:bg-[#3a3a3a] text-left rounded-md cursor-pointer p-2"
+              >
+                <div className="w-[15rem]">
+                  <p className="text-sm truncate">{chapter.title}</p>
+                  <span className="text-light text-xs truncate">
+                    {chapter.description}
+                  </span>
+                </div>
+                <ChevronRight size={20} className="text-gray-400" />
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Light Mode Toggle */}
+        <div className="flex flex-row items-center justify-between mb-8">
+          <div className="flex flex-row items-center justify-start text-gray-300 hover:text-white hover:bg-[#3a3a3a]">
+            <Sun className="w-4 h-4 mr-3" />
+            <p>Light mode</p>
+          </div>
+          <Switch
+            id={"lightmode"}
+            checked={isLightMode}
+            onCheckedChange={setIsLightMode}
+            className="w-20 h-10"
+          />
         </div>
       </div>
 
-      {/* Light Mode Toggle */}
-      <div className="flex flex-row items-center justify-between mb-8">
-        <Button
-          variant="ghost"
-          onClick={() => setIsLightMode(!isLightMode)}
-          className="w-full justify-start text-gray-300 hover:text-white hover:bg-[#3a3a3a]"
-        >
-          <Sun className="w-4 h-4 mr-3" />
-          Light mode
-        </Button>
-        <Switch id={"lightmode"} />
-      </div>
-
-      {/* User Profile */}
-      <div className="p-5 rounded-lg mt-auto pt-6 border-t border-[#3a3a3a] border border-gray-700">
-        <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full flex items-center justify-center">
-            <User className="w-5 h-5 text-white" />
-          </div>
-          <div>
-            <p className="text-sm font-medium text-white">Williams Chang</p>
-            <p className="text-xs text-gray-400">Account</p>
+      {/* Fixed Footer Section */}
+      <div className="flex-shrink-0 p-6 border-t border-[#3a3a3a]">
+        {/* User Profile */}
+        <div className="p-5 rounded-lg border border-gray-700">
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full flex items-center justify-center">
+              <User className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-white">Williams Chang</p>
+              <p className="text-xs text-gray-400">Account</p>
+            </div>
           </div>
         </div>
       </div>

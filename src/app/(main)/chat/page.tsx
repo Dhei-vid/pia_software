@@ -9,8 +9,8 @@ import { LeftSideBar } from "@/components/navigation/left-side-bar";
 import RightSideBar from "@/components/navigation/right-side-bar";
 
 const ChatPage = () => {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [isLightMode, setIsLightMode] = useState(false);
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [isLightMode, setIsLightMode] = useState<boolean>(false);
 
   const tools = [
     { icon: FileText, label: "Add Notes", active: false },
@@ -20,37 +20,37 @@ const ChatPage = () => {
   ];
 
   return (
-    <div className="text-white">
-      <div className="flex">
-        {/* Left Sidebar - Navigation */}
+    <div className="h-full flex overflow-hidden">
+      {/* Left Sidebar - Navigation */}
+      <div className="w-80 flex-shrink-0 h-full overflow-hidden">
         <LeftSideBar
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
           isLightMode={isLightMode}
           setIsLightMode={setIsLightMode}
         />
+      </div>
 
-        {/* Main Content Area */}
-        <div className="m-8 rounded-md flex-1 bg-dark p-8">
+      {/* Main Content Area */}
+      <div className="flex-1 p-5 h-full overflow-y-auto">
+        <div className="min-h-full rounded-xl bg-dark p-4 sm:p-6 lg:p-8">
           <div className="max-w-4xl mx-auto">
             {/* Greeting */}
             <div className="mb-8 text-center">
-              <h1 className="text-4xl font-serif text-white mb-2">
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-serif text-white mb-2">
                 Hello, Williams
               </h1>
             </div>
 
             {/* Main Search Input */}
-            <div className={"border border-gray-700 rounded-xl bg-dark"}>
-              <div className={"pt-3 pb-12"}>
+            <div className="border border-gray-700 rounded-xl bg-dark">
+              <div className="pt-3 pb-12">
                 <Input
                   placeholder="Search for a section, upload a document, or draft a new document."
-                  className={
-                    "text-lg border-none text-white placeholder:text-gray-400 focus:border-none rounded-xl"
-                  }
+                  className="text-lg border-none text-white placeholder:text-gray-400 focus:border-none rounded-xl"
                 />
               </div>
-              <div className={"p-3 flex flex-row items-center justify-between"}>
+              <div className="p-3 flex flex-row items-center justify-between">
                 <Button
                   variant="outline"
                   size="sm"
@@ -69,8 +69,10 @@ const ChatPage = () => {
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Right Sidebar - Tools */}
+      {/* Right Sidebar - Tools */}
+      <div className="w-80 flex-shrink-0 h-full overflow-hidden">
         <RightSideBar tools={tools} />
       </div>
     </div>

@@ -1,0 +1,74 @@
+"use client";
+
+import { ChevronLeft, User, SquareCheck, Bell } from "lucide-react";
+import Link from "next/link";
+
+interface ProfileSidebarProps {
+  activePage: "account" | "preferences" | "notification";
+}
+
+const ProfileSidebar: React.FC<ProfileSidebarProps> = ({ activePage }) => {
+  const navigationItems = [
+    {
+      id: "account",
+      label: "Account",
+      icon: User,
+      href: "/profile",
+    },
+    {
+      id: "preferences",
+      label: "Preferences",
+      icon: SquareCheck,
+      href: "/profile/preferences",
+    },
+    {
+      id: "notification",
+      label: "Notification",
+      icon: Bell,
+      href: "/profile/notification",
+    },
+  ];
+
+  return (
+    <div className="w-80 flex-shrink-0 h-full overflow-hidden">
+      <div className="h-full flex flex-col p-6">
+        {/* Back Button */}
+        <Link
+          href="/chat"
+          className="flex items-center space-x-2 text-gray-300 hover:text-white transition-colors mb-8"
+        >
+          <ChevronLeft size={20} />
+          <span>Back</span>
+        </Link>
+
+        {/* Navigation Title */}
+        <h2 className="text-lg font-semibold text-white mb-8">Account</h2>
+
+        {/* Navigation Items */}
+        <div className="space-y-2">
+          {navigationItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = activePage === item.id;
+
+            return (
+              <Link
+                key={item.id}
+                href={item.href}
+                className={`flex items-center space-x-3 p-3 rounded-md transition-colors ${
+                  isActive
+                    ? "bg-dark border border-lightgrey text-white"
+                    : "text-gray-300 hover:text-white hover:bg-[#3a3a3a]"
+                }`}
+              >
+                <Icon size={20} />
+                <span className="text-sm">{item.label}</span>
+              </Link>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ProfileSidebar;
