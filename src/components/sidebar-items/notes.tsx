@@ -60,7 +60,9 @@ const NotesSideBarItems: FC<INotesSideBarItems> = ({
       className="p-3 text-left flex flex-row gap-5 justify-between hover:bg-lightgrey cursor-pointer transition-all duration-200 ease-in-out rounded-md"
     >
       <div>
-        <p className="text-sm text-white truncate text-wrap">{content}</p>
+        <p className="text-sm text-white truncate text-wrap line-clamp-2">
+          {content}
+        </p>
         {/* <p className="text-sm text-gray-400 truncate">{content}</p> */}
       </div>
       <p className="text-xs text-nowrap text-gray-400">

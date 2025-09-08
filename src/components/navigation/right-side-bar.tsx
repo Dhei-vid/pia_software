@@ -74,12 +74,12 @@ const RightSideBar: FC<RightSideBarProps> = ({ tools }) => {
         onClose={() => setIsDrawerOpen(false)}
         title={title}
         position="right"
-        >
-          <div className="space-y-6">
-            {/* Items List */}
-            {isNotes ? <SavedNotes /> : <CheckList />}
-          </div>
-        </GenericDrawer>
+      >
+        <div className="space-y-6">
+          {/* Items List */}
+          {isNotes ? <SavedNotes /> : <CheckList />}
+        </div>
+      </GenericDrawer>
     </div>
   );
 };

@@ -74,10 +74,10 @@ export const LeftSideBar: FC<ILeftSideBarProps> = ({
   return (
     <div className="h-full flex flex-col overflow-hidden">
       {/* Fixed Header Section */}
-      <div className="flex-shrink-0 p-6 space-y-6">
+      <div className="flex-shrink-0 p-6 space-y-4">
         {/* Logo */}
         <div>
-          <Image src={"/logo.png"} alt={"Logo"} width={60} height={60} />
+          <Image src={"/logo.png"} alt={"Logo"} width={40} height={40} />
         </div>
 
         {/* Search Bar */}
@@ -88,7 +88,7 @@ export const LeftSideBar: FC<ILeftSideBarProps> = ({
               placeholder="New Query"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 bg-[#3a3a3a] border-[#4a4a4a] text-white placeholder:text-gray-400 focus:border-yellow-400"
+              className="pl-10 bg-dark border-lightgrey text-white placeholder:text-gray-400 focus:border-yellow-400"
             />
           </div>
 
@@ -107,7 +107,7 @@ export const LeftSideBar: FC<ILeftSideBarProps> = ({
       </div>
 
       {/* Content Section - No scrolling */}
-      <div className="flex-1 px-6 pb-6 overflow-hidden">
+      <div className="flex-1 px-6 pb-6 overflow-y-auto scrollbar-width">
         {/* PIA 2021 Document */}
         <div className="mb-8 pt-6 border-t border-[#3a3a3a]">
           <h3 className="text-sm font-medium text-gray-400 uppercase tracking-wider mb-4">
