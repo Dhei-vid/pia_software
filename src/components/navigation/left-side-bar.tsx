@@ -1,9 +1,10 @@
 import Image from "next/image";
 import { Input } from "../ui/input";
-import { Search, RotateCw, User, ChevronRight, Sun } from "lucide-react";
-import { SetStateAction, Dispatch, FC } from "react";
+import { Search, RotateCw, User, ChevronRight, Sun, Clock } from "lucide-react";
+import { SetStateAction, Dispatch, FC, useState } from "react";
 import { Button } from "../ui/button";
 import { Switch } from "@/components/ui/switch";
+import { GenericDrawer } from "@/components/ui/generic-drawer";
 
 interface ILeftSideBarProps {
   searchQuery: string;
@@ -18,6 +19,9 @@ export const LeftSideBar: FC<ILeftSideBarProps> = ({
   isLightMode,
   setIsLightMode,
 }) => {
+  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+  const [historySearchQuery, setHistorySearchQuery] = useState("");
+
   const chapters = [
     {
       title: "Chapter 1 Governance & Institution",
@@ -40,6 +44,32 @@ export const LeftSideBar: FC<ILeftSideBarProps> = ({
       description: "description lorem possum possum possum",
     },
   ];
+
+  // Sample history data
+  const historyData = [
+    {
+      id: "1",
+      query: "What are the rules about obtain...",
+      timestamp: "2 hours ago",
+      type: "query",
+    },
+    {
+      id: "2",
+      query: "Penalties for gas flaring",
+      timestamp: "1 day ago",
+      type: "query",
+    },
+    {
+      id: "3",
+      query: "S.104",
+      timestamp: "3 days ago",
+      type: "section",
+    },
+  ];
+
+  const filteredHistory = historyData.filter((item) =>
+    item.query.toLowerCase().includes(historySearchQuery.toLowerCase())
+  );
 
   return (
     <div className="h-full flex flex-col overflow-hidden">
@@ -66,6 +96,7 @@ export const LeftSideBar: FC<ILeftSideBarProps> = ({
           <div>
             <Button
               variant="ghost"
+              onClick={() => setIsHistoryOpen(true)}
               className="w-full justify-start text-gray-300 hover:text-white hover:bg-[#3a3a3a]"
             >
               <RotateCw className="w-4 h-4 mr-3" />
@@ -110,7 +141,6 @@ export const LeftSideBar: FC<ILeftSideBarProps> = ({
             id={"lightmode"}
             checked={isLightMode}
             onCheckedChange={setIsLightMode}
-            className="w-20 h-10"
           />
         </div>
       </div>
@@ -130,6 +160,75 @@ export const LeftSideBar: FC<ILeftSideBarProps> = ({
           </div>
         </div>
       </div>
+
+      {/* History Drawer */}
+      <GenericDrawer
+        isOpen={isHistoryOpen}
+        onClose={() => setIsHistoryOpen(false)}
+        title="History"
+        position="left"
+      >
+        <div className="space-y-6">
+          {/* Search Bar */}
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Search history..."
+              value={historySearchQuery}
+              onChange={(e) => setHistorySearchQuery(e.target.value)}
+              className="w-full pl-10 pr-4 py-3 bg-[#3a3a3a] border border-[#4a4a4a] rounded-md text-white placeholder:text-gray-400 focus:border-yellow-400 focus:outline-none"
+            />
+          </div>
+
+          {/* History List */}
+          <div className="space-y-2">
+            {filteredHistory.length > 0 ? (
+              filteredHistory.map((item) => (
+                <div
+                  key={item.id}
+                  className="group flex items-center justify-between p-3 rounded-md hover:bg-[#3a3a3a] cursor-pointer transition-colors"
+                >
+                  <div className="flex items-center space-x-3 flex-1 min-w-0">
+                    <div className="flex-shrink-0">
+                      {item.type === "query" ? (
+                        <Search className="w-4 h-4 text-gray-400" />
+                      ) : (
+                        <Clock className="w-4 h-4 text-gray-400" />
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm text-white truncate">
+                        {item.query}
+                      </p>
+                      <p className="text-xs text-gray-400">{item.timestamp}</p>
+                    </div>
+                  </div>
+                  <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-white transition-colors" />
+                </div>
+              ))
+            ) : (
+              <div className="text-center py-8">
+                <Search className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+                <p className="text-gray-400 text-sm">
+                  {historySearchQuery
+                    ? "No matching history found"
+                    : "No history yet"}
+                </p>
+              </div>
+            )}
+          </div>
+
+          {/* Clear History Button */}
+          {filteredHistory.length > 0 && (
+            <div className="pt-4 border-t border-lightgrey">
+              <button className="w-full py-2 px-4 text-sm text-gray-400 hover:text-white hover:bg-[#3a3a3a] rounded-md transition-colors">
+                Clear All History
+              </button>
+            </div>
+          )}
+        </div>
+      </GenericDrawer>
     </div>
   );
 };

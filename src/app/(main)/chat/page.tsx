@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Plus, SendHorizontal, FileText, CheckSquare } from "lucide-react";
+import { Plus, SendHorizontal, FileText, SquareCheck } from "lucide-react";
 
 import { LeftSideBar } from "@/components/navigation/left-side-bar";
 import RightSideBar from "@/components/navigation/right-side-bar";
@@ -14,9 +14,9 @@ const ChatPage = () => {
 
   const tools = [
     { icon: FileText, label: "Add Notes", active: false },
-    { icon: CheckSquare, label: "Create New Checklist", active: false },
+    { icon: SquareCheck, label: "Create New Checklist", active: false },
     { icon: FileText, label: "Saved Notes", active: false },
-    { icon: CheckSquare, label: "Your Checklist", active: true },
+    { icon: SquareCheck, label: "Your Checklist", active: true },
   ];
 
   return (

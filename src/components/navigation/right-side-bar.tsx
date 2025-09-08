@@ -1,6 +1,9 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import { LucideIcon, HelpCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { GenericDrawer } from "@/components/ui/generic-drawer";
+import SavedNotes from "../sidebar-items/notes";
+import CheckList from "../sidebar-items/checklist";
 
 interface RightSideBarProps {
   tools: {
@@ -11,11 +14,28 @@ interface RightSideBarProps {
 }
 
 const RightSideBar: FC<RightSideBarProps> = ({ tools }) => {
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [drawerType, setDrawerType] = useState<"saved-notes" | "checklist">(
+    "saved-notes"
+  );
+
+  const handleToolClick = (toolLabel: string) => {
+    if (toolLabel === "Saved Notes" || toolLabel === "Your Checklist") {
+      setDrawerType(toolLabel === "Saved Notes" ? "saved-notes" : "checklist");
+      setIsDrawerOpen(true);
+    }
+  };
+
+  // Sample data for tools drawer
+
+  const isNotes = drawerType === "saved-notes";
+  const title = isNotes ? "Saved Notes" : "Your Checklist";
+
   return (
     <div className="h-full flex flex-col relative">
       {/* Fixed Header */}
       <div className="flex-shrink-0 p-6">
-        <h3 className="text-lg font-semibold text-white mb-6">Tools</h3>
+        <h3 className="text-lg font-semibold text-white">Tools</h3>
       </div>
 
       {/* Scrollable Content */}
@@ -25,17 +45,13 @@ const RightSideBar: FC<RightSideBarProps> = ({ tools }) => {
             <Button
               key={index}
               variant="ghost"
-              className={`w-full justify-start text-gray-300 hover:text-white hover:bg-[#3a3a3a] ${
-                tool.active ? "bg-[#3a3a3a] text-white" : ""
+              onClick={() => handleToolClick(tool.label)}
+              className={`w-full justify-start text-gray-300 hover:text-white hover:bg-lightgrey ${
+                tool.active ? "bg-lightgrey text-white" : ""
               }`}
             >
-              <tool.icon className="w-4 h-4 mr-3" />
+              <tool.icon size={20} className="mr-3" />
               <span className="text-sm">{tool.label}</span>
-              {tool.active && (
-                <div className="ml-auto w-4 h-4 bg-green-500 rounded-sm flex items-center justify-center">
-                  <div className="w-2 h-2 bg-white rounded-sm"></div>
-                </div>
-              )}
             </Button>
           ))}
         </div>
@@ -51,6 +67,19 @@ const RightSideBar: FC<RightSideBarProps> = ({ tools }) => {
           <HelpCircle size={20} className="text-gray-400" />
         </Button>
       </div>
+
+      {/* Tools Drawer */}
+      <GenericDrawer
+        isOpen={isDrawerOpen}
+        onClose={() => setIsDrawerOpen(false)}
+        title={title}
+        position="right"
+        >
+          <div className="space-y-6">
+            {/* Items List */}
+            {isNotes ? <SavedNotes /> : <CheckList />}
+          </div>
+        </GenericDrawer>
     </div>
   );
 };
