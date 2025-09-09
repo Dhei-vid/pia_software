@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+
 import { Plus, SendHorizontal, FileText, SquareCheck } from "lucide-react";
 
 import { LeftSideBar } from "@/components/navigation/left-side-bar";
@@ -12,11 +13,9 @@ const ChatPage = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [isLightMode, setIsLightMode] = useState<boolean>(false);
 
-  const tools = [
-    { icon: FileText, label: "Add Notes", active: false },
-    { icon: SquareCheck, label: "Create New Checklist", active: false },
+  const HistoryTools = [
     { icon: FileText, label: "Saved Notes", active: false },
-    { icon: SquareCheck, label: "Your Checklist", active: true },
+    { icon: SquareCheck, label: "Your Checklist", active: false },
   ];
 
   return (
@@ -73,7 +72,7 @@ const ChatPage = () => {
 
       {/* Right Sidebar - Tools */}
       <div className="w-80 flex-shrink-0 h-full overflow-hidden">
-        <RightSideBar tools={tools} />
+        <RightSideBar tools={HistoryTools} />
       </div>
     </div>
   );

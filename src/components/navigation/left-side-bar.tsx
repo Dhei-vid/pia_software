@@ -1,10 +1,11 @@
 import Image from "next/image";
 import { Input } from "../ui/input";
-import { Search, RotateCw, User, ChevronRight, Sun, Clock } from "lucide-react";
+import { Search, RotateCw, ChevronRight, Sun, Clock } from "lucide-react";
 import { SetStateAction, Dispatch, FC, useState } from "react";
 import { Button } from "../ui/button";
 import { Switch } from "@/components/ui/switch";
 import { GenericDrawer } from "@/components/ui/generic-drawer";
+import UserProfile from "./user-profile";
 
 interface ILeftSideBarProps {
   searchQuery: string;
@@ -146,19 +147,9 @@ export const LeftSideBar: FC<ILeftSideBarProps> = ({
       </div>
 
       {/* Fixed Footer Section */}
-      <div className="flex-shrink-0 p-6 border-t border-[#3a3a3a]">
+      <div className="w-full flex-shrink-0 p-6 border-t border-lightgrey">
         {/* User Profile */}
-        <div className="p-5 rounded-lg border border-gray-700">
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full flex items-center justify-center">
-              <User className="w-5 h-5 text-white" />
-            </div>
-            <div>
-              <p className="text-sm font-medium text-white">Williams Chang</p>
-              <p className="text-xs text-gray-400">Account</p>
-            </div>
-          </div>
-        </div>
+        <UserProfile />
       </div>
 
       {/* History Drawer */}

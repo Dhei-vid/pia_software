@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { CircleCheck, User } from "lucide-react";
+import { CircleCheck } from "lucide-react";
+import { AvatarProfile } from "@/components/ui/avatar-profile";
 
 const ProfilePage = () => {
   const [firstName, setFirstName] = useState("Williams");
@@ -58,9 +59,7 @@ const ProfilePage = () => {
         </div>
 
         <div className="justify-self-center flex items-center">
-          <div className="w-20 h-20 rounded-full overflow-hidden bg-gradient-to-r from-blue-400 to-purple-500 flex items-center justify-center">
-            <User className="w-10 h-10 text-white" />
-          </div>
+          <AvatarProfile name={`${firstName} ${lastName}`} size={"xl"} />
         </div>
       </div>
 

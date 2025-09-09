@@ -4,6 +4,9 @@ import { Button } from "@/components/ui/button";
 import { GenericDrawer } from "@/components/ui/generic-drawer";
 import SavedNotes from "../sidebar-items/notes";
 import CheckList from "../sidebar-items/checklist";
+import AddNotesModal from "../modals/add-notes";
+import ModalComponents from "../general/alert-modal";
+import { FileText, SquareCheck } from "lucide-react";
 
 interface RightSideBarProps {
   tools: {
@@ -26,8 +29,6 @@ const RightSideBar: FC<RightSideBarProps> = ({ tools }) => {
     }
   };
 
-  // Sample data for tools drawer
-
   const isNotes = drawerType === "saved-notes";
   const title = isNotes ? "Saved Notes" : "Your Checklist";
 
@@ -39,8 +40,28 @@ const RightSideBar: FC<RightSideBarProps> = ({ tools }) => {
       </div>
 
       {/* Scrollable Content */}
-      <div className="flex-1 overflow-y-auto px-6 pb-20">
-        <div className="space-y-3">
+      <div className="space-y-5 flex-1 overflow-y-auto px-6 pb-20">
+        <div className="w-full space-y-3">
+          {/* Add modal */}
+          <AddNotesModal
+            trigger={
+              <ModalComponents.ModalTrigger label="Add Note" Icon={FileText} />
+            }
+            content={<div></div>}
+          />
+
+          <AddNotesModal
+            trigger={
+              <ModalComponents.ModalTrigger
+                label="Create New Checklist"
+                Icon={SquareCheck}
+              />
+            }
+            content={<div></div>}
+          />
+        </div>
+
+        <div className="space-y-3 border-t border-lightgrey">
           {tools.map((tool, index) => (
             <Button
               key={index}
