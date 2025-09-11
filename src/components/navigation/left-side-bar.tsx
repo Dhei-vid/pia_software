@@ -1,6 +1,13 @@
 import Image from "next/image";
 import { Input } from "../ui/input";
-import { Search, RotateCw, ChevronRight, Sun, Clock } from "lucide-react";
+import {
+  Search,
+  RotateCw,
+  ChevronRight,
+  ChevronDown,
+  Sun,
+  Clock,
+} from "lucide-react";
 import { SetStateAction, Dispatch, FC, useState } from "react";
 import { Button } from "../ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -14,6 +21,20 @@ interface ILeftSideBarProps {
   setIsLightMode: Dispatch<SetStateAction<boolean>>;
 }
 
+interface ChapterPart {
+  id: string;
+  title: string;
+  isSelected?: boolean;
+}
+
+interface Chapter {
+  id: string;
+  title: string;
+  description: string;
+  isExpanded: boolean;
+  parts: ChapterPart[];
+}
+
 export const LeftSideBar: FC<ILeftSideBarProps> = ({
   searchQuery,
   setSearchQuery,
@@ -22,27 +43,85 @@ export const LeftSideBar: FC<ILeftSideBarProps> = ({
 }) => {
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [historySearchQuery, setHistorySearchQuery] = useState("");
+  const [expandedChapters, setExpandedChapters] = useState<Set<string>>(
+    new Set(["2"])
+  ); // Chapter 2 is expanded by default
+  const [selectedPart, setSelectedPart] = useState<string>("2-2"); // Part II is selected by default
 
-  const chapters = [
+  const chapters: Chapter[] = [
     {
+      id: "1",
       title: "Chapter 1 Governance & Institution",
       description: "description lorem possum possum possum",
+      isExpanded: false,
+      parts: [
+        { id: "1-1", title: "Part I - General Provisions" },
+        { id: "1-2", title: "Part II - Petroleum Industry Commission" },
+        { id: "1-3", title: "Part III - Host Communities Development Trust" },
+      ],
     },
     {
+      id: "2",
       title: "Chapter 2 Administration",
       description: "description lorem possum possum possum",
+      isExpanded: true,
+      parts: [
+        { id: "2-1", title: "Part I - General Administration" },
+        {
+          id: "2-2",
+          title:
+            "Part II - Administration of Upstream Petroleum Operations and Environment",
+          isSelected: true,
+        },
+        {
+          id: "2-3",
+          title: "Part III - General Administration of Midstream Operations",
+        },
+        {
+          id: "2-4",
+          title: "Part IV - Administration of Downstream Operations",
+        },
+        { id: "2-5", title: "Part V - Administration of Gas Flaring" },
+        {
+          id: "2-6",
+          title: "Part VI - Other Matters Relating to Administration",
+        },
+        { id: "2-7", title: "Part VII - Common Provisions" },
+      ],
     },
     {
+      id: "3",
       title: "Chapter 3 Host Communities Development",
       description: "description lorem possum possum possum",
+      isExpanded: false,
+      parts: [
+        { id: "3-1", title: "Part I - Host Communities Development Trust" },
+        {
+          id: "3-2",
+          title: "Part II - Host Communities Development Trust Fund",
+        },
+      ],
     },
     {
+      id: "4",
       title: "Chapter 4 Petroleum Industrial Fiscal Framework",
       description: "description lorem possum possum possum",
+      isExpanded: false,
+      parts: [
+        { id: "4-1", title: "Part I - General Provisions" },
+        { id: "4-2", title: "Part II - Royalties" },
+        { id: "4-3", title: "Part III - Petroleum Profits Tax" },
+      ],
     },
     {
+      id: "5",
       title: "Chapter 5 Miscellaneous Provisions",
       description: "description lorem possum possum possum",
+      isExpanded: false,
+      parts: [
+        { id: "5-1", title: "Part I - General Provisions" },
+        { id: "5-2", title: "Part II - Transitional Provisions" },
+      ],
     },
   ];
 
@@ -71,6 +150,24 @@ export const LeftSideBar: FC<ILeftSideBarProps> = ({
   const filteredHistory = historyData.filter((item) =>
     item.query.toLowerCase().includes(historySearchQuery.toLowerCase())
   );
+
+  const handleChapterClick = (chapterId: string) => {
+    setExpandedChapters((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(chapterId)) {
+        newSet.delete(chapterId);
+      } else {
+        newSet.add(chapterId);
+      }
+      return newSet;
+    });
+  };
+
+  const handlePartClick = (partId: string) => {
+    setSelectedPart(partId);
+    // Here you would typically navigate to the specific part or update the main content
+    console.log(`Selected part: ${partId}`);
+  };
 
   return (
     <div className="h-full flex flex-col overflow-hidden">
@@ -107,27 +204,66 @@ export const LeftSideBar: FC<ILeftSideBarProps> = ({
         </div>
       </div>
 
-      {/* Content Section - No scrolling */}
+      {/* Content Section - Scrollable */}
       <div className="flex-1 px-6 pb-6 overflow-y-auto scrollbar-width">
         {/* PIA 2021 Document */}
-        <div className="mb-8 pt-6 border-t border-[#3a3a3a]">
+        <div className="mb-8 pt-6 border-t border-lightgrey">
           <h3 className="text-sm font-medium text-gray-400 uppercase tracking-wider mb-4">
             PIA 2021 Document
           </h3>
-          <div className="space-y-4">
-            {chapters.map((chapter, index) => (
-              <button
-                key={index}
-                className="flex flex-row items-center w-full justify-between text-gray-300 hover:text-white hover:bg-[#3a3a3a] text-left rounded-md cursor-pointer p-2"
-              >
-                <div className="w-[15rem]">
-                  <p className="text-sm truncate">{chapter.title}</p>
-                  <span className="text-light text-xs truncate">
-                    {chapter.description}
-                  </span>
-                </div>
-                <ChevronRight size={20} className="text-gray-400" />
-              </button>
+          <div className="space-y-2 w-full">
+            {chapters.map((chapter) => (
+              <div key={chapter.id} className="space-y-1">
+                {/* Chapter Header */}
+                <button
+                  onClick={() => handleChapterClick(chapter.id)}
+                  className="flex flex-row items-center w-full justify-between text-gray-300 hover:text-white hover:bg-lightgrey text-left rounded-md cursor-pointer p-2 group"
+                >
+                  <div className="flex flex-col w-[13rem]">
+                    <span className="text-sm truncate">{chapter.title}</span>
+                    <span className="text-xs font-light truncate">
+                      {chapter.description}
+                    </span>
+                  </div>
+                  <div className="flex-shrink-0 ml-2">
+                    {expandedChapters.has(chapter.id) ? (
+                      <ChevronDown
+                        size={16}
+                        className="text-gray-400 group-hover:text-white"
+                      />
+                    ) : (
+                      <ChevronRight
+                        size={16}
+                        className="text-gray-400 group-hover:text-white"
+                      />
+                    )}
+                  </div>
+                </button>
+
+                {/* Chapter Parts - Only show when expanded */}
+                {expandedChapters.has(chapter.id) && (
+                  <div className="ml-6 space-y-1">
+                    {chapter.parts.map((part) => (
+                      <button
+                        key={part.id}
+                        onClick={() => handlePartClick(part.id)}
+                        className={`flex flex-row items-center w-full justify-between text-left rounded-md cursor-pointer p-2 transition-colors ${
+                          selectedPart === part.id
+                            ? "bg-[#3a3a3a] text-white"
+                            : "text-gray-400 hover:text-white hover:bg-[#2a2a2a]"
+                        }`}
+                      >
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs truncate">{part.title}</p>
+                        </div>
+                        {selectedPart === part.id && (
+                          <div className="w-2 h-2 bg-green rounded-full flex-shrink-0" />
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             ))}
           </div>
         </div>

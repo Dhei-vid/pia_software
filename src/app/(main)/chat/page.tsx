@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import SearchResultCard from "@/components/ui/search-result-card";
 
 import { Plus, SendHorizontal, FileText, SquareCheck } from "lucide-react";
 
@@ -18,6 +19,30 @@ const ChatPage = () => {
     { icon: SquareCheck, label: "Your Checklist", active: false },
   ];
 
+  // Sample search results data
+  const searchResults = [
+    {
+      title: "Petroleum Engineering Fundamentals",
+      description:
+        "Comprehensive guide covering drilling operations, reservoir engineering, and production optimization techniques used in modern petroleum engineering.",
+      onViewFullSection: () =>
+        console.log("Viewing Petroleum Engineering section"),
+    },
+    {
+      title: "Environmental Impact Assessment",
+      description:
+        "Detailed analysis of environmental considerations in energy projects, including regulatory compliance and sustainability practices.",
+      onViewFullSection: () =>
+        console.log("Viewing Environmental Impact section"),
+    },
+    {
+      title: "Renewable Energy Integration",
+      description:
+        "Best practices for integrating renewable energy sources into existing energy infrastructure and grid management systems.",
+      onViewFullSection: () => console.log("Viewing Renewable Energy section"),
+    },
+  ];
+
   return (
     <div className="h-full flex overflow-hidden">
       {/* Left Sidebar - Navigation */}
@@ -31,18 +56,37 @@ const ChatPage = () => {
       </div>
 
       {/* Main Content Area */}
-      <div className="flex-1 p-5 h-full overflow-y-auto">
+      <div className="flex-1 p-5 h-full overflow-y-auto scrollbar-width">
         <div className="min-h-full rounded-xl bg-dark p-4 sm:p-6 lg:p-8">
           <div className="max-w-4xl mx-auto">
             {/* Greeting */}
             <div className="mb-8 text-center">
-              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-serif text-white mb-2">
+              <h1 className="text-2xl sm:text-3xl lg:text-3xl font-serif text-white mb-2">
                 Hello, Williams
               </h1>
             </div>
 
-            {/* Main Search Input */}
+            {/* Search Results Section */}
+            {searchQuery && (
+              <div className="mb-8">
+                <h2 className="text-xl font-semibold text-white mb-4">
+                  Search Results for &lsquo;{searchQuery}&lsquo;
+                </h2>
+                <div className="space-y-4">
+                  {searchResults.map((result, index) => (
+                    <SearchResultCard
+                      key={index}
+                      title={result.title}
+                      description={result.description}
+                      onViewFullSection={result.onViewFullSection}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+
             <div className="border border-gray-700 rounded-xl bg-dark">
+              {/* Main Search Input */}
               <div className="pt-3 pb-12">
                 <Input
                   placeholder="Search for a section, upload a document, or draft a new document."
