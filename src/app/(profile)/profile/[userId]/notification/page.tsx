@@ -1,17 +1,44 @@
 "use client";
 
 import { useState } from "react";
+import { useParams } from "next/navigation";
 import { Switch } from "@/components/ui/switch";
+import { useUser } from "@/contexts/UserContext";
 
-const NotificationPage = () => {
+const UserNotificationPage = () => {
+  const params = useParams();
+  const { user } = useUser();
+  const userId = params.userId as string;
+
+  // Check if the current user is viewing their own notifications
+  const isOwnNotifications = user?.id === userId;
+
   const [emailNotifications, setEmailNotifications] = useState(true);
+  const [pushNotifications, setPushNotifications] = useState(false);
+  const [weeklyDigest, setWeeklyDigest] = useState(true);
 
   const handleEmailToggle = () => {
     setEmailNotifications(!emailNotifications);
   };
 
+  const handlePushToggle = () => {
+    setPushNotifications(!pushNotifications);
+  };
+
+  const handleWeeklyDigestToggle = () => {
+    setWeeklyDigest(!weeklyDigest);
+  };
+
+  if (!user) {
+    return (
+      <div className="h-full p-8 flex items-center justify-center">
+        <p className="text-gray-400">Loading user notifications...</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="h-full p-8">
+    <div className="min-h-full p-8">
       {/* Header */}
       <div className="border-b border-lightgrey mb-8">
         <h1 className="text-3xl font-serif text-white mb-8">Notifications</h1>
@@ -37,4 +64,4 @@ const NotificationPage = () => {
   );
 };
 
-export default NotificationPage;
+export default UserNotificationPage;

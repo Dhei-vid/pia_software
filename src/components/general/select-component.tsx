@@ -21,15 +21,17 @@ interface ISelectComp {
   placeholder: string;
   header: string;
   selectItems: SelectItems[];
+  onValueChange?: (value: string) => void;
 }
 
 const SelectComp: React.FC<ISelectComp> = ({
   placeholder,
   header,
   selectItems,
+  onValueChange,
 }) => {
   return (
-    <Select>
+    <Select onValueChange={onValueChange}>
       <SelectTrigger className="w-[180px] border-lightgrey">
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>

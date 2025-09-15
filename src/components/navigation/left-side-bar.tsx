@@ -1,38 +1,19 @@
 import Image from "next/image";
 import { Input } from "../ui/input";
-import {
-  Search,
-  RotateCw,
-  ChevronRight,
-  ChevronDown,
-  Sun,
-  Clock,
-} from "lucide-react";
+import { Search, RotateCw, ChevronRight, ChevronDown, Sun } from "lucide-react";
 import { SetStateAction, Dispatch, FC, useState } from "react";
 import { Button } from "../ui/button";
 import { Switch } from "@/components/ui/switch";
 import { GenericDrawer } from "@/components/ui/generic-drawer";
 import UserProfile from "./user-profile";
+import { cn } from "@/lib/utils";
+import { chapters } from "@/common/data";
 
 interface ILeftSideBarProps {
   searchQuery: string;
   setSearchQuery: Dispatch<SetStateAction<string>>;
   isLightMode: boolean;
   setIsLightMode: Dispatch<SetStateAction<boolean>>;
-}
-
-interface ChapterPart {
-  id: string;
-  title: string;
-  isSelected?: boolean;
-}
-
-interface Chapter {
-  id: string;
-  title: string;
-  description: string;
-  isExpanded: boolean;
-  parts: ChapterPart[];
 }
 
 export const LeftSideBar: FC<ILeftSideBarProps> = ({
@@ -47,83 +28,6 @@ export const LeftSideBar: FC<ILeftSideBarProps> = ({
     new Set(["2"])
   ); // Chapter 2 is expanded by default
   const [selectedPart, setSelectedPart] = useState<string>("2-2"); // Part II is selected by default
-
-  const chapters: Chapter[] = [
-    {
-      id: "1",
-      title: "Chapter 1 Governance & Institution",
-      description: "description lorem possum possum possum",
-      isExpanded: false,
-      parts: [
-        { id: "1-1", title: "Part I - General Provisions" },
-        { id: "1-2", title: "Part II - Petroleum Industry Commission" },
-        { id: "1-3", title: "Part III - Host Communities Development Trust" },
-      ],
-    },
-    {
-      id: "2",
-      title: "Chapter 2 Administration",
-      description: "description lorem possum possum possum",
-      isExpanded: true,
-      parts: [
-        { id: "2-1", title: "Part I - General Administration" },
-        {
-          id: "2-2",
-          title:
-            "Part II - Administration of Upstream Petroleum Operations and Environment",
-          isSelected: true,
-        },
-        {
-          id: "2-3",
-          title: "Part III - General Administration of Midstream Operations",
-        },
-        {
-          id: "2-4",
-          title: "Part IV - Administration of Downstream Operations",
-        },
-        { id: "2-5", title: "Part V - Administration of Gas Flaring" },
-        {
-          id: "2-6",
-          title: "Part VI - Other Matters Relating to Administration",
-        },
-        { id: "2-7", title: "Part VII - Common Provisions" },
-      ],
-    },
-    {
-      id: "3",
-      title: "Chapter 3 Host Communities Development",
-      description: "description lorem possum possum possum",
-      isExpanded: false,
-      parts: [
-        { id: "3-1", title: "Part I - Host Communities Development Trust" },
-        {
-          id: "3-2",
-          title: "Part II - Host Communities Development Trust Fund",
-        },
-      ],
-    },
-    {
-      id: "4",
-      title: "Chapter 4 Petroleum Industrial Fiscal Framework",
-      description: "description lorem possum possum possum",
-      isExpanded: false,
-      parts: [
-        { id: "4-1", title: "Part I - General Provisions" },
-        { id: "4-2", title: "Part II - Royalties" },
-        { id: "4-3", title: "Part III - Petroleum Profits Tax" },
-      ],
-    },
-    {
-      id: "5",
-      title: "Chapter 5 Miscellaneous Provisions",
-      description: "description lorem possum possum possum",
-      isExpanded: false,
-      parts: [
-        { id: "5-1", title: "Part I - General Provisions" },
-        { id: "5-2", title: "Part II - Transitional Provisions" },
-      ],
-    },
-  ];
 
   // Sample history data
   const historyData = [
@@ -217,7 +121,11 @@ export const LeftSideBar: FC<ILeftSideBarProps> = ({
                 {/* Chapter Header */}
                 <button
                   onClick={() => handleChapterClick(chapter.id)}
-                  className="flex flex-row items-center w-full justify-between text-gray-300 hover:text-white hover:bg-lightgrey text-left rounded-md cursor-pointer p-2 group"
+                  className={cn(
+                    chapter.id === Array.from(expandedChapters)[0] &&
+                      "bg-dark border border-lightgrey",
+                    "flex flex-row items-center w-full justify-between text-gray-300 hover:text-white hover:bg-lightgrey text-left rounded-md cursor-pointer p-2 group"
+                  )}
                 >
                   <div className="flex flex-col w-[13rem]">
                     <span className="text-sm truncate">{chapter.title}</span>
@@ -242,23 +150,20 @@ export const LeftSideBar: FC<ILeftSideBarProps> = ({
 
                 {/* Chapter Parts - Only show when expanded */}
                 {expandedChapters.has(chapter.id) && (
-                  <div className="ml-6 space-y-1">
+                  <div className="ml-3 space-y-1">
                     {chapter.parts.map((part) => (
                       <button
                         key={part.id}
                         onClick={() => handlePartClick(part.id)}
                         className={`flex flex-row items-center w-full justify-between text-left rounded-md cursor-pointer p-2 transition-colors ${
                           selectedPart === part.id
-                            ? "bg-[#3a3a3a] text-white"
-                            : "text-gray-400 hover:text-white hover:bg-[#2a2a2a]"
+                            ? "bg-dark text-white border border-lightgrey"
+                            : "text-gray-400 hover:text-white hover:bg-dark"
                         }`}
                       >
                         <div className="flex-1 min-w-0">
                           <p className="text-xs truncate">{part.title}</p>
                         </div>
-                        {selectedPart === part.id && (
-                          <div className="w-2 h-2 bg-green rounded-full flex-shrink-0" />
-                        )}
                       </button>
                     ))}
                   </div>
@@ -297,7 +202,7 @@ export const LeftSideBar: FC<ILeftSideBarProps> = ({
       >
         <div className="space-y-6">
           {/* Search Bar */}
-          <div className="relative">
+          {/* <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
             <input
               type="text"
@@ -306,7 +211,7 @@ export const LeftSideBar: FC<ILeftSideBarProps> = ({
               onChange={(e) => setHistorySearchQuery(e.target.value)}
               className="w-full pl-10 pr-4 py-3 bg-[#3a3a3a] border border-[#4a4a4a] rounded-md text-white placeholder:text-gray-400 focus:border-yellow-400 focus:outline-none"
             />
-          </div>
+          </div> */}
 
           {/* History List */}
           <div className="space-y-2">
@@ -314,16 +219,9 @@ export const LeftSideBar: FC<ILeftSideBarProps> = ({
               filteredHistory.map((item) => (
                 <div
                   key={item.id}
-                  className="group flex items-center justify-between p-3 rounded-md hover:bg-[#3a3a3a] cursor-pointer transition-colors"
+                  className="group flex items-center justify-between p-3 rounded-md hover:bg-lightgrey cursor-pointer transition-colors"
                 >
                   <div className="flex items-center space-x-3 flex-1 min-w-0">
-                    <div className="flex-shrink-0">
-                      {item.type === "query" ? (
-                        <Search className="w-4 h-4 text-gray-400" />
-                      ) : (
-                        <Clock className="w-4 h-4 text-gray-400" />
-                      )}
-                    </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm text-white truncate">
                         {item.query}
@@ -331,7 +229,6 @@ export const LeftSideBar: FC<ILeftSideBarProps> = ({
                       <p className="text-xs text-gray-400">{item.timestamp}</p>
                     </div>
                   </div>
-                  <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-white transition-colors" />
                 </div>
               ))
             ) : (
@@ -349,7 +246,7 @@ export const LeftSideBar: FC<ILeftSideBarProps> = ({
           {/* Clear History Button */}
           {filteredHistory.length > 0 && (
             <div className="pt-4 border-t border-lightgrey">
-              <button className="w-full py-2 px-4 text-sm text-gray-400 hover:text-white hover:bg-[#3a3a3a] rounded-md transition-colors">
+              <button className="cursor-pointer w-full py-2 px-4 text-sm text-gray-400 hover:text-white hover:bg-[#3a3a3a] rounded-md transition-colors">
                 Clear All History
               </button>
             </div>

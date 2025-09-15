@@ -1,39 +1,93 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
+import { useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { CircleCheck } from "lucide-react";
+import { CircleCheck, X } from "lucide-react";
 import { AvatarProfile } from "@/components/ui/avatar-profile";
+import { useUser } from "@/contexts/UserContext";
+import { toast } from "sonner";
 
-const ProfilePage = () => {
-  const [firstName, setFirstName] = useState("Williams");
-  const [lastName, setLastName] = useState("Chang");
-  const [email, setEmail] = useState("williams.change@example.com");
+const UserProfilePage = () => {
+  const params = useParams();
+  const { user, setUser } = useUser();
+  const userId = params.userId as string;
+
+  // Check if the current user is viewing their own profile
+  const isOwnProfile = user?.id === userId;
+
+  const [firstName, setFirstName] = useState(user?.name.split(" ")[0] || "");
+  const [lastName, setLastName] = useState(
+    user?.name.split(" ").slice(1).join(" ") || ""
+  );
+  const [email, setEmail] = useState(user?.email || "");
   const [isEmailVerified, setIsEmailVerified] = useState(true);
+  const [profileImage, setProfileImage] = useState<string | null>(
+    user?.avatar || null
+  );
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleSaveChanges = () => {
-    // Handle save changes logic
+    if (isOwnProfile && user) {
+      const updatedUser = {
+        ...user,
+        name: `${firstName} ${lastName}`.trim(),
+        email: email,
+        avatar: profileImage,
+      };
+      setUser(updatedUser);
+      toast.success("Profile updated successfully!");
+    }
     console.log("Saving changes...");
   };
 
+  const handleFile = (file: File) => {
+    if (file.type.startsWith("image/")) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setProfileImage(e.target?.result as string);
+        toast.success("Profile picture updated!");
+      };
+      reader.readAsDataURL(file);
+    } else {
+      toast.error("Please select an image file");
+    }
+  };
+
+  const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      handleFile(e.target.files[0]);
+    }
+  };
+
+  const removeProfileImage = () => {
+    setProfileImage(null);
+    toast.success("Profile picture removed!");
+  };
+
   const handleContactSupport = () => {
-    // Handle contact support logic
     console.log("Contacting support...");
   };
 
   const handleSignOut = () => {
-    // Handle sign out logic
     console.log("Signing out...");
   };
 
   const handleDeleteAccount = () => {
-    // Handle delete account logic
     console.log("Deleting account...");
   };
 
+  if (!user) {
+    return (
+      <div className="h-full p-8 flex items-center justify-center">
+        <p className="text-gray-400">Loading user profile...</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="h-full p-8 2xl:px-12 space-y-6">
+    <div className="min-h-full p-8 2xl:px-12 space-y-6">
       {/* Header */}
       <div className="border-b border-lightgrey">
         <h1 className="text-3xl font-serif text-white mb-6">Account</h1>
@@ -49,17 +103,43 @@ const ProfilePage = () => {
             This image will be displayed on your profile
           </p>
 
-          <Button
-            size={"lg"}
-            variant="outline"
-            className="border-gray-100/10 bg-transparent text-white hover:bg-lightgrey hover:text-white"
-          >
-            Change Profile Picture
-          </Button>
+          <div className="space-y-3">
+            <Button
+              size={"lg"}
+              variant="outline"
+              onClick={() => fileInputRef.current?.click()}
+              className="border-gray-100/10 bg-transparent text-white hover:bg-lightgrey hover:text-white"
+            >
+              Change Profile Picture
+            </Button>
+
+            {/* Hidden file input */}
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleFileInput}
+              className="hidden"
+            />
+          </div>
         </div>
 
         <div className="justify-self-center flex items-center">
-          <AvatarProfile name={`${firstName} ${lastName}`} size={"xl"} />
+          <div className="relative">
+            <AvatarProfile
+              name={`${firstName} ${lastName}`}
+              size={"xl"}
+              imageUrl={profileImage || undefined}
+            />
+            {profileImage && (
+              <button
+                onClick={removeProfileImage}
+                className="cursor-pointer absolute -top-2 -right-1 w-6 h-6 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center transition-colors"
+              >
+                <X size={12} />
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
@@ -186,4 +266,4 @@ const ProfilePage = () => {
   );
 };
 
-export default ProfilePage;
+export default UserProfilePage;

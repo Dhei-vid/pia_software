@@ -1,20 +1,30 @@
 "use client";
 
 import { useState } from "react";
+import { useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Moon, Globe, Sun } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
-
+import { useUser } from "@/contexts/UserContext";
+import { useTheme } from "@/contexts/ThemeContext";
 import SelectComp from "@/components/general/select-component";
 
-const PreferencesPage = () => {
-  const [appearance, setAppearance] = useState("dark mode");
+const UserPreferencesPage = () => {
+  const params = useParams();
+  const { user } = useUser();
+  const { theme, setTheme } = useTheme();
+  const userId = params.userId as string;
+
+  // Check if the current user is viewing their own preferences
+  const isOwnPreferences = user?.id === userId;
+
   const [language, setLanguage] = useState("English");
   const [autoSuggest, setAutoSuggest] = useState(true);
   const [referenceSearch, setReferenceSearch] = useState(true);
 
   const handleAppearanceChange = (value: string) => {
-    setAppearance(value);
+    const newTheme = value === "dark mode" ? "dark" : "light";
+    setTheme(newTheme);
   };
 
   const handleLanguageChange = (value: string) => {
@@ -29,8 +39,16 @@ const PreferencesPage = () => {
     setReferenceSearch(!referenceSearch);
   };
 
+  if (!user) {
+    return (
+      <div className="h-full p-8 flex items-center justify-center">
+        <p className="text-gray-400">Loading user preferences...</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="h-full p-8 space-y-8">
+    <div className="min-h-full p-8 space-y-8">
       {/* Header */}
       <div className={" pb-6 border-b border-lightgrey"}>
         <h1 className="text-3xl font-serif text-white">Preferences</h1>
@@ -49,8 +67,9 @@ const PreferencesPage = () => {
           </div>
 
           <SelectComp
-            placeholder={appearance}
+            placeholder={theme === "dark" ? "dark mode" : "light mode"}
             header={"Mode"}
+            onValueChange={handleAppearanceChange}
             selectItems={[
               {
                 Icon: Moon,
@@ -127,4 +146,4 @@ const PreferencesPage = () => {
   );
 };
 
-export default PreferencesPage;
+export default UserPreferencesPage;

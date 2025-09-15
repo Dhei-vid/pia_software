@@ -1,7 +1,6 @@
 import Header from "../../components/general/header";
-import MainLayout from "../../components/layouts/main-layout";
 
-export default function Layout({
+export default function ProfileLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -9,9 +8,7 @@ export default function Layout({
   return (
     <main className="h-screen flex flex-col overflow-hidden">
       <Header />
-      <div className="flex-1 overflow-hidden bg-grey">
-        <MainLayout>{children}</MainLayout>
-      </div>
+      <div className="flex-1 overflow-hidden bg-grey">{children}</div>
     </main>
   );
 }

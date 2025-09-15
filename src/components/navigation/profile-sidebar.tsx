@@ -2,30 +2,36 @@
 
 import { ChevronLeft, User, SquareCheck, Bell } from "lucide-react";
 import Link from "next/link";
+import { useParams } from "next/navigation";
+import { useUser } from "@/contexts/UserContext";
 
 interface ProfileSidebarProps {
   activePage: "account" | "preferences" | "notification";
 }
 
 const ProfileSidebar: React.FC<ProfileSidebarProps> = ({ activePage }) => {
+  const params = useParams();
+  const { user } = useUser();
+  const userId = params.userId as string;
+
   const navigationItems = [
     {
       id: "account",
       label: "Account",
       icon: User,
-      href: "/profile",
+      href: `/profile/${userId}`,
     },
     {
       id: "preferences",
       label: "Preferences",
       icon: SquareCheck,
-      href: "/profile/preferences",
+      href: `/profile/${userId}/preferences`,
     },
     {
       id: "notification",
       label: "Notification",
       icon: Bell,
-      href: "/profile/notification",
+      href: `/profile/${userId}/notification`,
     },
   ];
 

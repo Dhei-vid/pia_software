@@ -8,6 +8,7 @@ import AddNotesModal from "../modals/add-notes";
 import ModalComponents from "../general/alert-modal";
 import { FileText, SquareCheck, X } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
+import { useRouter } from "next/navigation";
 
 interface RightSideBarProps {
   tools: {
@@ -22,10 +23,14 @@ const RightSideBar: FC<RightSideBarProps> = ({ tools }) => {
   const [drawerType, setDrawerType] = useState<"saved-notes" | "checklist">(
     "saved-notes"
   );
+  const router = useRouter();
 
   const handleToolClick = (toolLabel: string) => {
-    if (toolLabel === "Saved Notes" || toolLabel === "Your Checklist") {
-      setDrawerType(toolLabel === "Saved Notes" ? "saved-notes" : "checklist");
+    if (toolLabel === "Saved Notes") {
+      // Navigate to the full saved notes page
+      router.push("/chat/saved-notes");
+    } else if (toolLabel === "Your Checklist") {
+      setDrawerType("checklist");
       setIsDrawerOpen(true);
     }
   };
@@ -83,20 +88,6 @@ const RightSideBar: FC<RightSideBarProps> = ({ tools }) => {
           placeholder="Enter checklist name..."
           className="w-full px-3 py-2 bg-dark border border-lightgrey rounded-md text-white placeholder:text-gray-400 focus:border-yellow-400 focus:outline-none"
         />
-      </div>
-
-      <div className="flex justify-end space-x-3 pt-4">
-        <Button
-          variant="outline"
-          className="border-gray-500 text-gray-300 hover:text-white hover:bg-gray-600"
-        >
-          <X className="w-4 h-4 mr-2" />
-          Cancel
-        </Button>
-        <Button className="bg-green hover:bg-green/90 text-white">
-          <span className="mr-2">✓</span>
-          Create Checklist
-        </Button>
       </div>
     </div>
   );

@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { X } from "lucide-react";
+import { X, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -99,18 +99,18 @@ const GenericDrawer: React.FC<GenericDrawerProps> = ({
             }}
           >
             {/* Header */}
-            <div className="flex items-center justify-between p-6 border-b border-lightgrey">
+            <div className="flex items-center justify-between p-4 border-b border-lightgrey">
               <h2 className="text-lg font-semibold text-white">{title}</h2>
               <button
                 onClick={onClose}
                 className="cursor-pointer p-2 rounded-md hover:bg-[#3a3a3a] transition-colors"
               >
-                <X className="w-5 h-5 text-gray-400" />
+                <ChevronRight className="w-5 h-5 text-gray-400" />
               </button>
             </div>
 
             {/* Content */}
-            <div className="flex-1 overflow-y-auto p-6 scrollbar-width">
+            <div className="flex-1 overflow-y-auto p-4 scrollbar-width">
               {children}
             </div>
           </motion.div>

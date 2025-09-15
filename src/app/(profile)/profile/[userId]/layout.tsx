@@ -5,13 +5,15 @@ import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { HelpCircle } from "lucide-react";
 import ProfileSidebar from "@/components/navigation/profile-sidebar";
+import { useUser } from "@/contexts/UserContext";
 
 interface ProfileLayoutProps {
   children: ReactNode;
 }
 
-const ProfileLayout: React.FC<ProfileLayoutProps> = ({ children }) => {
+const UserProfileLayout: React.FC<ProfileLayoutProps> = ({ children }) => {
   const pathname = usePathname();
+  const { user } = useUser();
 
   // Determine active page based on pathname
   const getActivePage = (): "account" | "preferences" | "notification" => {
@@ -20,8 +22,16 @@ const ProfileLayout: React.FC<ProfileLayoutProps> = ({ children }) => {
     return "account";
   };
 
+  if (!user) {
+    return (
+      <div className="h-full p-8 flex items-center justify-center">
+        <p className="text-gray-400">Loading...</p>
+      </div>
+    );
+  }
+
   return (
-    <main className="h-full p-2 2xl:p-5 bg-black">
+    <div className="h-full p-2 2xl:p-5 bg-black">
       <div className="relative h-full bg-grey flex overflow-hidden rounded-lg">
         {/* Profile Sidebar */}
         <div className="border-r border-lightgrey">
@@ -29,8 +39,8 @@ const ProfileLayout: React.FC<ProfileLayoutProps> = ({ children }) => {
         </div>
 
         {/* Body */}
-        <div className="flex-1 h-full flex flex-col min-h-0 pb-20">
-          <div className="flex-1 overflow-y-auto">{children}</div>
+        <div className="flex-1 h-full flex flex-col min-h-0">
+          <div className="flex-1 overflow-y-auto pb-20">{children}</div>
         </div>
 
         {/* Help Button */}
@@ -44,8 +54,8 @@ const ProfileLayout: React.FC<ProfileLayoutProps> = ({ children }) => {
           </Button>
         </div>
       </div>
-    </main>
+    </div>
   );
 };
 
-export default ProfileLayout;
+export default UserProfileLayout;
