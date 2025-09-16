@@ -53,6 +53,7 @@
   --grey: #2a2a2a;
   --lightgrey: #3a3a3a;
   --green: #007a48;
+  --gold: #cebb57;
 
   --radius: 0.625rem;
   --background: oklch(1 0 0);
@@ -134,4 +135,27 @@
 
 .scrollbar-width {
   scrollbar-width: thin;
+}
+
+.home-gradient {
+  background-image: linear-gradient(
+    to top,
+    #191a1a,
+    #1f2020,
+    #1f2020,
+    #1f2020,
+    #1f2020,
+    #384757,
+    #007a48
+  );
+}
+
+.header-gradient {
+  border-bottom: 1px solid transparent;
+  border-image: linear-gradient(
+    90deg,
+    rgba(206, 187, 87, 1) 0%,
+    rgba(0, 122, 72, 1) 100%
+  );
+  border-image-slice: 1;
 }

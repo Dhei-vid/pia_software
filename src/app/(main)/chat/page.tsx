@@ -66,7 +66,7 @@ const ChatPage = () => {
         <div className="pt-3 pb-12">
           <Input
             placeholder="Search for a section, upload a document, or draft a new document."
-            className="text-lg border-none text-white placeholder:text-gray-400 focus:border-none rounded-xl"
+            className="!bg-dark text-lg border-none text-white placeholder:text-gray-400 focus:border-none"
           />
         </div>
         <div className="p-3 flex flex-row items-center justify-between">

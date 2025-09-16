@@ -9,6 +9,7 @@ import ModalComponents from "../general/alert-modal";
 import { FileText, SquareCheck, X } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { useRouter } from "next/navigation";
+import DraftDocumentModal from "../modals/draft-document-modal";
 
 interface RightSideBarProps {
   tools: {
@@ -19,11 +20,28 @@ interface RightSideBarProps {
 }
 
 const RightSideBar: FC<RightSideBarProps> = ({ tools }) => {
+  const router = useRouter();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [drawerType, setDrawerType] = useState<"saved-notes" | "checklist">(
     "saved-notes"
   );
-  const router = useRouter();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleCopyToClipboard = () => {
+    // Simulate copying to clipboard
+    navigator.clipboard.writeText("Sample text to copy");
+    setIsModalOpen(true);
+  };
+
+  const handleDraftDocument = () => {
+    console.log("Drafting document...");
+    // Add your draft document logic here
+  };
+
+  const handleCancel = () => {
+    console.log("Cancelled");
+    // Add your cancel logic here
+  };
 
   const handleToolClick = (toolLabel: string) => {
     if (toolLabel === "Saved Notes") {
@@ -161,6 +179,13 @@ const RightSideBar: FC<RightSideBarProps> = ({ tools }) => {
           <HelpCircle size={20} className="text-gray-400" />
         </Button>
       </div>
+
+      <DraftDocumentModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onDraftDocument={handleDraftDocument}
+        onCancel={handleCancel}
+      />
 
       {/* Tools Drawer */}
       <GenericDrawer

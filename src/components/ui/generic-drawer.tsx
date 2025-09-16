@@ -45,7 +45,7 @@ const GenericDrawer: React.FC<GenericDrawerProps> = ({
   const positionClasses =
     position === "left"
       ? "left-80 border-r border-lightgrey"
-      : "right-80 border-l border-lightgrey";
+      : "right-65 border-l border-lightgrey";
 
   const slideVariants = {
     hidden: {

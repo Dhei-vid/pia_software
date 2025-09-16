@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 
@@ -23,3 +24,13 @@ export function formatTimeAgo(date: string | Date) {
   if (diffInMonths < 12) return `${diffInMonths}m ago`;
   return `${diffInYears}y ago`;
 }
+
+// Extract error message
+export const extractErrorMessage = (error: any): string => {
+  return (
+    error?.response?.data?.message ||
+    error?.response?.data?.error || // sometimes APIs use "error"
+    error?.message ||
+    "An unexpected error occurred"
+  );
+};
