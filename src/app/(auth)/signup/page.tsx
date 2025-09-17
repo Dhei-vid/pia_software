@@ -116,7 +116,7 @@ const SignUpPage = () => {
               Create Account
             </h1>
             <p className="text-muted-foreground">
-              Smart AI Guidance for Nigerian Petroleum Law
+              Smart AI Guidance System for the Nigerian Petroleum Law
             </p>
           </div>
 
