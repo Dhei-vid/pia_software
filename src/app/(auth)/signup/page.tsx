@@ -113,10 +113,10 @@ const SignUpPage = () => {
               </div>
             </div>
             <h1 className="text-2xl font-bold text-foreground mb-2">
-              Create Account
+              Sign Up to PIA Software
             </h1>
             <p className="text-muted-foreground">
-              Smart AI Guidance System for the Nigerian Petroleum Law
+              Instant Access to PIA 2021 search, compliance and tools.
             </p>
           </div>
 
