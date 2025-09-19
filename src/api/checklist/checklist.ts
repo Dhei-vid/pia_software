@@ -3,7 +3,7 @@ import { extractErrorMessage } from "@/common/helpers";
 // import { UpdateCheckListResponse } from "./checklist-type";
 
 export const checklistService = {
-  getCheckListById: async (documentId: string) => {
+  getCheckList: async (documentId: string) => {
     try {
       const response = await axiosInstance.get(
         `/api/v1/checklists/${documentId}`
@@ -16,10 +16,10 @@ export const checklistService = {
     }
   },
 
-  updateCheckList: async (documentId: string) => {
+  updateCheckList: async (checklistId: string) => {
     try {
       const response = await axiosInstance.patch(
-        `/api/v1/checklists/${documentId}`
+        `/api/v1/checklists/${checklistId}`
       );
       return response.data;
     } catch (error) {
@@ -29,9 +29,11 @@ export const checklistService = {
     }
   },
 
-  addCheckList: async () => {
+  addCheckList: async (documentId: string) => {
     try {
-      const response = await axiosInstance.post("");
+      const response = await axiosInstance.post(
+        `/api/v1/checklists/${documentId}`
+      );
       return response.data;
     } catch (error) {
       const errorMessage = extractErrorMessage(error);
