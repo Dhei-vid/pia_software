@@ -3,7 +3,6 @@
 import { ChevronLeft, User, SquareCheck, Bell } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useUser } from "@/contexts/UserContext";
 
 interface ProfileSidebarProps {
   activePage: "account" | "preferences" | "notification";
@@ -11,7 +10,6 @@ interface ProfileSidebarProps {
 
 const ProfileSidebar: React.FC<ProfileSidebarProps> = ({ activePage }) => {
   const params = useParams();
-  const { user } = useUser();
   const userId = params.userId as string;
 
   const navigationItems = [

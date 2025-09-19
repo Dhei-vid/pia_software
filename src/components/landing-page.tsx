@@ -15,7 +15,7 @@ const LandingPage = () => {
             </div>
 
             <div className={"flex items-center"}>
-              <Link href={"/chat"}>
+              <Link href={"/signin"}>
                 <Button className="bg-green hover:bg-green/90 text-white border-0 transition-all duration-300 hover:shadow-lg px-6 py-2">
                   Request a Demo
                 </Button>

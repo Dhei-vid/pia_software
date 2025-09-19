@@ -1,27 +1,29 @@
 "use client";
 
 import Link from "next/link";
-import { toast } from "sonner";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, Mail, Lock, Eye, EyeOff } from "lucide-react";
 import Image from "next/image";
+import { toast } from "sonner";
+import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { extractErrorMessage } from "@/common/helpers";
+import { ArrowLeft, Mail, Lock, Eye, EyeOff } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import AuthService from "@/api/auth/auth";
+import { useUser } from "@/contexts/UserContext";
 
 const SignInPage = () => {
   const router = useRouter();
-
+  const { login, isAuthenticated } = useUser();
+  const [isPending, startTransition] = useTransition();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
 
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,28 +34,34 @@ const SignInPage = () => {
       return;
     }
 
-    setIsLoading(true);
+    startTransition(async () => {
+      try {
+        // Sign in user
+        const response = await AuthService.login(formData);
 
-    try {
-      // Simulate sign in process
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+        if (response.success) {
+          // Login user with the returned data
+          login({
+            token: response.data.token,
+            user: response.data.user,
+          });
 
-      toast.success("Welcome back!", {
-        description: "Redirecting to your AI assistant...",
-      });
+          toast.success("Welcome back!", {
+            description: "Redirecting to your AI assistant...",
+          });
 
-      // Redirect to chat after 2 seconds
-      setTimeout(() => {
-        router.push("/chat");
-      }, 2000);
-    } catch (error) {
-      const message = extractErrorMessage(error);
-      toast.error("Invalid email or password. Please try again.", {
-        description: message,
-      });
-    } finally {
-      setIsLoading(false);
-    }
+          // Redirect to chat after 2 seconds
+          setTimeout(() => {
+            router.push("/chat");
+          }, 2000);
+        }
+      } catch (error) {
+        const message = extractErrorMessage(error);
+        toast.error("Invalid email or password. Please try again.", {
+          description: message,
+        });
+      }
+    });
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -184,9 +192,9 @@ const SignInPage = () => {
                 <Button
                   type="submit"
                   className="w-full text-lg py-6 mt-6"
-                  disabled={isLoading}
+                  disabled={isPending}
                 >
-                  {isLoading ? "Signing In..." : "Sign In"}
+                  {isPending ? "Signing In..." : "Sign In"}
                 </Button>
               </form>
 

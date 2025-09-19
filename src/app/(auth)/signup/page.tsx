@@ -20,9 +20,12 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { extractErrorMessage } from "@/common/helpers";
+import AuthService from "@/api/auth/auth";
+import { useUser } from "@/contexts/UserContext";
 
 const SignUpPage = () => {
   const router = useRouter();
+  const { login, isAuthenticated } = useUser();
 
   const [isPending, startTransition] = useTransition();
   const [formData, setFormData] = useState({
@@ -56,18 +59,35 @@ const SignUpPage = () => {
 
     startTransition(async () => {
       try {
-        // Simulate sign up process
-        await new Promise((resolve) => setTimeout(resolve, 1500));
+        const data = {
+          fullName: `${formData.firstname} ${formData.lastname}`,
+          email: formData.email,
+          company: formData.company,
+          jobTitle: formData.role,
+          location: formData.location,
+          password: formData.password,
+        };
 
-        toast.success("Account Created Successfully!", {
-          description:
-            "Welcome to Wright PIA. Redirecting to your AI assistant...",
-        });
+        // Register user
+        const response = await AuthService.register(data);
 
-        // Redirect to chat after 2 seconds
-        setTimeout(() => {
-          router.push("/chat");
-        }, 2000);
+        if (response.success) {
+          // Login user with the returned data
+          login({
+            token: response.data.token,
+            user: response.data.user,
+          });
+
+          toast.success("Account Created Successfully!", {
+            description:
+              "Welcome to Wright PIA. Redirecting to your AI assistant...",
+          });
+
+          // Redirect to chat after 2 seconds
+          setTimeout(() => {
+            router.push("/chat");
+          }, 2000);
+        }
       } catch (error) {
         const message = extractErrorMessage(error);
         toast.error("Failed to create account. Please try again.", {

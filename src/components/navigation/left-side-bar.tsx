@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import { Input } from "../ui/input";
 import { Search, RotateCw, ChevronRight, ChevronDown, Sun } from "lucide-react";
@@ -172,7 +174,10 @@ export const LeftSideBar: FC<ILeftSideBarProps> = ({
             ))}
           </div>
         </div>
+      </div>
 
+      {/* Fixed Footer Section */}
+      <div className="w-full flex-shrink-0 p-6 border-t border-lightgrey">
         {/* Light Mode Toggle */}
         <div className="flex flex-row items-center justify-between mb-8">
           <div className="flex flex-row items-center justify-start text-gray-300 hover:text-white hover:bg-[#3a3a3a]">
@@ -185,10 +190,7 @@ export const LeftSideBar: FC<ILeftSideBarProps> = ({
             onCheckedChange={setIsLightMode}
           />
         </div>
-      </div>
 
-      {/* Fixed Footer Section */}
-      <div className="w-full flex-shrink-0 p-6 border-t border-lightgrey">
         {/* User Profile */}
         <UserProfile />
       </div>

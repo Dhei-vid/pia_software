@@ -1,47 +1,54 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { CircleCheck, X } from "lucide-react";
 import { AvatarProfile } from "@/components/ui/avatar-profile";
 import { useUser } from "@/contexts/UserContext";
 import { toast } from "sonner";
+import AuthService from "@/api/auth/auth";
+import { UserService } from "@/api/user/user";
+import { extractErrorMessage } from "@/common/helpers";
 
 const UserProfilePage = () => {
   const params = useParams();
   const { user, setUser } = useUser();
   const userId = params.userId as string;
+  const router = useRouter()
 
   // Check if the current user is viewing their own profile
   const isOwnProfile = user?.id === userId;
+  const fullname = user?.fullName;
 
-  const [firstName, setFirstName] = useState(user?.name.split(" ")[0] || "");
-  const [lastName, setLastName] = useState(
-    user?.name.split(" ").slice(1).join(" ") || ""
-  );
-  const [email, setEmail] = useState(user?.email || "");
+  const splitName = fullname?.split(" ") ?? [];
+  const firstname = splitName[0] ?? "";
+  const lastname = splitName[1] ?? "";
+
+  const [firstName, setFirstName] = useState(firstname);
+  const [lastName, setLastName] = useState(lastname);
   const [isEmailVerified, setIsEmailVerified] = useState(true);
   const [profileImage, setProfileImage] = useState<string | null>(
     user?.avatar || null
   );
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleSaveChanges = () => {
+  const handleSaveChanges = async () => {
     if (isOwnProfile && user) {
       const updatedUser = {
         ...user,
-        name: `${firstName} ${lastName}`.trim(),
-        email: email,
-        avatar: profileImage,
+        fullName: `${firstName} ${lastName}`.trim(),
+        avatar: profileImage || undefined,
+        phone: "09067676676",
       };
+      await UserService.updateUser(updatedUser);
       setUser(updatedUser);
       toast.success("Profile updated successfully!");
     }
-    console.log("Saving changes...");
   };
 
+  // Handling Image upload
   const handleFile = (file: File) => {
     if (file.type.startsWith("image/")) {
       const reader = new FileReader();
@@ -61,19 +68,29 @@ const UserProfilePage = () => {
     }
   };
 
+  // Remove selected image
   const removeProfileImage = () => {
     setProfileImage(null);
     toast.success("Profile picture removed!");
   };
 
+  // Contact Support
   const handleContactSupport = () => {
     console.log("Contacting support...");
   };
 
-  const handleSignOut = () => {
-    console.log("Signing out...");
+  // Sign User Out
+  const handleSignOut = async () => {
+    try {
+      await AuthService.logout(router);
+      toast.success("Logged out successfully");
+    } catch (error) {
+      const errorMessage = extractErrorMessage(error);
+      console.log(errorMessage);
+    }
   };
 
+  // Delete User Account
   const handleDeleteAccount = () => {
     console.log("Deleting account...");
   };
@@ -193,7 +210,7 @@ const UserProfilePage = () => {
             </label>
             <div className="p-4 flex items-center space-x-3 rounded-md bg-grey border-gray-100/10 border">
               <div className="flex-1">
-                <p className="text-white">{email}</p>
+                <p className="text-sm text-white">{user?.email || ""}</p>
               </div>
               {isEmailVerified && (
                 <div className="flex items-center space-x-2 text-green">
@@ -228,7 +245,7 @@ const UserProfilePage = () => {
         {/* Sign Out Section */}
         <div className="flex flex-row justify-between">
           <p className="text-lg font-semibold text-white  mb-4">
-            You are signed in as Williams Chang
+            You are signed in as {`${fullname}`}
           </p>
           <div className="flex justify-end">
             <Button
