@@ -27,7 +27,8 @@ const LandingPage = () => {
 
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center">
-        <div className="backdrop-blur-sm absolute inset-0 home-gradient align-center "></div>
+        {/* Gradient overlay */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(16,185,129,0.35),transparent_50%)] backdrop-blur-sm"></div>
 
         <div className="relative container mx-auto px-6 text-center">
           <div className="max-w-4xl mx-auto">
@@ -62,11 +63,20 @@ const LandingPage = () => {
       </section>
 
       {/* Content Placeholder Section */}
-      <section className="py-24 px-6">
+      <section className="pt-10 pb-24 px-6">
         <div className="container mx-auto">
-          <div className="max-w-4xl mx-auto">
-            <div className="aspect-video bg-dark border border-white/20 rounded-lg flex items-center justify-center">
-              <div className="text-white/60 text-lg">Content Placeholder</div>
+          <div className="mx-auto">
+            <div className="aspect-video bg-dark border border-white/20 overflow-hidden rounded-lg flex items-center justify-center">
+              <video
+                className="w-full h-full object-cover"
+                loop
+                autoPlay
+                muted
+                playsInline
+              >
+                <source src={"/video/PIA SAMPLE GIF.MP4"} type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
             </div>
           </div>
         </div>
