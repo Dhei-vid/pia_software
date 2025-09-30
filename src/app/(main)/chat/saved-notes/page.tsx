@@ -71,11 +71,10 @@ export default function Page() {
 
   return (
     <>
-      <div className="mb-8 text-center">
+      <div className="mb-8">
         <h1 className="text-2xl sm:text-3xl lg:text-3xl font-serif text-white mb-2">
           Saved Notes
         </h1>
-        <p className="text-gray-400">View and manage your saved notes</p>
       </div>
 
       {/* Search and Filter Section */}
@@ -88,7 +87,7 @@ export default function Page() {
             className="bg-transparent border-gray-700 text-white placeholder:text-gray-400 focus:border-yellow-400 h-12"
           />
         </div>
-        <div className="sm:w-48">
+        <div className="">
           <Select value={timeFilter} onValueChange={setTimeFilter}>
             <SelectTrigger className="bg-transparent border-gray-700 text-white !h-12">
               <SelectValue placeholder="Time filter" />

@@ -2,7 +2,7 @@
 
 import { FC } from "react";
 import { Button } from "@/components/ui/button";
-import { Edit3, Trash2, ExternalLink } from "lucide-react";
+import { Edit3, Trash2, ArrowUpRight } from "lucide-react";
 import { formatTimeAgo } from "@/common/helpers";
 
 interface NoteCardProps {
@@ -64,7 +64,7 @@ const NoteCard: FC<NoteCardProps> = ({
               className="ml-3 p-1 text-gray-400 hover:text-white transition-colors"
               title="View linked section"
             >
-              <ExternalLink size={16} />
+              <ArrowUpRight size={18} />
             </button>
           )}
         </div>
@@ -83,10 +83,10 @@ const NoteCard: FC<NoteCardProps> = ({
       {/* Action Buttons */}
       <div className="flex items-center justify-end space-x-3 pt-2">
         <Button
-          variant="outline"
+          variant={"outline"}
           size="sm"
           onClick={handleEdit}
-          className="text-gray-400 hover:text-white hover:bg-gray-700/50 p-2"
+          className="text-gray-50/50 hover:text-white bg-transparent border border-gray-50/50 hover:bg-gray-700/50 p-2"
         >
           <Edit3 size={16} className="mr-2" />
           Edit Note
@@ -95,7 +95,7 @@ const NoteCard: FC<NoteCardProps> = ({
         <Button
           size="sm"
           onClick={handleDelete}
-          className="border border-destrictive/90 text-destructive/80 bg-transparent hover:bg-destructive hover:text-white/70"
+          className="border border-destructive/90 text-destructive/80 bg-transparent hover:bg-destructive hover:text-white/70"
         >
           <Trash2 size={16} className="mr-2" />
           Delete Note

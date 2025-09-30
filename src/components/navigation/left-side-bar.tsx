@@ -3,13 +3,17 @@
 import Image from "next/image";
 import { Input } from "../ui/input";
 import { Search, RotateCw, ChevronRight, ChevronDown, Sun } from "lucide-react";
-import { SetStateAction, Dispatch, FC, useState } from "react";
+import { SetStateAction, Dispatch, FC, useState, useEffect } from "react";
 import { Button } from "../ui/button";
 import { Switch } from "@/components/ui/switch";
 import { GenericDrawer } from "@/components/ui/generic-drawer";
 import UserProfile from "./user-profile";
 import { cn } from "@/lib/utils";
-import { chapters } from "@/common/data";
+
+import { Document } from "@/api/documents/document-types";
+import { DocumentService } from "@/api/documents/document";
+import { useDocumentParser } from "@/hooks/useDocumentParser";
+// import { DocumentSection } from "@/utils/documentParser";
 
 interface ILeftSideBarProps {
   searchQuery: string;
@@ -27,9 +31,37 @@ export const LeftSideBar: FC<ILeftSideBarProps> = ({
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [historySearchQuery, setHistorySearchQuery] = useState("");
   const [expandedChapters, setExpandedChapters] = useState<Set<string>>(
-    new Set(["2"])
-  ); // Chapter 2 is expanded by default
-  const [selectedPart, setSelectedPart] = useState<string>("2-2"); // Part II is selected by default
+    new Set()
+  ); // Start with no chapters expanded
+  const [selectedPart, setSelectedPart] = useState<string>(""); // Start with no part selected
+
+  const [documents, setDocuments] = useState<Document[]>([]);
+  const [selectedDocument, setSelectedDocument] = useState<Document | null>(
+    null
+  );
+
+  useEffect(() => {
+    const fetchDocument = async () => {
+      const response = await DocumentService.getAllDocuments();
+      const docs = Array.isArray(response.documents) ? response.documents : [];
+      setDocuments(docs);
+
+      // Set the first document as selected by default
+      if (docs.length > 0) {
+        setSelectedDocument(docs[0]);
+      }
+    };
+
+    fetchDocument();
+  }, []);
+
+  // Use document parser for the selected document
+  const { parsedDocument, chapters: parsedChapters } =
+    useDocumentParser(selectedDocument);
+
+  console.log("Parsed Document:", parsedDocument);
+
+  // Keep all chapters closed by default - no auto-expansion
 
   // Sample history data
   const historyData = [
@@ -75,6 +107,9 @@ export const LeftSideBar: FC<ILeftSideBarProps> = ({
     console.log(`Selected part: ${partId}`);
   };
 
+  // Use only parsed chapters from the API
+  const displayChapters = parsedChapters;
+
   return (
     <div className="h-full flex flex-col overflow-hidden">
       {/* Fixed Header Section */}
@@ -112,66 +147,103 @@ export const LeftSideBar: FC<ILeftSideBarProps> = ({
 
       {/* Content Section - Scrollable */}
       <div className="flex-1 px-6 pb-6 overflow-y-auto scrollbar-width">
-        {/* PIA 2021 Document */}
+        {/* Document Selector */}
+        {documents.length > 1 && (
+          <div className="mb-6">
+            <label className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-2 block">
+              Select Document
+            </label>
+            <select
+              value={selectedDocument?.id || ""}
+              onChange={(e) => {
+                const doc = documents.find((d) => d.id === e.target.value);
+                setSelectedDocument(doc || null);
+              }}
+              className="w-full bg-dark border border-lightgrey text-white rounded-md px-3 py-2 text-sm focus:border-yellow-400 focus:outline-none"
+            >
+              {documents.map((doc) => (
+                <option key={doc.id} value={doc.id}>
+                  {doc.title}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+
+        {/* Document Structure */}
         <div className="mb-8 pt-6 border-t border-lightgrey">
-          <h3 className="text-sm font-medium text-gray-400 uppercase tracking-wider mb-4">
-            PIA 2021 Document
+          <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-4">
+            {selectedDocument
+              ? `${selectedDocument.title} Structure`
+              : "Document Structure"}
           </h3>
           <div className="space-y-2 w-full">
-            {chapters.map((chapter) => (
-              <div key={chapter.id} className="space-y-1">
-                {/* Chapter Header */}
-                <button
-                  onClick={() => handleChapterClick(chapter.id)}
-                  className={cn(
-                    chapter.id === Array.from(expandedChapters)[0] &&
-                      "bg-dark border border-lightgrey",
-                    "flex flex-row items-center w-full justify-between text-gray-300 hover:text-white hover:bg-lightgrey text-left rounded-md cursor-pointer p-2 group"
-                  )}
-                >
-                  <div className="flex flex-col w-[13rem]">
-                    <span className="text-sm truncate">{chapter.title}</span>
-                    <span className="text-xs font-light truncate">
-                      {chapter.description}
-                    </span>
-                  </div>
-                  <div className="flex-shrink-0 ml-2">
-                    {expandedChapters.has(chapter.id) ? (
-                      <ChevronDown
-                        size={16}
-                        className="text-gray-400 group-hover:text-white"
-                      />
-                    ) : (
-                      <ChevronRight
-                        size={16}
-                        className="text-gray-400 group-hover:text-white"
-                      />
-                    )}
-                  </div>
-                </button>
-
-                {/* Chapter Parts - Only show when expanded */}
-                {expandedChapters.has(chapter.id) && (
-                  <div className="ml-3 space-y-1">
-                    {chapter.parts.map((part) => (
-                      <button
-                        key={part.id}
-                        onClick={() => handlePartClick(part.id)}
-                        className={`flex flex-row items-center w-full justify-between text-left rounded-md cursor-pointer p-2 transition-colors ${
-                          selectedPart === part.id
-                            ? "bg-dark text-white border border-lightgrey"
-                            : "text-gray-400 hover:text-white hover:bg-dark"
-                        }`}
-                      >
-                        <div className="flex-1 min-w-0">
-                          <p className="text-xs truncate">{part.title}</p>
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-                )}
+            {displayChapters.length === 0 ? (
+              <div className="text-center py-8">
+                <p className="text-gray-400 text-sm">
+                  {!selectedDocument
+                    ? "No document selected"
+                    : "No chapters found in this document"}
+                </p>
               </div>
-            ))}
+            ) : (
+              displayChapters.map((chapter) => (
+                <div key={chapter.id} className="space-y-1">
+                  {/* Chapter Header */}
+                  <button
+                    onClick={() => handleChapterClick(chapter.id)}
+                    className={cn(
+                      expandedChapters.has(chapter.id) &&
+                        "bg-dark border border-lightgrey",
+                      "flex flex-row items-center w-full justify-between text-gray-300 hover:text-white hover:bg-lightgrey text-left rounded-md cursor-pointer p-2 group"
+                    )}
+                  >
+                    <div className="flex flex-col w-[13rem]">
+                      <span className="text-base text-white truncate">
+                        {chapter.title}
+                      </span>
+                      <span className="text-xs font-light truncate capitalize!">
+                        {chapter.description}
+                      </span>
+                    </div>
+                    <div className="flex-shrink-0 ml-2">
+                      {expandedChapters.has(chapter.id) ? (
+                        <ChevronDown
+                          size={16}
+                          className="text-gray-400 group-hover:text-white"
+                        />
+                      ) : (
+                        <ChevronRight
+                          size={16}
+                          className="text-gray-400 group-hover:text-white"
+                        />
+                      )}
+                    </div>
+                  </button>
+
+                  {/* Chapter Parts - Only show when expanded */}
+                  {expandedChapters.has(chapter.id) && (
+                    <div className="ml-3 space-y-1">
+                      {chapter.subsections?.map((part) => (
+                        <button
+                          key={part.id}
+                          onClick={() => handlePartClick(part.id)}
+                          className={`flex flex-row items-center w-full justify-between text-left rounded-md cursor-pointer p-2 transition-colors ${
+                            selectedPart === part.id
+                              ? "bg-dark text-white border border-lightgrey"
+                              : "text-gray-400 hover:text-white hover:bg-dark"
+                          }`}
+                        >
+                          <div className="flex-1 min-w-0">
+                            <p className="text-xs truncate">{part.title}</p>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))
+            )}
           </div>
         </div>
       </div>

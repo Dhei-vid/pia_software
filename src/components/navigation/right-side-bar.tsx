@@ -6,7 +6,7 @@ import SavedNotes from "../sidebar-items/notes";
 import CheckList from "../sidebar-items/checklist";
 import AddNotesModal from "../modals/add-notes";
 import ModalComponents from "../general/alert-modal";
-import { FileText, SquareCheck, X } from "lucide-react";
+import { FileText, SquareCheck } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { useRouter } from "next/navigation";
 import DraftDocumentModal from "../modals/draft-document-modal";
@@ -152,7 +152,9 @@ const RightSideBar: FC<RightSideBarProps> = ({ tools }) => {
           />
         </div>
 
-        <div className="space-y-3 border-t border-lightgrey">
+        <div className={"border-t border-lightgrey"} />
+
+        <div className="space-y-3">
           {tools.map((tool, index) => (
             <Button
               key={index}
