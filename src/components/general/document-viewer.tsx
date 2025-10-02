@@ -21,6 +21,8 @@ interface IDocumentViewerProps {
   totalSections?: number;
   previousSectionTitle: string;
   nextSectionTitle: string;
+  previousSectionNumber?: number;
+  nextSectionNumber?: number;
   onPreviousSection?: () => void;
   onNextSection?: () => void;
   onSearch?: (query: string) => void;
@@ -34,6 +36,8 @@ const DocumentViewer: FC<IDocumentViewerProps> = ({
   partTitle,
   previousSectionTitle,
   nextSectionTitle,
+  previousSectionNumber = 0,
+  nextSectionNumber = 0,
   currentSectionIndex = 0,
   totalSections = 0,
   onPreviousSection,
@@ -48,11 +52,24 @@ const DocumentViewer: FC<IDocumentViewerProps> = ({
     }
   };
 
+  // Helper function to extract section number from section ID
+  const getSectionNumber = (sectionId: string): number => {
+    const match = sectionId.match(/section-(\d+)/);
+    return match ? parseInt(match[1]) : 0;
+  };
+
+  // Get current section number for display
+  const currentSectionNumber = selectedSection
+    ? getSectionNumber(selectedSection.id)
+    : 0;
+
   // Debug: Log the selected section content
   React.useEffect(() => {
     if (selectedSection) {
       console.log("DocumentViewer - Selected section:", selectedSection);
-      console.log("DocumentViewer - Section content:", selectedSection.content);
+      console.log("DocumentViewer - Section content length:", selectedSection.content?.length || 0);
+      console.log("DocumentViewer - Section content preview:", selectedSection.content?.substring(0, 200) + "...");
+      console.log("DocumentViewer - Full section content:", selectedSection.content);
     }
   }, [selectedSection]);
 
@@ -99,24 +116,42 @@ const DocumentViewer: FC<IDocumentViewerProps> = ({
       <div className="flex-1 overflow-y-auto mb-6">
         <div className="prose prose-invert max-w-none">
           {selectedSection.content ? (
-            <div className="space-y-4">
+            <div className="space-y-3">
+              {/* Debug info */}
+              <div className="mb-4 p-3 bg-gray-800 rounded text-xs text-gray-300">
+                <p>Content length: {selectedSection.content.length} characters</p>
+                <p>Content preview: {selectedSection.content.substring(0, 100)}...</p>
+              </div>
+              
               {selectedSection.content.split("\n").map((paragraph, index) => {
-                if (!paragraph.trim()) return null;
+                if (!paragraph.trim()) {
+                  // Preserve empty lines for spacing
+                  return <div key={index} className="h-2" />;
+                }
 
-                // Check if this is a numbered paragraph (1., 2., 3., etc.)
-                const isNumberedParagraph = /^\d+\./.test(paragraph.trim());
-                // Check if this is a sub-point (A., B., C., etc.)
-                const isSubPoint = /^[A-Z]\./.test(paragraph.trim());
+                // Check for different types of content
+                const isSectionTitle = /^\d+\.\s+/.test(paragraph.trim());
+                const isSubPointA = /^[A-Z]\.\s+/.test(paragraph.trim());
+                const isSubPointB = /^\([a-z]\)\s+/.test(paragraph.trim());
+                const isSubPointC = /^\([ivx]+\)\s+/.test(paragraph.trim());
+                const isIndented =
+                  paragraph.startsWith("    ") || paragraph.startsWith("  ");
 
                 return (
                   <div key={index} className="flex items-start gap-3">
                     <div className="flex-1">
                       <p
                         className={`text-white leading-relaxed ${
-                          isNumberedParagraph
-                            ? "font-medium text-lg mb-2"
-                            : isSubPoint
-                            ? "ml-4 text-base"
+                          isSectionTitle
+                            ? "font-bold text-lg mb-3 text-yellow-400"
+                            : isSubPointA
+                            ? "font-semibold text-base mb-2 ml-4"
+                            : isSubPointB
+                            ? "text-base mb-1 ml-8"
+                            : isSubPointC
+                            ? "text-sm mb-1 ml-12"
+                            : isIndented
+                            ? "text-base ml-4"
                             : "text-base"
                         }`}
                       >
@@ -159,7 +194,7 @@ const DocumentViewer: FC<IDocumentViewerProps> = ({
             <div className="text-left leading-tight flex-1">
               <span className="text-sm opacity-50 block">Previous</span>
               <p className="text-sm line-clamp-2">
-                Section {currentSectionIndex}: {previousSectionTitle}
+                Section {previousSectionNumber}: {previousSectionTitle}
               </p>
             </div>
           </button>
@@ -180,7 +215,7 @@ const DocumentViewer: FC<IDocumentViewerProps> = ({
             <div className="text-right leading-tight flex-1">
               <span className="text-sm opacity-50 block">Next</span>
               <p className="text-sm line-clamp-2">
-                Section {currentSectionIndex + 2}: {nextSectionTitle}
+                Section {nextSectionNumber}: {nextSectionTitle}
               </p>
             </div>
             <ChevronRight size={16} className="flex-shrink-0" />

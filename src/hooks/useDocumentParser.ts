@@ -28,6 +28,15 @@ export const useDocumentParser = (document: Document | null) => {
     console.log("Parsed document chapters count:", parsed.chapters.length);
     console.log("Parsed document parts count:", parsed.parts.length);
     
+    // Get detailed statistics
+    const stats = DocumentParser.getDocumentStatistics(parsed);
+    console.log("Document Statistics:", stats);
+    console.log("Section Distribution by Part:", stats.sectionDistribution);
+    
+    // Validate structure
+    const validation = DocumentParser.validateDocumentStructure(parsed);
+    console.log("Structure Validation:", validation);
+    
     return parsed;
   }, [document]);
 
@@ -71,6 +80,16 @@ export const useDocumentParser = (document: Document | null) => {
     [parsedDocument]
   );
 
+  const validateStructure = useCallback(() => {
+    if (!parsedDocument) return { isValid: true, issues: [] };
+    return DocumentParser.validateDocumentStructure(parsedDocument);
+  }, [parsedDocument]);
+
+  const getDocumentStatistics = useCallback(() => {
+    if (!parsedDocument) return null;
+    return DocumentParser.getDocumentStatistics(parsedDocument);
+  }, [parsedDocument]);
+
   const selectSection = useCallback((section: DocumentSection) => {
     setSelectedSection(section);
   }, []);
@@ -89,6 +108,8 @@ export const useDocumentParser = (document: Document | null) => {
     getSectionsByType,
     getSectionHierarchy,
     getSectionsForPart,
+    validateStructure,
+    getDocumentStatistics,
     // Convenience getters
     chapters: parsedDocument?.chapters || [],
     parts: parsedDocument?.parts || [],

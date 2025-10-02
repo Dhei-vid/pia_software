@@ -4,7 +4,7 @@ import ModalComponents from "@/components/general/alert-modal";
 interface ICreateModal {
   trigger: ReactNode;
   content: ReactNode;
-  onAction?: () => void;
+  onAction?: () => void | Promise<void>;
   modalStyle?: string;
 }
 

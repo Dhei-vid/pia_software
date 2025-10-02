@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { X, ChevronRight } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -12,6 +12,8 @@ interface GenericDrawerProps {
   children: React.ReactNode;
   className?: string;
   position?: "left" | "right";
+  headerStyle?: string;
+  isHeaderArrow?: boolean;
 }
 
 const GenericDrawer: React.FC<GenericDrawerProps> = ({
@@ -21,6 +23,8 @@ const GenericDrawer: React.FC<GenericDrawerProps> = ({
   children,
   className,
   position = "right",
+  headerStyle,
+  isHeaderArrow = true,
 }) => {
   // Handle escape key
   React.useEffect(() => {
@@ -100,12 +104,21 @@ const GenericDrawer: React.FC<GenericDrawerProps> = ({
           >
             {/* Header */}
             <div className="flex items-center justify-between p-4 border-b border-lightgrey flex-shrink-0">
-              <h2 className="text-lg font-semibold text-white">{title}</h2>
+              <h2
+                className={cn(
+                  headerStyle ? headerStyle : "text-lg font-semibold",
+                  "text-white"
+                )}
+              >
+                {title}
+              </h2>
               <button
                 onClick={onClose}
                 className="cursor-pointer p-2 rounded-md hover:bg-[#3a3a3a] transition-colors"
               >
-                <ChevronRight className="w-5 h-5 text-gray-400" />
+                {isHeaderArrow && (
+                  <ChevronRight className="w-5 h-5 text-gray-400" />
+                )}
               </button>
             </div>
 

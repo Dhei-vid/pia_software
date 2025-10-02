@@ -26,7 +26,9 @@ export const DocumentService = {
   // Get search history: {{baseURL}}/api/v1/documents/search-history
   getSearchHistory: async (): Promise<SearchHistoryItem[]> => {
     try {
-      const response = await axiosInstance.get(`/api/v1/documents/search-history`);
+      const response = await axiosInstance.get(
+        `/api/v1/documents/search-history`
+      );
       return response.data.data;
     } catch (error) {
       const errorMessage = extractErrorMessage(error);
@@ -35,9 +37,13 @@ export const DocumentService = {
   },
 
   // AI processing status: {{baseURL}}/api/v1/documents/:documentId/status
-  getAIProcessingStatus: async (documentId: string): Promise<AIProcessingStatus> => {
+  getAIProcessingStatus: async (
+    documentId: string
+  ): Promise<AIProcessingStatus> => {
     try {
-      const response = await axiosInstance.get(`/api/v1/documents/${documentId}/status`);
+      const response = await axiosInstance.get(
+        `/api/v1/documents/${documentId}/status`
+      );
       const document = response.data.data;
       return {
         documentId: document.id,
@@ -53,7 +59,9 @@ export const DocumentService = {
   // Delete the document: {{baseURL}}/api/v1/documents/:documentId
   deleteDocument: async (documentId: string): Promise<DocumentApiResponse> => {
     try {
-      const response = await axiosInstance.delete(`/api/v1/documents/${documentId}`);
+      const response = await axiosInstance.delete(
+        `/api/v1/documents/${documentId}`
+      );
       return response.data;
     } catch (error) {
       const errorMessage = extractErrorMessage(error);
@@ -82,13 +90,17 @@ export const DocumentService = {
   uploadDocument: async (file: File): Promise<UploadResponse> => {
     try {
       const formData = new FormData();
-      formData.append('file', file);
+      formData.append("file", file);
 
-      const response = await axiosInstance.post(`/api/v1/documents/upload`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      const response = await axiosInstance.post(
+        `/api/v1/documents/upload`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
       return response.data.data;
     } catch (error) {
       const errorMessage = extractErrorMessage(error);
@@ -97,9 +109,14 @@ export const DocumentService = {
   },
 
   // Get all documents with pagination
-  getAllDocuments: async (page: number = 1, limit: number = 10): Promise<DocumentResponse> => {
+  getAllDocuments: async (
+    page: number = 1,
+    limit: number = 10
+  ): Promise<DocumentResponse> => {
     try {
-      const response = await axiosInstance.get(`/api/v1/documents?page=${page}&limit=${limit}`);
+      const response = await axiosInstance.get(
+        `/api/v1/documents?page=${page}&limit=${limit}`
+      );
       return response.data.data;
     } catch (error) {
       const errorMessage = extractErrorMessage(error);

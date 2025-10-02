@@ -74,9 +74,6 @@ export const LeftSideBar: FC<ILeftSideBarProps> = ({
     getSectionsForPart,
   } = useDocumentParser(selectedDocument);
 
-  console.log("Parsed Document:", parsedDocument);
-  console.log("Parsed Chapters:", parsedChapters);
-
   // Debug: Log sections for the first part if available
   if (
     parsedChapters.length > 0 &&
@@ -366,6 +363,8 @@ export const LeftSideBar: FC<ILeftSideBarProps> = ({
           setIsSectionsDrawerOpen(false);
           setSelectedPartForDrawer(null);
         }}
+        headerStyle="text-sm opacity-50"
+        isHeaderArrow={false}
         title={selectedPartForDrawer?.title || "Sections"}
         position="left"
       >
@@ -380,12 +379,12 @@ export const LeftSideBar: FC<ILeftSideBarProps> = ({
             ) : (
               getSectionsForPart(selectedPartForDrawer.id).map(
                 (section, index) => {
-                  // Extract section number from the section title if it exists
-                  const sectionNumberMatch = section.title.match(/^(\d+)\./);
+                  // Extract section number from the section ID (e.g., "section-1" -> "1")
+                  const sectionNumberMatch = section.id.match(/section-(\d+)/);
                   const sectionNumber = sectionNumberMatch
                     ? sectionNumberMatch[1]
                     : (index + 1).toString();
-                  const sectionTitle = section.title.replace(/^\d+\.\s*/, "");
+                  const sectionTitle = section.title;
 
                   return (
                     <button
@@ -417,15 +416,14 @@ export const LeftSideBar: FC<ILeftSideBarProps> = ({
                         }
                       }}
                       className={cn(
-                        "w-full flex items-center justify-between p-3 rounded-md transition-colors",
+                        "cursor-pointer w-full flex items-center justify-between p-3 rounded-md transition-colors",
                         "text-left hover:bg-lightgrey hover:text-white",
                         "text-gray-300 group"
                       )}
                     >
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium truncate">
-                          Section {sectionNumber}: {sectionTitle}
-                        </p>
+                      <div className="flex-1 min-w-0 text-sm font-medium">
+                        <p className="opacity-50">Section {sectionNumber}</p>
+                        <p className="line-clamp-2">{sectionTitle}</p>
                       </div>
                       <ChevronRight
                         size={16}

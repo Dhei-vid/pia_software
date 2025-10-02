@@ -10,10 +10,12 @@ import { FileText, SquareCheck } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { useRouter } from "next/navigation";
 import DraftDocumentModal from "../modals/draft-document-modal";
+import { toast } from "sonner";
 
 // APIs
 import { useNotes } from "@/hooks/useNotes";
 import { useDocuments } from "@/hooks/useDocuments";
+import { useChecklists } from "@/hooks/useChecklists";
 
 interface RightSideBarProps {
   tools: {
@@ -31,13 +33,22 @@ const RightSideBar: FC<RightSideBarProps> = ({ tools }) => {
   );
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [newNote, setNewNote] = useState<string>("");
+  const [newChecklistName, setNewChecklistName] = useState<string>("");
+  const [modalKey, setModalKey] = useState<number>(0);
 
   // Get the first document for note creation
   const { documents } = useDocuments();
   const selectedDocument = documents.length > 0 ? documents[0] : null;
 
   // Use notes hook
-  const { createNote, loading: noteLoading } = useNotes();
+  const { createNote, loading: noteLoading, notes } = useNotes();
+
+  // Use checklists hook
+  const {
+    createChecklist,
+    loading: checklistLoading,
+    checklists,
+  } = useChecklists();
 
   const handleCopyToClipboard = () => {
     // Simulate copying to clipboard
@@ -117,8 +128,10 @@ const RightSideBar: FC<RightSideBarProps> = ({ tools }) => {
         </label>
         <input
           type="text"
+          value={newChecklistName}
+          onChange={(e) => setNewChecklistName(e.target.value)}
           placeholder="Enter checklist name..."
-          className="w-full px-3 py-2 bg-dark border border-lightgrey rounded-md text-white placeholder:text-gray-400 focus:border-yellow-400 focus:outline-none"
+          className="w-full px-3 py-2 bg-dark border border-lightgrey rounded-md text-white placeholder:text-gray-400 focus:border-lightgrey focus:outline-none"
         />
       </div>
     </div>
@@ -136,17 +149,38 @@ const RightSideBar: FC<RightSideBarProps> = ({ tools }) => {
         documentId: selectedDocument.id,
       });
 
-      // Clear the note input
+      // Clear the note input and force modal re-render
       setNewNote("");
+      setModalKey((prev) => prev + 1);
+      toast.success("Note saved successfully!");
       console.log("Note saved successfully!");
     } catch (error) {
       console.error("Failed to save note:", error);
+      toast.error("Failed to save note. Please try again.");
     }
   };
 
-  const handleCreateChecklist = () => {
-    // Handle create checklist logic
-    console.log("Creating checklist...");
+  const handleCreateChecklist = async () => {
+    if (!newChecklistName.trim() || !selectedDocument) {
+      console.log("No checklist name or document selected");
+      return;
+    }
+
+    try {
+      await createChecklist({
+        name: newChecklistName.trim(),
+        documentId: selectedDocument.id,
+      });
+
+      // Clear the checklist name input and force modal re-render
+      setNewChecklistName("");
+      setModalKey((prev) => prev + 1);
+      toast.success("Checklist created successfully!");
+      console.log("Checklist created successfully!");
+    } catch (error) {
+      console.error("Failed to create checklist:", error);
+      toast.error("Failed to create checklist. Please try again.");
+    }
   };
 
   return (
@@ -160,26 +194,33 @@ const RightSideBar: FC<RightSideBarProps> = ({ tools }) => {
       <div className="space-y-5 flex-1 overflow-y-auto px-6 pb-20">
         <div className="w-full space-y-3">
           {/* Add Notes Modal */}
-          <CreateModal
-            trigger={
-              <ModalComponents.ModalTrigger label="Add Note" Icon={FileText} />
-            }
-            content={addNotesContent}
-            onAction={handleSaveNote}
-            modalStyle={"p-2"}
-          />
+          <div key={`note-modal-${modalKey}`}>
+            <CreateModal
+              trigger={
+                <ModalComponents.ModalTrigger
+                  label="Add Note"
+                  Icon={FileText}
+                />
+              }
+              content={addNotesContent}
+              onAction={handleSaveNote}
+              modalStyle={"p-2"}
+            />
+          </div>
 
           {/* Create New Checklist Modal */}
-          <CreateModal
-            trigger={
-              <ModalComponents.ModalTrigger
-                label="Create New Checklist"
-                Icon={SquareCheck}
-              />
-            }
-            content={createChecklistContent}
-            onAction={handleCreateChecklist}
-          />
+          <div key={`checklist-modal-${modalKey}`}>
+            <CreateModal
+              trigger={
+                <ModalComponents.ModalTrigger
+                  label="Create New Checklist"
+                  Icon={SquareCheck}
+                />
+              }
+              content={createChecklistContent}
+              onAction={handleCreateChecklist}
+            />
+          </div>
         </div>
 
         <div className={"border-t border-lightgrey"} />

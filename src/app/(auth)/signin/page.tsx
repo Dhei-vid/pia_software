@@ -16,7 +16,7 @@ import { useUser } from "@/contexts/UserContext";
 
 const SignInPage = () => {
   const router = useRouter();
-  const { login, isAuthenticated } = useUser();
+  const { login, token } = useUser();
   const [isPending, startTransition] = useTransition();
   const [formData, setFormData] = useState({
     email: "",
