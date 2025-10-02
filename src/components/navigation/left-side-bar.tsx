@@ -13,13 +13,19 @@ import { cn } from "@/lib/utils";
 import { Document } from "@/api/documents/document-types";
 import { DocumentService } from "@/api/documents/document";
 import { useDocumentParser } from "@/hooks/useDocumentParser";
-// import { DocumentSection } from "@/utils/documentParser";
+import { DocumentSection } from "@/utils/documentParser";
 
 interface ILeftSideBarProps {
   searchQuery: string;
   setSearchQuery: Dispatch<SetStateAction<string>>;
   isLightMode: boolean;
   setIsLightMode: Dispatch<SetStateAction<boolean>>;
+  onSectionSelect?: (
+    section: DocumentSection,
+    chapterTitle: string,
+    partTitle: string,
+    sections: DocumentSection[]
+  ) => void;
 }
 
 export const LeftSideBar: FC<ILeftSideBarProps> = ({
@@ -27,6 +33,7 @@ export const LeftSideBar: FC<ILeftSideBarProps> = ({
   setSearchQuery,
   isLightMode,
   setIsLightMode,
+  onSectionSelect,
 }) => {
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [historySearchQuery, setHistorySearchQuery] = useState("");
@@ -34,6 +41,11 @@ export const LeftSideBar: FC<ILeftSideBarProps> = ({
     new Set()
   ); // Start with no chapters expanded
   const [selectedPart, setSelectedPart] = useState<string>(""); // Start with no part selected
+  const [isSectionsDrawerOpen, setIsSectionsDrawerOpen] = useState(false);
+  const [selectedPartForDrawer, setSelectedPartForDrawer] = useState<{
+    id: string;
+    title: string;
+  } | null>(null);
 
   const [documents, setDocuments] = useState<Document[]>([]);
   const [selectedDocument, setSelectedDocument] = useState<Document | null>(
@@ -56,10 +68,28 @@ export const LeftSideBar: FC<ILeftSideBarProps> = ({
   }, []);
 
   // Use document parser for the selected document
-  const { parsedDocument, chapters: parsedChapters } =
-    useDocumentParser(selectedDocument);
+  const {
+    parsedDocument,
+    chapters: parsedChapters,
+    getSectionsForPart,
+  } = useDocumentParser(selectedDocument);
 
   console.log("Parsed Document:", parsedDocument);
+  console.log("Parsed Chapters:", parsedChapters);
+
+  // Debug: Log sections for the first part if available
+  if (
+    parsedChapters.length > 0 &&
+    parsedChapters[0].subsections &&
+    parsedChapters[0].subsections.length > 0
+  ) {
+    const firstPartId = parsedChapters[0].subsections[0].id;
+    const sectionsForFirstPart = getSectionsForPart(firstPartId);
+    console.log("Sections for first part:", sectionsForFirstPart);
+    if (sectionsForFirstPart.length > 0) {
+      console.log("First section content:", sectionsForFirstPart[0].content);
+    }
+  }
 
   // Keep all chapters closed by default - no auto-expansion
 
@@ -101,9 +131,10 @@ export const LeftSideBar: FC<ILeftSideBarProps> = ({
     });
   };
 
-  const handlePartClick = (partId: string) => {
+  const handlePartClick = (partId: string, partTitle: string) => {
     setSelectedPart(partId);
-    // Here you would typically navigate to the specific part or update the main content
+    setSelectedPartForDrawer({ id: partId, title: partTitle });
+    setIsSectionsDrawerOpen(true);
     console.log(`Selected part: ${partId}`);
   };
 
@@ -174,7 +205,7 @@ export const LeftSideBar: FC<ILeftSideBarProps> = ({
         <div className="mb-8 pt-6 border-t border-lightgrey">
           <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-4">
             {selectedDocument
-              ? `${selectedDocument.title} Structure`
+              ? `${selectedDocument.title}`
               : "Document Structure"}
           </h3>
           <div className="space-y-2 w-full">
@@ -227,7 +258,7 @@ export const LeftSideBar: FC<ILeftSideBarProps> = ({
                       {chapter.subsections?.map((part) => (
                         <button
                           key={part.id}
-                          onClick={() => handlePartClick(part.id)}
+                          onClick={() => handlePartClick(part.id, part.title)}
                           className={`flex flex-row items-center w-full justify-between text-left rounded-md cursor-pointer p-2 transition-colors ${
                             selectedPart === part.id
                               ? "bg-dark text-white border border-lightgrey"
@@ -323,6 +354,91 @@ export const LeftSideBar: FC<ILeftSideBarProps> = ({
               <button className="cursor-pointer w-full py-2 px-4 text-sm text-gray-400 hover:text-white hover:bg-[#3a3a3a] rounded-md transition-colors">
                 Clear All History
               </button>
+            </div>
+          )}
+        </div>
+      </GenericDrawer>
+
+      {/* Sections Drawer */}
+      <GenericDrawer
+        isOpen={isSectionsDrawerOpen}
+        onClose={() => {
+          setIsSectionsDrawerOpen(false);
+          setSelectedPartForDrawer(null);
+        }}
+        title={selectedPartForDrawer?.title || "Sections"}
+        position="left"
+      >
+        <div className="space-y-2">
+          {selectedPartForDrawer ? (
+            getSectionsForPart(selectedPartForDrawer.id).length === 0 ? (
+              <div className="text-center py-8">
+                <p className="text-gray-400 text-sm">
+                  No sections found for this part
+                </p>
+              </div>
+            ) : (
+              getSectionsForPart(selectedPartForDrawer.id).map(
+                (section, index) => {
+                  // Extract section number from the section title if it exists
+                  const sectionNumberMatch = section.title.match(/^(\d+)\./);
+                  const sectionNumber = sectionNumberMatch
+                    ? sectionNumberMatch[1]
+                    : (index + 1).toString();
+                  const sectionTitle = section.title.replace(/^\d+\.\s*/, "");
+
+                  return (
+                    <button
+                      key={section.id}
+                      onClick={() => {
+                        console.log("Selected section:", section);
+                        if (onSectionSelect && selectedPartForDrawer) {
+                          // Find the chapter and part titles
+                          const chapter = parsedChapters.find((ch) =>
+                            ch.subsections?.some(
+                              (sub) => sub.id === selectedPartForDrawer.id
+                            )
+                          );
+                          const part = chapter?.subsections?.find(
+                            (sub) => sub.id === selectedPartForDrawer.id
+                          );
+
+                          if (chapter && part) {
+                            const sections = getSectionsForPart(
+                              selectedPartForDrawer.id
+                            );
+                            onSectionSelect(
+                              section,
+                              chapter.title,
+                              part.title,
+                              sections
+                            );
+                          }
+                        }
+                      }}
+                      className={cn(
+                        "w-full flex items-center justify-between p-3 rounded-md transition-colors",
+                        "text-left hover:bg-lightgrey hover:text-white",
+                        "text-gray-300 group"
+                      )}
+                    >
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium truncate">
+                          Section {sectionNumber}: {sectionTitle}
+                        </p>
+                      </div>
+                      <ChevronRight
+                        size={16}
+                        className="text-gray-400 group-hover:text-white flex-shrink-0 ml-2"
+                      />
+                    </button>
+                  );
+                }
+              )
+            )
+          ) : (
+            <div className="text-center py-8">
+              <p className="text-gray-400 text-sm">No part selected</p>
             </div>
           )}
         </div>

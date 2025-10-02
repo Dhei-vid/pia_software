@@ -4,12 +4,16 @@ import { Button } from "@/components/ui/button";
 import { GenericDrawer } from "@/components/ui/generic-drawer";
 import SavedNotes from "../sidebar-items/notes";
 import CheckList from "../sidebar-items/checklist";
-import AddNotesModal from "../modals/add-notes";
+import CreateModal from "../modals/create-modal";
 import ModalComponents from "../general/alert-modal";
 import { FileText, SquareCheck } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { useRouter } from "next/navigation";
 import DraftDocumentModal from "../modals/draft-document-modal";
+
+// APIs
+import { useNotes } from "@/hooks/useNotes";
+import { useDocuments } from "@/hooks/useDocuments";
 
 interface RightSideBarProps {
   tools: {
@@ -21,11 +25,19 @@ interface RightSideBarProps {
 
 const RightSideBar: FC<RightSideBarProps> = ({ tools }) => {
   const router = useRouter();
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
   const [drawerType, setDrawerType] = useState<"saved-notes" | "checklist">(
     "saved-notes"
   );
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [newNote, setNewNote] = useState<string>("");
+
+  // Get the first document for note creation
+  const { documents } = useDocuments();
+  const selectedDocument = documents.length > 0 ? documents[0] : null;
+
+  // Use notes hook
+  const { createNote, loading: noteLoading } = useNotes();
 
   const handleCopyToClipboard = () => {
     // Simulate copying to clipboard
@@ -60,7 +72,7 @@ const RightSideBar: FC<RightSideBarProps> = ({ tools }) => {
   const addNotesContent = (
     <div className="space-y-6">
       {/* Chapter Information Header */}
-      <div className="bg-dark border-1 border-lightgrey pb-4 rounded-md p-2">
+      {/* <div className="bg-dark border-1 border-lightgrey pb-4 rounded-md p-2">
         <h3 className="text-lg font-semibold text-white mb-2">
           Chapter 2, Part II, Section 81: Petroleum Mining Leases
         </h3>
@@ -73,13 +85,15 @@ const RightSideBar: FC<RightSideBarProps> = ({ tools }) => {
             revoked or has expired.&quot;
           </p>
         </div>
-      </div>
+      </div> */}
 
       {/* Note Input Section */}
       <div>
         <Textarea
+          value={newNote}
+          onChange={(e) => setNewNote(e.target.value)}
           placeholder="Type your note here"
-          className="min-h-32 bg-dark text-white placeholder:text-gray-400"
+          className="min-h-32 !bg-transparent text-white placeholder:text-gray-400 resize-none border-none !overflow-y-auto"
         />
       </div>
     </div>
@@ -110,9 +124,24 @@ const RightSideBar: FC<RightSideBarProps> = ({ tools }) => {
     </div>
   );
 
-  const handleSaveNote = () => {
-    // Handle save note logic
-    console.log("Saving note...");
+  const handleSaveNote = async () => {
+    if (!newNote.trim() || !selectedDocument) {
+      console.log("No note content or document selected");
+      return;
+    }
+
+    try {
+      await createNote({
+        body: newNote.trim(),
+        documentId: selectedDocument.id,
+      });
+
+      // Clear the note input
+      setNewNote("");
+      console.log("Note saved successfully!");
+    } catch (error) {
+      console.error("Failed to save note:", error);
+    }
   };
 
   const handleCreateChecklist = () => {
@@ -131,16 +160,17 @@ const RightSideBar: FC<RightSideBarProps> = ({ tools }) => {
       <div className="space-y-5 flex-1 overflow-y-auto px-6 pb-20">
         <div className="w-full space-y-3">
           {/* Add Notes Modal */}
-          <AddNotesModal
+          <CreateModal
             trigger={
               <ModalComponents.ModalTrigger label="Add Note" Icon={FileText} />
             }
             content={addNotesContent}
             onAction={handleSaveNote}
+            modalStyle={"p-2"}
           />
 
           {/* Create New Checklist Modal */}
-          <AddNotesModal
+          <CreateModal
             trigger={
               <ModalComponents.ModalTrigger
                 label="Create New Checklist"

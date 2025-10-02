@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import SearchResultCard from "@/components/ui/search-result-card";
 import { Plus, SendHorizontal } from "lucide-react";
@@ -43,7 +44,7 @@ const ChatPage = () => {
       </div>
 
       {/* Search Results Section */}
-      {searchQuery && (
+      {/* {searchQuery && (
         <div className="mb-8">
           <h2 className="text-xl font-semibold text-white mb-4">
             Search Results for &lsquo;{searchQuery}&lsquo;
@@ -59,14 +60,17 @@ const ChatPage = () => {
             ))}
           </div>
         </div>
-      )}
+      )} */}
 
       <div className="border border-gray-700 rounded-xl bg-dark">
         {/* Main Search Input */}
-        <div className="pt-3 pb-12">
-          <Input
+        <div className="pt-3 pb-6">
+          <Textarea
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            rows={8}
             placeholder="Search for a section, upload a document, or draft a new document."
-            className="!bg-dark text-lg border-none text-white placeholder:text-gray-400 focus:border-none"
+            className="!bg-dark text-lg border-none text-white placeholder:text-gray-400 focus:border-none resize-none !overflow-y-auto"
           />
         </div>
         <div className="p-3 flex flex-row items-center justify-between">

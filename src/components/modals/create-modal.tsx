@@ -1,22 +1,28 @@
 import { FC, ReactNode } from "react";
 import ModalComponents from "@/components/general/alert-modal";
 
-interface IAddNotesModal {
+interface ICreateModal {
   trigger: ReactNode;
   content: ReactNode;
   onAction?: () => void;
+  modalStyle?: string;
 }
 
-const AddNotesModal: FC<IAddNotesModal> = ({
+const CreateModal: FC<ICreateModal> = ({
   trigger,
   content,
   onAction = () => {},
+  modalStyle,
 }) => {
   return (
-    <ModalComponents.GeneralAlertDialog onAction={onAction} btn={trigger}>
+    <ModalComponents.GeneralAlertDialog
+      onAction={onAction}
+      btn={trigger}
+      dialogContentStyle={modalStyle}
+    >
       {content}
     </ModalComponents.GeneralAlertDialog>
   );
 };
 
-export default AddNotesModal;
+export default CreateModal;

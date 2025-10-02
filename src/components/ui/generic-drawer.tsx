@@ -84,7 +84,7 @@ const GenericDrawer: React.FC<GenericDrawerProps> = ({
           {/* Drawer */}
           <motion.div
             className={cn(
-              `fixed top-0 ${positionClasses} h-full w-80 bg-grey z-50`,
+              `fixed top-0 ${positionClasses} h-full w-80 bg-grey z-50 flex flex-col`,
               className
             )}
             variants={slideVariants}
@@ -99,7 +99,7 @@ const GenericDrawer: React.FC<GenericDrawerProps> = ({
             }}
           >
             {/* Header */}
-            <div className="flex items-center justify-between p-4 border-b border-lightgrey">
+            <div className="flex items-center justify-between p-4 border-b border-lightgrey flex-shrink-0">
               <h2 className="text-lg font-semibold text-white">{title}</h2>
               <button
                 onClick={onClose}
@@ -110,7 +110,7 @@ const GenericDrawer: React.FC<GenericDrawerProps> = ({
             </div>
 
             {/* Content */}
-            <div className="flex-1 overflow-y-auto p-4 scrollbar-width">
+            <div className="flex-1 overflow-y-auto p-4 scrollbar-width min-h-0">
               {children}
             </div>
           </motion.div>

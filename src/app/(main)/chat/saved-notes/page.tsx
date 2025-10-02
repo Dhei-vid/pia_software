@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useNotes } from "@/hooks/useNotes";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -41,7 +42,8 @@ const sampleNotes = [
 ];
 
 export default function Page() {
-  const [notes, setNotes] = useState(sampleNotes);
+  const [note, setNotes] = useState(sampleNotes);
+  const { createNote, updateNote, deleteNote, notes } = useNotes();
   const [searchQuery, setSearchQuery] = useState("");
   const [timeFilter, setTimeFilter] = useState("7");
 
@@ -60,7 +62,7 @@ export default function Page() {
     console.log("Viewing linked section:", href);
   };
 
-  const filteredNotes = notes.filter(
+  const filteredNotes = note.filter(
     (note) =>
       note.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
       (note.linkedSection?.title &&

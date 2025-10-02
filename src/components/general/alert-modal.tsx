@@ -11,12 +11,14 @@ import {
 } from "@/components/ui/alert-dialog";
 import { FC, ReactNode } from "react";
 import { Check, X, LucideIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface IGeneralAlertDialog {
   children: ReactNode;
   btn: ReactNode;
-  title?: string;
   onAction: () => void;
+  title?: string;
+  dialogContentStyle?: string;
 }
 
 const GeneralAlertDialog: FC<IGeneralAlertDialog> = ({
@@ -24,13 +26,14 @@ const GeneralAlertDialog: FC<IGeneralAlertDialog> = ({
   btn,
   title,
   onAction,
+  dialogContentStyle,
 }) => {
   return (
     <AlertDialog>
       <AlertDialogTrigger className="cursor-pointer w-full">
         {btn}
       </AlertDialogTrigger>
-      <AlertDialogContent>
+      <AlertDialogContent className={cn(dialogContentStyle)}>
         <AlertDialogHeader>
           <AlertDialogTitle>{title}</AlertDialogTitle>
           <AlertDialogDescription></AlertDialogDescription>

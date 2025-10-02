@@ -92,24 +92,34 @@ export class DocumentParser {
       }
 
       // Parse SECTION (numbered sections like "1. Vesting of Petroleum.")
-      // Note: We're not adding numbered sections to the navigation structure
-      // They will only be used for content extraction when needed
       else if (line.match(/^\d+\.\s+/)) {
         sectionCounter++;
         const sectionId = `section-${sectionCounter}`;
+        const sectionTitle = line.replace(/^\d+\.\s+/, "");
+        
+        // Extract the full content for this section
+        const sectionContent = this.extractSectionContentFromLines(lines, i);
+        
         const section: DocumentSection = {
           id: sectionId,
-          title: line.replace(/^\d+\.\s+/, ""),
+          title: sectionTitle,
           type: "section",
           level: 3,
-          content: line,
+          content: sectionContent,
           subsections: [],
           parentId: currentPart?.id || currentChapter?.id,
         };
         sections.push(section);
 
-        // Don't add numbered sections to chapter/part subsections for navigation
-        // They will be available for content search but not shown in the sidebar
+        // Add sections to the current part's subsections for navigation
+        if (currentPart) {
+          currentPart.subsections = currentPart.subsections || [];
+          currentPart.subsections.push(section);
+        } else if (currentChapter) {
+          // If no current part, add to chapter
+          currentChapter.subsections = currentChapter.subsections || [];
+          currentChapter.subsections.push(section);
+        }
       }
     }
 
@@ -120,6 +130,45 @@ export class DocumentParser {
       chapters,
       parts,
     };
+  }
+
+  static extractSectionContentFromLines(lines: string[], startIndex: number): string {
+    const sectionContent: string[] = [];
+    let i = startIndex;
+    
+    // Add the section title line
+    sectionContent.push(lines[i]);
+    i++;
+    
+    console.log(`Extracting content for section starting at line ${startIndex}: ${lines[startIndex]}`);
+    
+    // Continue reading until we hit another section, chapter, part, or end of document
+    while (i < lines.length) {
+      const line = lines[i];
+      const trimmedLine = line.trim();
+      
+      // Stop if we hit another section, chapter, or part
+      if (
+        trimmedLine.match(/^CHAPTER\s+\d+[—\-]/i) ||
+        trimmedLine.match(/^PART\s+[IVX]+[—\-]/i) ||
+        (trimmedLine.match(/^\d+\.\s+/) && i !== startIndex) || // Don't stop on the current section
+        trimmedLine.match(/^ARRANGEMENT OF SECTIONS/i) ||
+        trimmedLine.match(/^SCHEDULE/i) ||
+        trimmedLine.match(/^APPENDIX/i)
+      ) {
+        console.log(`Stopping at line ${i}: ${trimmedLine}`);
+        break;
+      }
+      
+      // Add the line to content (including empty lines for formatting)
+      sectionContent.push(line);
+      i++;
+    }
+    
+    const content = sectionContent.join("\n");
+    console.log(`Extracted content (${content.length} chars):`, content.substring(0, 200) + "...");
+    
+    return content;
   }
 
   static extractSectionContent(content: string, sectionTitle: string): string {
@@ -181,5 +230,14 @@ export class DocumentParser {
   ): DocumentSection[] {
     // Return only top-level sections (chapters) with their nested structure
     return parsedDocument.chapters;
+  }
+
+  static getSectionsForPart(
+    parsedDocument: ParsedDocument,
+    partId: string
+  ): DocumentSection[] {
+    return parsedDocument.sections.filter(
+      (section) => section.type === "section" && section.parentId === partId
+    );
   }
 }

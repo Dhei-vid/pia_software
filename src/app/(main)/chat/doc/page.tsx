@@ -7,10 +7,12 @@ export default function Page() {
         </h1>
         <p className="text-gray-400">View and manage your documents</p>
       </div>
-      
+
       <div className="space-y-6">
         <div className="bg-dark border border-gray-700 rounded-xl p-6">
-          <h2 className="text-xl font-semibold text-white mb-4">Recent Documents</h2>
+          <h2 className="text-xl font-semibold text-white mb-4">
+            Recent Documents
+          </h2>
           <p className="text-gray-400">Your documents will appear here</p>
         </div>
       </div>

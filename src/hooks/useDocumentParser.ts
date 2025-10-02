@@ -15,11 +15,20 @@ export const useDocumentParser = (document: Document | null) => {
       return null;
     }
 
-    return DocumentParser.parseDocumentContent(
+    console.log("Document content length:", document.content.length);
+    console.log("Document content preview:", document.content.substring(0, 500));
+    
+    const parsed = DocumentParser.parseDocumentContent(
       document.id,
       document.title,
       document.content
     );
+    
+    console.log("Parsed document sections count:", parsed.sections.length);
+    console.log("Parsed document chapters count:", parsed.chapters.length);
+    console.log("Parsed document parts count:", parsed.parts.length);
+    
+    return parsed;
   }, [document]);
 
   const getSectionContent = useCallback(
@@ -54,6 +63,14 @@ export const useDocumentParser = (document: Document | null) => {
     return DocumentParser.getSectionHierarchy(parsedDocument);
   }, [parsedDocument]);
 
+  const getSectionsForPart = useCallback(
+    (partId: string): DocumentSection[] => {
+      if (!parsedDocument) return [];
+      return DocumentParser.getSectionsForPart(parsedDocument, partId);
+    },
+    [parsedDocument]
+  );
+
   const selectSection = useCallback((section: DocumentSection) => {
     setSelectedSection(section);
   }, []);
@@ -71,6 +88,7 @@ export const useDocumentParser = (document: Document | null) => {
     getSectionByTitle,
     getSectionsByType,
     getSectionHierarchy,
+    getSectionsForPart,
     // Convenience getters
     chapters: parsedDocument?.chapters || [],
     parts: parsedDocument?.parts || [],

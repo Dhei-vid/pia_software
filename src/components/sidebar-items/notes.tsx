@@ -1,38 +1,60 @@
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import { formatTimeAgo } from "@/common/helpers";
 import { useRouter } from "next/navigation";
-
-const savedNotesData = [
-  {
-    id: "1",
-    title: "Important definition - Commission refers to th....",
-    content:
-      "Commission refers to the Petroleum Industry Commission established under this Act...",
-    timestamp: "2025-08-01",
-    link: "",
-  },
-  {
-    id: "2",
-    title: "Need to cross-reference with petroleum operatio...",
-    content:
-      "Cross-reference with petroleum operations and environmental regulations...",
-    timestamp: "2025-07-01",
-    link: "",
-  },
-  {
-    id: "3",
-    title: "Need to cross-reference with petroleum operati...",
-    content: "Additional cross-reference notes for petroleum operations...",
-    timestamp: new Date(),
-    link: "",
-  },
-];
+import { useNotes } from "@/hooks/useNotes";
+import { Note } from "@/api/notes/notes-type";
+import { Trash2, Edit3 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const SavedNotes = () => {
+  const { notes, loading, error, getAllNotes, deleteNote } = useNotes();
+
+  useEffect(() => {
+    getAllNotes();
+  }, [getAllNotes]);
+
+  const handleDeleteNote = async (noteId: string) => {
+    if (window.confirm("Are you sure you want to delete this note?")) {
+      try {
+        await deleteNote(noteId);
+      } catch (error) {
+        console.error("Failed to delete note:", error);
+      }
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-8">
+        <div className="text-gray-400 text-sm">Loading notes...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center py-8">
+        <div className="text-red-400 text-sm">Error loading notes: {error}</div>
+      </div>
+    );
+  }
+
+  if (notes.length === 0) {
+    return (
+      <div className="flex items-center justify-center py-8">
+        <div className="text-gray-400 text-sm">No notes found</div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-4 w-[100%]">
-      {savedNotesData.map((item, index) => (
-        <NotesSideBarItems key={index} {...item} />
+      {notes.map((note) => (
+        <NotesSideBarItems 
+          key={note.id} 
+          note={note} 
+          onDelete={handleDeleteNote}
+        />
       ))}
     </div>
   );
@@ -41,33 +63,46 @@ const SavedNotes = () => {
 export default SavedNotes;
 
 interface INotesSideBarItems {
-  title: string;
-  content: string;
-  link: string;
-  timestamp: Date | string;
+  note: Note;
+  onDelete: (noteId: string) => void;
 }
 
 const NotesSideBarItems: FC<INotesSideBarItems> = ({
-  content,
-  timestamp,
-  // title,
-  link,
+  note,
+  onDelete,
 }) => {
   const router = useRouter();
+
+  const handleNoteClick = () => {
+    // You can navigate to a specific note view or do something else
+    console.log("Note clicked:", note.id);
+  };
+
+  const handleDelete = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onDelete(note.id);
+  };
+
   return (
-    <button
-      onClick={() => router.push(link)}
-      className="p-3 text-left flex flex-row gap-5 justify-between hover:bg-lightgrey cursor-pointer transition-all duration-200 ease-in-out rounded-md"
-    >
-      <div>
+    <div className="p-3 text-left flex flex-row gap-5 justify-between hover:bg-lightgrey cursor-pointer transition-all duration-200 ease-in-out rounded-md group">
+      <div className="flex-1" onClick={handleNoteClick}>
         <p className="text-sm text-white truncate text-wrap line-clamp-2">
-          {content}
+          {note.body}
         </p>
-        {/* <p className="text-sm text-gray-400 truncate">{content}</p> */}
+        <p className="text-xs text-nowrap text-gray-400 mt-1">
+          {formatTimeAgo(new Date(note.createdAt))}
+        </p>
       </div>
-      <p className="text-xs text-nowrap text-gray-400">
-        {formatTimeAgo(new Date(timestamp))}
-      </p>
-    </button>
+      <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={handleDelete}
+          className="h-6 w-6 p-0 text-gray-400 hover:text-red-400"
+        >
+          <Trash2 size={12} />
+        </Button>
+      </div>
+    </div>
   );
 };
