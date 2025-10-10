@@ -63,16 +63,6 @@ const DocumentViewer: FC<IDocumentViewerProps> = ({
     ? getSectionNumber(selectedSection.id)
     : 0;
 
-  // Debug: Log the selected section content
-  React.useEffect(() => {
-    if (selectedSection) {
-      console.log("DocumentViewer - Selected section:", selectedSection);
-      console.log("DocumentViewer - Section content length:", selectedSection.content?.length || 0);
-      console.log("DocumentViewer - Section content preview:", selectedSection.content?.substring(0, 200) + "...");
-      console.log("DocumentViewer - Full section content:", selectedSection.content);
-    }
-  }, [selectedSection]);
-
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
@@ -117,12 +107,6 @@ const DocumentViewer: FC<IDocumentViewerProps> = ({
         <div className="prose prose-invert max-w-none">
           {selectedSection.content ? (
             <div className="space-y-3">
-              {/* Debug info */}
-              <div className="mb-4 p-3 bg-gray-800 rounded text-xs text-gray-300">
-                <p>Content length: {selectedSection.content.length} characters</p>
-                <p>Content preview: {selectedSection.content.substring(0, 100)}...</p>
-              </div>
-              
               {selectedSection.content.split("\n").map((paragraph, index) => {
                 if (!paragraph.trim()) {
                   // Preserve empty lines for spacing
@@ -143,7 +127,7 @@ const DocumentViewer: FC<IDocumentViewerProps> = ({
                       <p
                         className={`text-white leading-relaxed ${
                           isSectionTitle
-                            ? "font-bold text-lg mb-3 text-yellow-400"
+                            ? "font-bold text-lg mb-3 text-gray-400"
                             : isSubPointA
                             ? "font-semibold text-base mb-2 ml-4"
                             : isSubPointB
@@ -158,7 +142,7 @@ const DocumentViewer: FC<IDocumentViewerProps> = ({
                         {paragraph}
                       </p>
                     </div>
-                    <button className="flex-shrink-0 p-1 hover:bg-lightgrey rounded transition-colors">
+                    <button className="cursor-pointer flex-shrink-0 p-1 hover:bg-lightgrey rounded transition-colors">
                       <Link
                         size={16}
                         className="text-gray-400 hover:text-white"

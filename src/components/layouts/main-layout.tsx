@@ -86,12 +86,22 @@ const MainLayout = ({ children }: MainLayoutProps) => {
                 }
                 previousSectionNumber={
                   currentSectionIndex > 0
-                    ? parseInt(currentPartSections[currentSectionIndex - 1].id.replace('section-', ''))
+                    ? parseInt(
+                        currentPartSections[currentSectionIndex - 1].id.replace(
+                          "section-",
+                          ""
+                        )
+                      )
                     : 0
                 }
                 nextSectionNumber={
                   currentSectionIndex < currentPartSections.length - 1
-                    ? parseInt(currentPartSections[currentSectionIndex + 1].id.replace('section-', ''))
+                    ? parseInt(
+                        currentPartSections[currentSectionIndex + 1].id.replace(
+                          "section-",
+                          ""
+                        )
+                      )
                     : 0
                 }
                 currentSectionIndex={currentSectionIndex}

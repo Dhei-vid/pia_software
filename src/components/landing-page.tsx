@@ -52,7 +52,7 @@ const LandingPage = () => {
               <Link href={"/chat"}>
                 <Button
                   variant="outline"
-                  className="border-white text-white hover:bg-white hover:text-dark text-lg px-8 py-4 rounded"
+                  className="border-white text-dark hover:bg-white hover:text-dark text-lg px-8 py-4 rounded"
                 >
                   Learn More
                 </Button>

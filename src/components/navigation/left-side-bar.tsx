@@ -74,19 +74,6 @@ export const LeftSideBar: FC<ILeftSideBarProps> = ({
     getSectionsForPart,
   } = useDocumentParser(selectedDocument);
 
-  // Debug: Log sections for the first part if available
-  if (
-    parsedChapters.length > 0 &&
-    parsedChapters[0].subsections &&
-    parsedChapters[0].subsections.length > 0
-  ) {
-    const firstPartId = parsedChapters[0].subsections[0].id;
-    const sectionsForFirstPart = getSectionsForPart(firstPartId);
-    console.log("Sections for first part:", sectionsForFirstPart);
-    if (sectionsForFirstPart.length > 0) {
-      console.log("First section content:", sectionsForFirstPart[0].content);
-    }
-  }
 
   // Keep all chapters closed by default - no auto-expansion
 
@@ -390,7 +377,6 @@ export const LeftSideBar: FC<ILeftSideBarProps> = ({
                     <button
                       key={section.id}
                       onClick={() => {
-                        console.log("Selected section:", section);
                         if (onSectionSelect && selectedPartForDrawer) {
                           // Find the chapter and part titles
                           const chapter = parsedChapters.find((ch) =>
