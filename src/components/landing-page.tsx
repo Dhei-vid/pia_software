@@ -81,6 +81,10 @@ const LandingPage = () => {
           </div>
         </div>
       </section>
+
+      <div className="container text-right py-4">
+        <p className="text-sm text-green">Powered by Engr. Farouk Ahmed</p>
+      </div>
     </div>
   );
 };
