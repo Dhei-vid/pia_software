@@ -85,7 +85,7 @@ const SignInPage = () => {
       </div>
 
       <div className="flex items-center justify-center min-h-screen p-6">
-        <div className="w-full max-w-md">
+        <div className="w-full w-full lg:max-w-2xl 2xl:max-w-3xl">
           {/* Header */}
           <div className="text-center mb-8">
             <div className="flex items-center justify-center space-x-2 mb-4">
