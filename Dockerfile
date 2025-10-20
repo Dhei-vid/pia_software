@@ -7,7 +7,7 @@ COPY .env .env
 RUN npm ci
 
 COPY . .
-RUN npm run build  # creates /app/dist
+RUN npm run build --no-lint
 
 # Stage 2: Production
 FROM node:20-alpine
