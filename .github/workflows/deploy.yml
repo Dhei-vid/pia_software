@@ -7,7 +7,7 @@ on:
 
 env:
   AWS_REGION: us-east-1
-  ECR_REPOSITORY_FRONTEND: wrightEnergy/frontend
+  ECR_REPOSITORY_FRONTEND: wrightenergy/frontend
   IMAGE_TAG: latest
 
 jobs:
