@@ -7,7 +7,7 @@ COPY .env .env
 RUN npm ci
 
 COPY . .
-RUN npm run build --no-lint
+RUN NEXT_DISABLE_ESLINT=true npm run build
 
 # Stage 2: Production
 FROM node:20-alpine
