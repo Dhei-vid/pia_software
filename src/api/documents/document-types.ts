@@ -28,7 +28,7 @@ export interface SearchHistoryItem {
   query: string;
   documentId: string;
   createdAt: string;
-  results?: any[];
+  results?: SearchResult[];
 }
 
 export interface AIProcessingStatus {
@@ -49,14 +49,7 @@ export interface SearchRequest {
 }
 
 export interface SearchResponse {
-  results: Array<{
-    id: string;
-    title: string;
-    content: string;
-    relevanceScore: number;
-    pageNumber?: number;
-    section?: string;
-  }>;
+  results: SearchResult[];
   totalResults: number;
   query: string;
   searchTime: number;
@@ -68,8 +61,17 @@ export interface UploadResponse {
   status: "uploaded" | "processing";
 }
 
-export interface DocumentApiResponse<T = any> {
+export interface DocumentApiResponse<T = unknown> {
   success: boolean;
   message: string;
   data: T;
+}
+
+export interface SearchResult {
+  id: string;
+  title: string;
+  content: string;
+  relevanceScore: number;
+  pageNumber?: number;
+  section?: string;
 }

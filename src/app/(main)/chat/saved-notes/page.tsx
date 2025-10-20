@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useNotes } from "@/hooks/useNotes";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -43,7 +42,6 @@ const sampleNotes = [
 
 export default function Page() {
   const [note, setNotes] = useState(sampleNotes);
-  const { createNote, updateNote, deleteNote, notes } = useNotes();
   const [searchQuery, setSearchQuery] = useState("");
   const [timeFilter, setTimeFilter] = useState("7");
 

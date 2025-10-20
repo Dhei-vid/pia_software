@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { User } from "@/common/types";
 import jwt, { SignOptions } from "jsonwebtoken";
 
@@ -23,7 +22,7 @@ export const generateToken = (data: Payload, time: string | number): string => {
 
 interface DecryptTokenResult {
   success: boolean;
-  data: any | null;
+  data: Payload | null;
 }
 
 export const decryptToken = (token: string): DecryptTokenResult => {
@@ -32,8 +31,8 @@ export const decryptToken = (token: string): DecryptTokenResult => {
     throw new Error("JWT secret is not defined");
   }
   jwt.verify(token, tokenSecret, (error, decoded) => {
-    if (!error) {
-      tokenData = { success: true, data: decoded };
+    if (!error && decoded) {
+      tokenData = { success: true, data: decoded as Payload };
     }
   });
   return tokenData;

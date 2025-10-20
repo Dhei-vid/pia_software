@@ -3,36 +3,10 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Input } from "@/components/ui/input";
-import SearchResultCard from "@/components/ui/search-result-card";
 import { Plus, SendHorizontal } from "lucide-react";
 
 const ChatPage = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
-
-  // Sample search results data
-  const searchResults = [
-    {
-      title: "Petroleum Engineering Fundamentals",
-      description:
-        "Comprehensive guide covering drilling operations, reservoir engineering, and production optimization techniques used in modern petroleum engineering.",
-      onViewFullSection: () =>
-        console.log("Viewing Petroleum Engineering section"),
-    },
-    {
-      title: "Environmental Impact Assessment",
-      description:
-        "Detailed analysis of environmental considerations in energy projects, including regulatory compliance and sustainability practices.",
-      onViewFullSection: () =>
-        console.log("Viewing Environmental Impact section"),
-    },
-    {
-      title: "Renewable Energy Integration",
-      description:
-        "Best practices for integrating renewable energy sources into existing energy infrastructure and grid management systems.",
-      onViewFullSection: () => console.log("Viewing Renewable Energy section"),
-    },
-  ];
 
   return (
     <>

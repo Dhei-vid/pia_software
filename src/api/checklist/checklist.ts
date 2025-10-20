@@ -1,7 +1,6 @@
 import axiosInstance from "@/utils/axios-instance";
 import { extractErrorMessage } from "@/common/helpers";
 import {
-  Checklist,
   CreateChecklistRequest,
   UpdateChecklistRequest,
   ChecklistResponse,
