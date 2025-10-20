@@ -236,7 +236,7 @@ export class DocumentParser {
     const sectionPattern = new RegExp(`^${sectionNumber}\\.\\s+`, "i");
     let currentChapterMatch = false;
     let currentPartMatch = false;
-    let foundMatches: Array<{line: number, content: string}> = [];
+    const foundMatches: Array<{line: number, content: string}> = [];
 
     // Extract part number for matching
     const partTitleNumberMatch = partTitle.match(/PART\s+([IVX]+)/i);
@@ -307,7 +307,7 @@ export class DocumentParser {
     const sectionPattern = new RegExp(`^${sectionNumber}\\.\\s+`, "i");
     let currentChapterMatch = false;
     let inChapterBody = false;
-    let foundMatches: Array<{line: number, content: string}> = [];
+    const foundMatches: Array<{line: number, content: string}> = [];
 
     // Find matches under chapter body but BEFORE any PART (content directly under chapter)
     for (let i = 0; i < lines.length; i++) {
@@ -371,10 +371,10 @@ export class DocumentParser {
     sectionNumber: string
   ): string {
     const sectionPattern = new RegExp(`^${sectionNumber}\\.\\s+`, "i");
-    let foundSection = false;
+    const foundSection = false;
     const sectionContent: string[] = [];
     let inDocumentBody = false;
-    let possibleMatches: Array<{lineIndex: number, line: string, nextContent: string}> = [];
+    const possibleMatches: Array<{lineIndex: number, line: string, nextContent: string}> = [];
 
     // First pass: find all lines that match the section number
     for (let i = 0; i < lines.length; i++) {
@@ -417,7 +417,7 @@ export class DocumentParser {
     // Find the match with substantial content (not TOC)
     // TOC entries will have another numbered section immediately after
     // Real content will have actual text
-    let bestMatch = possibleMatches.find(match => 
+    const bestMatch = possibleMatches.find(match => 
       match.nextContent.length > 50 && 
       !match.line.toLowerCase().includes("vesting of petroleum.")
     ) || possibleMatches[possibleMatches.length - 1]; // Default to last match
