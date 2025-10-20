@@ -45,7 +45,7 @@ const LandingPage = () => {
 
             <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
               <Link href={"/signup"}>
-                <Button className="bg-green-700 hover:bg-green-600 text-white text-lg px-8 py-4 rounded">
+                <Button className="bg-green hover:bg-green/90 text-white text-lg px-8 py-4 rounded">
                   Request a Demo
                 </Button>
               </Link>
@@ -81,6 +81,10 @@ const LandingPage = () => {
           </div>
         </div>
       </section>
+
+      <div className="container text-right py-4">
+        <p className="text-sm text-green">Powered by Engr. Farouk Ahmed</p>
+      </div>
     </div>
   );
 };

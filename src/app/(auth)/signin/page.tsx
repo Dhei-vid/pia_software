@@ -16,7 +16,7 @@ import { useUser } from "@/contexts/UserContext";
 
 const SignInPage = () => {
   const router = useRouter();
-  const { login, token } = useUser();
+  const { login } = useUser();
   const [isPending, startTransition] = useTransition();
   const [formData, setFormData] = useState({
     email: "",
@@ -77,7 +77,7 @@ const SignInPage = () => {
       <div className="absolute top-6 left-6 z-10">
         <Link
           href="/"
-          className="inline-flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors bg-background/80 backdrop-blur-sm rounded-lg px-3 py-2 border border-border/50"
+          className="inline-flex items-center space-x-2 text-gray hover:text-foreground transition-colors bg-background/80 backdrop-blur-sm rounded-lg px-3 py-2 border border-border/50"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>Back to Home</span>
@@ -85,7 +85,7 @@ const SignInPage = () => {
       </div>
 
       <div className="flex items-center justify-center min-h-screen p-6">
-        <div className="w-full max-w-md">
+        <div className="w-full w-full lg:max-w-2xl 2xl:max-w-3xl">
           {/* Header */}
           <div className="text-center mb-8">
             <div className="flex items-center justify-center space-x-2 mb-4">
@@ -99,9 +99,7 @@ const SignInPage = () => {
                 />
               </div>
             </div>
-            <h1 className="text-2xl font-bold text-foreground mb-2">
-              Welcome Back
-            </h1>
+            <h1 className="text-2xl font-bold text-white mb-2">Welcome Back</h1>
             <p className="text-muted-foreground">
               Sign in to continue to your AI assistant
             </p>
@@ -191,7 +189,7 @@ const SignInPage = () => {
 
                 <Button
                   type="submit"
-                  className="w-full text-lg py-6 mt-6"
+                  className="w-full text-lg py-6 mt-6 bg-grey hover:bg-grey/80"
                   disabled={isPending}
                 >
                   {isPending ? "Signing In..." : "Sign In"}

@@ -25,7 +25,7 @@ import { useUser } from "@/contexts/UserContext";
 
 const SignUpPage = () => {
   const router = useRouter();
-  const { login, isAuthenticated } = useUser();
+  const { login } = useUser();
 
   const [isPending, startTransition] = useTransition();
   const [formData, setFormData] = useState({
@@ -110,7 +110,7 @@ const SignUpPage = () => {
       <div className="absolute top-6 left-6 z-10">
         <Link
           href="/"
-          className="inline-flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors bg-background/80 backdrop-blur-sm rounded-lg px-3 py-2 border border-border/50"
+          className="inline-flex items-center space-x-2 text-grey hover:text-grey/80 transition-colors bg-background/80 backdrop-blur-sm rounded-lg px-3 py-2 border border-border/50"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>Back to Home</span>
@@ -132,7 +132,7 @@ const SignUpPage = () => {
                 />
               </div>
             </div>
-            <h1 className="text-2xl font-bold text-foreground mb-2">
+            <h1 className="text-2xl font-bold text-white mb-2">
               Sign Up to PIA Software
             </h1>
             <p className="text-muted-foreground">
@@ -334,7 +334,7 @@ const SignUpPage = () => {
 
                 <Button
                   type="submit"
-                  className="w-full text-lg py-6 mt-8"
+                  className="w-full text-lg py-6 mt-8 bg-grey hover:bg-grey/80"
                   disabled={isPending}
                 >
                   {isPending ? "Creating Account..." : "Create Account"}
