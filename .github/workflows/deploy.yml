@@ -44,7 +44,7 @@ jobs:
           username: ubuntu
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd /home/ubuntu/WrightEnergy
-            docker-compose -f WrightEnergy-frontend.yml down
-            docker-compose -f WrightEnergy-frontend.yml pull --ignore-pull-failures
-            docker-compose -f WrightEnergy-frontend.yml up -d --force-recreate
+            cd /home/ubuntu/wrightEnergy
+            docker-compose -f wrightEnergy-frontend.yml down
+            docker-compose -f wrightEnergy-frontend.yml pull --ignore-pull-failures
+            docker-compose -f wrightEnergy-frontend.yml up -d --force-recreate
