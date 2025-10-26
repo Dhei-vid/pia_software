@@ -74,7 +74,6 @@ export const LeftSideBar: FC<ILeftSideBarProps> = ({
     getSectionsForPart,
   } = useDocumentParser(selectedDocument);
 
-
   // Keep all chapters closed by default - no auto-expansion
 
   // Sample history data

@@ -1,8 +1,8 @@
 import { Auth } from "./auth-type";
 import axiosInstance from "@/utils/axios-instance";
 import { extractErrorMessage } from "@/common/helpers";
-import { deleteCookie } from "cookies-next";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
+import { performLogout } from "@/utils/helpers";
 
 interface UserForm {
   fullName: string;
@@ -37,14 +37,7 @@ const AuthService = {
   },
 
   logout: async (router: AppRouterInstance): Promise<void> => {
-    try {
-      deleteCookie("mlToken");
-      router.push("/");
-    } catch (error) {
-      const errorMessage = extractErrorMessage(error);
-      console.error("Logout error:", errorMessage);
-      // Don't throw error for logout, just log it
-    }
+    performLogout(router);
   },
 };
 

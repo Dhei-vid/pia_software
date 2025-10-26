@@ -1,7 +1,10 @@
+import { Pagination } from "@/common/types";
+
 export interface Note {
   id: string;
   body: string;
-  documentId: string;
+  document?: { id: string; title: string };
+  documentId?: string;
   userId: string;
   createdAt: string;
   updatedAt: string;
@@ -16,10 +19,15 @@ export interface UpdateNoteRequest {
   body: string;
 }
 
+interface NotesData {
+  notes: Note[];
+  pagination: Pagination;
+}
+
 export interface NotesResponse {
   success: boolean;
   message: string;
-  data: Note[];
+  data: NotesData;
 }
 
 export interface NoteResponse {

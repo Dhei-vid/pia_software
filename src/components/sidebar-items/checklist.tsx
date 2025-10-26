@@ -1,5 +1,10 @@
-import { FC, useState } from "react";
+"use client";
+
+import { FC, useState, useEffect } from "react";
 import { CheckboxField } from "../ui/checkbox-field";
+import { useChecklists } from "@/hooks/useChecklists";
+import { useUser } from "@/contexts/UserContext";
+import { Checklist } from "@/api/checklist/checklist-type";
 
 const checklistData = [
   {
@@ -20,7 +25,20 @@ const checklistData = [
 ];
 
 const CheckList = () => {
-  const [items, setItems] = useState(checklistData);
+  const { user } = useUser();
+  const { checklists, fetchChecklists } = useChecklists();
+  const [items, setItems] = useState<Checklist[]>(checklists);
+
+  // console.log("items ", items);
+
+  useEffect(() => {
+    if (!user) return;
+
+    (async () => {
+      const response = await fetchChecklists(user?.documentId);
+      setItems(response.checklist);
+    })();
+  }, [user, fetchChecklists]);
 
   const handleToggle = (id: string) => {
     setItems((prevItems) =>
@@ -32,9 +50,21 @@ const CheckList = () => {
 
   return (
     <div className="space-y-4 w-[100%]">
-      {items.map((item, index) => (
-        <ChecklistSideBarItem key={index} {...item} onToggle={handleToggle} />
-      ))}
+      {checklists && checklists.length > 0 ? (
+        checklists?.map((it, index) => (
+          <ChecklistSideBarItem
+            key={it.id ?? index}
+            id={it.id}
+            item={it.item ?? ""}
+            completed={it.completed}
+            onToggle={handleToggle}
+          />
+        ))
+      ) : (
+        <div className={"flex items-center justify-center pt-5"}>
+          <p className="text-sm text-grey">No checklists found.</p>
+        </div>
+      )}
     </div>
   );
 };
@@ -43,21 +73,21 @@ export default CheckList;
 
 interface IChecklistSideBarItem {
   id: string;
-  title: string;
+  item: string;
   completed: boolean;
   onToggle: (id: string) => void;
 }
 
 const ChecklistSideBarItem: FC<IChecklistSideBarItem> = ({
   id,
-  title,
+  item,
   completed,
   onToggle,
 }) => {
   return (
-    <div className="p-3 flex flex-row gap-3 items-start hover:bg-lightgrey cursor-pointer transition-all duration-200 ease-in-out rounded-md">
+    <div className="flex flex-row gap-3 items-start hover:bg-lightgrey cursor-pointer transition-all duration-200 ease-in-out rounded-md">
       <CheckboxField
-        label={title}
+        label={item}
         id={id}
         checked={completed}
         onCheckedChange={() => onToggle(id)}

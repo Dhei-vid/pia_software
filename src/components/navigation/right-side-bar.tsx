@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { GenericDrawer } from "@/components/ui/generic-drawer";
 import SavedNotes from "../sidebar-items/notes";
 import CheckList from "../sidebar-items/checklist";
-import CreateModal from "../modals/create-modal";
+import ModalX from "../modals/modalx";
 import ModalComponents from "../general/alert-modal";
 import { FileText, SquareCheck } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
@@ -14,7 +14,7 @@ import { toast } from "sonner";
 
 // APIs
 import { useNotes } from "@/hooks/useNotes";
-import { useDocuments } from "@/hooks/useDocuments";
+import { useUser } from "@/contexts/UserContext";
 import { useChecklists } from "@/hooks/useChecklists";
 
 interface RightSideBarProps {
@@ -36,25 +36,20 @@ const RightSideBar: FC<RightSideBarProps> = ({ tools }) => {
   const [newChecklistName, setNewChecklistName] = useState<string>("");
   const [modalKey, setModalKey] = useState<number>(0);
 
-  // Get the first document for note creation
-  const { documents } = useDocuments();
-  const selectedDocument = documents.length > 0 ? documents[0] : null;
+  // Use user context
+  const { user } = useUser();
 
   // Use notes hook
-  const { createNote, loading: noteLoading, notes } = useNotes();
+  const { createNote } = useNotes();
 
   // Use checklists hook
-  const {
-    createChecklist,
-    loading: checklistLoading,
-    checklists,
-  } = useChecklists();
+  const { createChecklist } = useChecklists();
 
-  const handleCopyToClipboard = () => {
-    // Simulate copying to clipboard
-    navigator.clipboard.writeText("Sample text to copy");
-    setIsModalOpen(true);
-  };
+  // const handleCopyToClipboard = () => {
+  //   // Simulate copying to clipboard
+  //   navigator.clipboard.writeText("Sample text to copy");
+  //   setIsModalOpen(true);
+  // };
 
   const handleDraftDocument = () => {
     console.log("Drafting document...");
@@ -69,7 +64,8 @@ const RightSideBar: FC<RightSideBarProps> = ({ tools }) => {
   const handleToolClick = (toolLabel: string) => {
     if (toolLabel === "Saved Notes") {
       // Navigate to the full saved notes page
-      router.push("/chat/saved-notes");
+      setDrawerType("saved-notes");
+      setIsDrawerOpen(true);
     } else if (toolLabel === "Your Checklist") {
       setDrawerType("checklist");
       setIsDrawerOpen(true);
@@ -138,7 +134,7 @@ const RightSideBar: FC<RightSideBarProps> = ({ tools }) => {
   );
 
   const handleSaveNote = async () => {
-    if (!newNote.trim() || !selectedDocument) {
+    if (!newNote.trim() || !user) {
       console.log("No note content or document selected");
       return;
     }
@@ -146,14 +142,13 @@ const RightSideBar: FC<RightSideBarProps> = ({ tools }) => {
     try {
       await createNote({
         body: newNote.trim(),
-        documentId: selectedDocument.id,
+        documentId: user?.documentId,
       });
 
       // Clear the note input and force modal re-render
       setNewNote("");
       setModalKey((prev) => prev + 1);
       toast.success("Note saved successfully!");
-      console.log("Note saved successfully!");
     } catch (error) {
       console.error("Failed to save note:", error);
       toast.error("Failed to save note. Please try again.");
@@ -161,15 +156,17 @@ const RightSideBar: FC<RightSideBarProps> = ({ tools }) => {
   };
 
   const handleCreateChecklist = async () => {
-    if (!newChecklistName.trim() || !selectedDocument) {
+    if (!newChecklistName.trim() || !user) {
       console.log("No checklist name or document selected");
       return;
     }
 
+    console.log(newChecklistName.trim());
+
     try {
       await createChecklist({
         name: newChecklistName.trim(),
-        documentId: selectedDocument.id,
+        documentId: user?.documentId,
       });
 
       // Clear the checklist name input and force modal re-render
@@ -195,7 +192,7 @@ const RightSideBar: FC<RightSideBarProps> = ({ tools }) => {
         <div className="w-full space-y-3">
           {/* Add Notes Modal */}
           <div key={`note-modal-${modalKey}`}>
-            <CreateModal
+            <ModalX
               trigger={
                 <ModalComponents.ModalTrigger
                   label="Add Note"
@@ -210,7 +207,7 @@ const RightSideBar: FC<RightSideBarProps> = ({ tools }) => {
 
           {/* Create New Checklist Modal */}
           <div key={`checklist-modal-${modalKey}`}>
-            <CreateModal
+            <ModalX
               trigger={
                 <ModalComponents.ModalTrigger
                   label="Create New Checklist"
@@ -263,7 +260,14 @@ const RightSideBar: FC<RightSideBarProps> = ({ tools }) => {
       {/* Tools Drawer */}
       <GenericDrawer
         isOpen={isDrawerOpen}
-        onClose={() => setIsDrawerOpen(false)}
+        onClose={() => {
+          if (drawerType === "saved-notes") {
+            router.push("/chat/saved-notes");
+          } else if (drawerType === "checklist") {
+            router.push("/chat/checklist");
+          }
+          setIsDrawerOpen(false);
+        }}
         title={title}
         position="right"
       >

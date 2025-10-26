@@ -1,5 +1,7 @@
 import { User } from "@/common/types";
 import jwt, { SignOptions } from "jsonwebtoken";
+import { deleteCookie } from "cookies-next";
+import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 
 interface Payload {
   [key: string]: User;
@@ -36,6 +38,21 @@ export const decryptToken = (token: string): DecryptTokenResult => {
     }
   });
   return tokenData;
+};
+
+export const performLogout = (router?: AppRouterInstance) => {
+  try {
+    deleteCookie("mlToken");
+    if (typeof window !== "undefined") {
+      if (router) {
+        router.push("/signin");
+      } else {
+        window.location.href = "/signin";
+      }
+    }
+  } catch (error) {
+    console.error("Error during logout:", error);
+  }
 };
 
 export const host = process.env.NEXT_PUBLIC_BASE_URL;

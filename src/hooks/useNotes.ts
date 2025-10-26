@@ -4,6 +4,7 @@ import {
   Note,
   CreateNoteRequest,
   UpdateNoteRequest,
+  NotesResponse,
 } from "@/api/notes/notes-type";
 
 export const useNotes = () => {
@@ -16,31 +17,15 @@ export const useNotes = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await NoteService.getAllNotes();
-      setNotes(response.data);
-      return response.data;
+      const response = (await NoteService.getAllNotes()) as NotesResponse;
+      setNotes(response.data.notes);
+      return response.data.notes;
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : "Failed to fetch notes";
       setError(errorMessage);
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  // Get notes for a specific document
-  const getNotesByDocument = useCallback(async (documentId: string) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await NoteService.getNotesByDocument(documentId);
-      setNotes(response.data);
-      return response.data;
-    } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : "Failed to fetch document notes";
-      setError(errorMessage);
+      setNotes([]);
+      console.error("Failed to fetch notes:", err);
       throw err;
     } finally {
       setLoading(false);
@@ -127,7 +112,6 @@ export const useNotes = () => {
     loading,
     error,
     getAllNotes,
-    getNotesByDocument,
     getNoteById,
     createNote,
     updateNote,

@@ -50,9 +50,9 @@ const SavedNotes = () => {
   return (
     <div className="space-y-4 w-[100%]">
       {notes.map((note) => (
-        <NotesSideBarItems 
-          key={note.id} 
-          note={note} 
+        <NotesSideBarItems
+          key={note.id}
+          note={note}
           onDelete={handleDeleteNote}
         />
       ))}
@@ -67,12 +67,7 @@ interface INotesSideBarItems {
   onDelete: (noteId: string) => void;
 }
 
-const NotesSideBarItems: FC<INotesSideBarItems> = ({
-  note,
-  onDelete,
-}) => {
-  const router = useRouter();
-
+const NotesSideBarItems: FC<INotesSideBarItems> = ({ note, onDelete }) => {
   const handleNoteClick = () => {
     // You can navigate to a specific note view or do something else
     console.log("Note clicked:", note.id);
@@ -84,7 +79,7 @@ const NotesSideBarItems: FC<INotesSideBarItems> = ({
   };
 
   return (
-    <div className="p-3 text-left flex flex-row gap-5 justify-between hover:bg-lightgrey cursor-pointer transition-all duration-200 ease-in-out rounded-md group">
+    <div className="text-left flex flex-row gap-5 justify-between hover:bg-lightgrey cursor-pointer transition-all duration-200 ease-in-out rounded-md group">
       <div className="flex-1" onClick={handleNoteClick}>
         <p className="text-sm text-white truncate text-wrap line-clamp-2">
           {note.body}

@@ -106,7 +106,7 @@ const SignInPage = () => {
           </div>
 
           {/* Sign In Form */}
-          <Card className="shadow-xl border-0">
+          <Card className="shadow-xl border-0 dark:bg-dark/50">
             <CardHeader className="text-center pb-4">
               <CardTitle className="text-xl">Sign In to Your Account</CardTitle>
             </CardHeader>
@@ -189,7 +189,7 @@ const SignInPage = () => {
 
                 <Button
                   type="submit"
-                  className="w-full text-lg py-6 mt-6 bg-grey hover:bg-grey/80"
+                  className="w-full text-lg py-6 mt-6 bg-grey hover:bg-grey/80 dark:text-white/80"
                   disabled={isPending}
                 >
                   {isPending ? "Signing In..." : "Sign In"}

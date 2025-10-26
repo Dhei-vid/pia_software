@@ -1,14 +1,14 @@
 import { FC, ReactNode } from "react";
 import ModalComponents from "@/components/general/alert-modal";
 
-interface ICreateModal {
+interface IModalX {
   trigger: ReactNode;
   content: ReactNode;
   onAction?: () => void | Promise<void>;
   modalStyle?: string;
 }
 
-const CreateModal: FC<ICreateModal> = ({
+const ModalX: FC<IModalX> = ({
   trigger,
   content,
   onAction = () => {},
@@ -25,4 +25,4 @@ const CreateModal: FC<ICreateModal> = ({
   );
 };
 
-export default CreateModal;
+export default ModalX;

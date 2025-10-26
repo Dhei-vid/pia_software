@@ -1,11 +1,15 @@
 export interface Checklist {
   id: string;
-  name: string;
+  item: string;
   documentId: string;
   userId: string;
   completed: boolean;
   createdAt: string;
   updatedAt: string;
+  document?: {
+    id: string;
+    title: string;
+  };
 }
 
 export interface CreateChecklistRequest {
@@ -21,19 +25,7 @@ export interface UpdateChecklistRequest {
 export interface ChecklistResponse {
   success: boolean;
   message: string;
-  data: Checklist;
-}
-
-export interface ChecklistsResponse {
-  success: boolean;
-  message: string;
-  data: Checklist[];
-}
-
-export interface CreateChecklistResponse {
-  success: boolean;
-  message: string;
-  data: Checklist;
+  data: { checklist: Array<Checklist> };
 }
 
 export interface UpdateChecklistResponse {

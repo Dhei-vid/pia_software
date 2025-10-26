@@ -27,19 +27,6 @@ export const NoteService = {
     }
   },
 
-  // Get all notes for a specific document
-  getNotesByDocument: async (documentId: string): Promise<NotesResponse> => {
-    try {
-      const response = await axiosInstance.get(
-        `/api/v1/notes/document/${documentId}`
-      );
-      return response.data;
-    } catch (error) {
-      const errorMessage = extractErrorMessage(error);
-      throw new Error(errorMessage);
-    }
-  },
-
   // Get all notes for the current user
   getAllNotes: async (): Promise<NotesResponse> => {
     try {
@@ -47,6 +34,7 @@ export const NoteService = {
       return response.data;
     } catch (error) {
       const errorMessage = extractErrorMessage(error);
+      console.error("API Error for getAllNotes:", error);
       throw new Error(errorMessage);
     }
   },
@@ -68,7 +56,7 @@ export const NoteService = {
     noteData: UpdateNoteRequest
   ): Promise<UpdateNoteResponse> => {
     try {
-      const response = await axiosInstance.put(
+      const response = await axiosInstance.patch(
         `/api/v1/notes/${noteId}`,
         noteData
       );

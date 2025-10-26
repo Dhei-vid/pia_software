@@ -3,7 +3,7 @@
 import { FC } from "react";
 import { Button } from "@/components/ui/button";
 import { Edit3, Trash2, ArrowUpRight } from "lucide-react";
-import { formatTimeAgo } from "@/common/helpers";
+import dayjs from "dayjs";
 
 interface NoteCardProps {
   id: string;
@@ -76,7 +76,8 @@ const NoteCard: FC<NoteCardProps> = ({
 
         {/* Timestamp */}
         <p className="text-sm text-gray-400">
-          Added on: {formatTimeAgo(timestamp)}
+          Added on: {dayjs(timestamp).format("DD/MM/YYYY")} at{" "}
+          {dayjs(timestamp).format("hh:mm A")}
         </p>
       </div>
 

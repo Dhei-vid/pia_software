@@ -3,5 +3,9 @@ export default function AuthLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <main className="bg-grey h-screen flex flex-col">{children}</main>;
+  return (
+    <main className="bg-grey flex flex-col">
+      <div className="min-h-screen">{children}</div>
+    </main>
+  );
 }

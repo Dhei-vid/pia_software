@@ -1,9 +1,4 @@
-export interface Pagination {
-  page: number;
-  limit: number;
-  total: number;
-  pages: number;
-}
+import { Pagination } from "@/common/types";
 
 export interface Document {
   id: string;

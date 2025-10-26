@@ -8,8 +8,8 @@ import {
   SearchResponse,
   // DocumentResponse,
   // UploadResponse,
-  Pagination,
 } from "@/api/documents/document-types";
+import { Pagination } from "@/common/types";
 
 export const useDocuments = () => {
   const [documents, setDocuments] = useState<Document[]>([]);

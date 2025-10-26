@@ -4,16 +4,18 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Plus, SendHorizontal } from "lucide-react";
+import { useUser } from "@/contexts/UserContext";
 
 const ChatPage = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const { user } = useUser();
 
   return (
     <>
       {/* Greeting */}
       <div className="mb-8 text-center">
         <h1 className="text-2xl sm:text-3xl lg:text-3xl font-serif text-white mb-2">
-          Hello, Williams
+          Hello, {user?.fullName.split(" ")[0]}!
         </h1>
       </div>
 
