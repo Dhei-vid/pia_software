@@ -33,7 +33,7 @@ export default function RootLayout({
         <ThemeProvider>
           <UserProvider>
             {children}
-            <Toaster />
+            <Toaster position={"top-right"} />
           </UserProvider>
         </ThemeProvider>
       </body>

@@ -228,7 +228,7 @@ const RightSideBar: FC<RightSideBarProps> = ({ tools }) => {
               key={index}
               variant="ghost"
               onClick={() => handleToolClick(tool.label)}
-              className={`w-full justify-start text-gray-300 hover:text-white hover:bg-lightgrey ${
+              className={`w-full justify-start text-gray-300 hover:text-white hover:!bg-lightgrey ${
                 tool.active ? "bg-lightgrey text-white" : ""
               }`}
             >
@@ -260,7 +260,8 @@ const RightSideBar: FC<RightSideBarProps> = ({ tools }) => {
       {/* Tools Drawer */}
       <GenericDrawer
         isOpen={isDrawerOpen}
-        onClose={() => {
+        onClose={() => setIsDrawerOpen(false)}
+        onArrowClick={() => {
           if (drawerType === "saved-notes") {
             router.push("/chat/saved-notes");
           } else if (drawerType === "checklist") {

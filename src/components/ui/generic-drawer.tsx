@@ -14,6 +14,7 @@ interface GenericDrawerProps {
   position?: "left" | "right";
   headerStyle?: string;
   isHeaderArrow?: boolean;
+  onArrowClick?: () => void;
 }
 
 const GenericDrawer: React.FC<GenericDrawerProps> = ({
@@ -25,6 +26,7 @@ const GenericDrawer: React.FC<GenericDrawerProps> = ({
   position = "right",
   headerStyle,
   isHeaderArrow = true,
+  onArrowClick,
 }) => {
   // Handle escape key
   React.useEffect(() => {
@@ -113,7 +115,7 @@ const GenericDrawer: React.FC<GenericDrawerProps> = ({
                 {title}
               </h2>
               <button
-                onClick={onClose}
+                onClick={onArrowClick || onClose}
                 className="cursor-pointer p-2 rounded-md hover:bg-[#3a3a3a] transition-colors"
               >
                 {isHeaderArrow && (

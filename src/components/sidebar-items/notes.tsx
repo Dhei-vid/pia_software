@@ -1,9 +1,8 @@
 import { FC, useEffect } from "react";
 import { formatTimeAgo } from "@/common/helpers";
-import { useRouter } from "next/navigation";
 import { useNotes } from "@/hooks/useNotes";
 import { Note } from "@/api/notes/notes-type";
-import { Trash2, Edit3 } from "lucide-react";
+import { Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const SavedNotes = () => {

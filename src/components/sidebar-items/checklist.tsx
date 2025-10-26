@@ -8,10 +8,8 @@ import { Checklist } from "@/api/checklist/checklist-type";
 
 const CheckList = () => {
   const { user } = useUser();
-  const { checklists, fetchChecklists } = useChecklists();
+  const { checklists, fetchChecklists, loading, error } = useChecklists();
   const [items, setItems] = useState<Checklist[]>(checklists);
-
-  // console.log("items ", items);
 
   useEffect(() => {
     if (!user) return;
@@ -30,10 +28,28 @@ const CheckList = () => {
     );
   };
 
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-8">
+        <div className="text-gray-400 text-sm">Loading checklist...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center py-8">
+        <div className="text-red-400 text-sm">
+          Error loading checklist: {error}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-4 w-[100%]">
-      {checklists && checklists.length > 0 ? (
-        checklists?.map((it, index) => (
+      {items && items.length > 0 ? (
+        items?.map((it, index) => (
           <ChecklistSideBarItem
             key={it.id ?? index}
             id={it.id}
@@ -67,7 +83,7 @@ const ChecklistSideBarItem: FC<IChecklistSideBarItem> = ({
   onToggle,
 }) => {
   return (
-    <div className="flex flex-row gap-3 items-start hover:bg-lightgrey cursor-pointer transition-all duration-200 ease-in-out rounded-md">
+    <div className="flex flex-row gap-3 items-start cursor-pointer transition-all duration-200 ease-in-out rounded-md">
       <CheckboxField
         label={item}
         id={id}
