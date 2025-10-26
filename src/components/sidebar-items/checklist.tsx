@@ -6,24 +6,6 @@ import { useChecklists } from "@/hooks/useChecklists";
 import { useUser } from "@/contexts/UserContext";
 import { Checklist } from "@/api/checklist/checklist-type";
 
-const checklistData = [
-  {
-    id: "1",
-    title: "Review Chapter 1 - Governance & Institution",
-    completed: false,
-  },
-  {
-    id: "2",
-    title: "Analyze Host Communities Development provisions",
-    completed: false,
-  },
-  {
-    id: "3",
-    title: "Study Petroleum Industrial Fiscal Framework",
-    completed: false,
-  },
-];
-
 const CheckList = () => {
   const { user } = useUser();
   const { checklists, fetchChecklists } = useChecklists();
