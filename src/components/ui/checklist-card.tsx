@@ -4,7 +4,6 @@ import { FC } from "react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Edit3, Trash2, FileText, ArrowUpRight } from "lucide-react";
-import dayjs from "dayjs";
 
 interface ChecklistCardProps {
   id: string;
@@ -30,8 +29,8 @@ const ChecklistCard: FC<ChecklistCardProps> = ({
   title,
   completed,
   document,
-  content,
-  timestamp,
+  // content,
+  // timestamp,
   onToggle,
   onEdit,
   onAddNote,
@@ -78,7 +77,7 @@ const ChecklistCard: FC<ChecklistCardProps> = ({
 
       {/* Linked Document Section - Only shown when linked */}
       {document && (
-        <div className="bg-dark p-3 rounded-lg">
+        <div className="bg-grey p-3 rounded-lg">
           <div className="flex items-start justify-between gap-3">
             <div className="flex-1">
               <p className="text-sm text-gray-400 mb-1">Linked to:</p>
@@ -98,23 +97,8 @@ const ChecklistCard: FC<ChecklistCardProps> = ({
         </div>
       )}
 
-      {/* Content Snippet - Only shown if there's content */}
-      {content && (
-        <>
-          <div className="border-t border-gray-700"></div>
-          <div className="space-y-2">
-            <p className="text-sm text-gray-300 leading-relaxed line-clamp-2">
-              {content}
-            </p>
-            <p className="text-xs text-gray-400">
-              Updated: {dayjs(timestamp).format("DD/MM/YYYY hh:mm A")}
-            </p>
-          </div>
-        </>
-      )}
-
       {/* Action Buttons */}
-      <div className="flex items-center justify-end gap-2 pt-2">
+      <div className="flex items-center justify-end gap-2 pt-4 border-t border-gray-100/20">
         <Button
           variant="outline"
           size="sm"
@@ -139,7 +123,7 @@ const ChecklistCard: FC<ChecklistCardProps> = ({
           variant="outline"
           size="sm"
           onClick={handleDelete}
-          className="border-red-500/60 text-red-400 hover:bg-red-500/10"
+          className="border-red-500/60 text-red-400 hover:!bg-destructive"
         >
           <Trash2 size={14} />
           Delete Checklist
@@ -150,4 +134,3 @@ const ChecklistCard: FC<ChecklistCardProps> = ({
 };
 
 export default ChecklistCard;
-

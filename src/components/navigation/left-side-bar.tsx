@@ -150,7 +150,7 @@ export const LeftSideBar: FC<ILeftSideBarProps> = ({
             <Button
               variant="ghost"
               onClick={() => setIsHistoryOpen(true)}
-              className="w-full justify-start text-gray-300 hover:text-white hover:bg-[#3a3a3a]"
+              className="w-full justify-start text-gray-300 hover:text-white hover:!bg-lightgrey"
             >
               <RotateCw className="w-4 h-4 mr-3" />
               History

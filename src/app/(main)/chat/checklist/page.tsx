@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import DateFilter from "@/components/general/date-filter";
 import { Input } from "@/components/ui/input";
@@ -9,6 +9,8 @@ import { DeleteConfirmationDialog } from "@/components/modals/delete-confirmatio
 import { EditChecklistDialog } from "@/components/modals/edit-checklist-dialog";
 import { useChecklists } from "@/hooks/useChecklists";
 import { toast } from "sonner";
+import { useUser } from "@/contexts/UserContext";
+import { extractErrorMessage } from "@/common/helpers";
 
 export default function Page() {
   const router = useRouter();
@@ -23,8 +25,23 @@ export default function Page() {
   );
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const { checklists, loading, error, updateChecklist, deleteChecklist } =
-    useChecklists();
+  const { user } = useUser();
+  const {
+    checklists,
+    fetchChecklists,
+    loading,
+    error,
+    updateChecklist,
+    deleteChecklist,
+  } = useChecklists();
+
+  useEffect(() => {
+    (async () => {
+      if (!user) return;
+
+      await fetchChecklists(user?.documentId);
+    })();
+  }, [user, fetchChecklists]);
 
   // Filter checklists based on time filter and search query
   const filteredChecklists = useMemo(() => {
@@ -57,7 +74,8 @@ export default function Page() {
         await updateChecklist(id, { completed: !checklist.completed });
         toast.success("Checklist updated");
       } catch (error) {
-        toast.error("Failed to update checklist");
+        const errorMessage = extractErrorMessage(error);
+        toast.error(`Failed to update checklist: ${errorMessage}`);
       }
     }
   };
@@ -102,7 +120,8 @@ export default function Page() {
       await deleteChecklist(deleteChecklistId);
       toast.success("Checklist deleted successfully");
     } catch (error) {
-      toast.error("Failed to delete checklist");
+      const errorMessage = extractErrorMessage(error);
+      toast.error(`Failed to delete checklist: ${errorMessage}`);
     } finally {
       setIsDeleting(false);
       setDeleteChecklistId(null);

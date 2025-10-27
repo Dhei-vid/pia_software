@@ -84,13 +84,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   const login = (authData: AuthData) => {
     try {
       // Store the backend token directly in cookie
-      setCookie("mlToken", authData.token, {
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
-        httpOnly: false, // Set to false so client can access it
-        maxAge: 60 * 60 * 24 * 7, // 7 days
-        path: "/", // Ensure cookie is available across all paths
-      });
+      setCookie("mlToken", authData.token);
 
       // Set user data and token in state
       setUser(authData.user);

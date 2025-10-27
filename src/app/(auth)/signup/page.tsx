@@ -110,7 +110,7 @@ const SignUpPage = () => {
       <div className="absolute top-6 left-6 z-10">
         <Link
           href="/"
-          className="inline-flex items-center space-x-2 text-grey hover:text-grey/80 transition-colors bg-background/80 backdrop-blur-sm rounded-lg px-3 py-2 border border-border/50"
+          className="inline-flex items-center space-x-2 text-grey hover:text-grey/80 transition-colors bg-lightgrey hover:bg-lightgrey/80 backdrop-blur-sm rounded-lg px-3 py-2 border border-border/50"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>Back to Home</span>

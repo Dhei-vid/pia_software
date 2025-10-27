@@ -80,7 +80,6 @@ export const useChecklists = () => {
     setError(null);
     try {
       const response = await ChecklistService.getAllChecklists(documentId);
-      console.log("Hook: fetched checklists ", response.data.checklist);
       setChecklists(response.data.checklist);
       return response.data;
     } catch (err) {
