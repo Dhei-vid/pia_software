@@ -16,7 +16,7 @@ const UserProfilePage = () => {
   const params = useParams();
   const { user, setUser } = useUser();
   const userId = params.userId as string;
-  const router = useRouter()
+  const router = useRouter();
 
   // Check if the current user is viewing their own profile
   const isOwnProfile = user?.id === userId;
@@ -86,7 +86,7 @@ const UserProfilePage = () => {
       toast.success("Logged out successfully");
     } catch (error) {
       const errorMessage = extractErrorMessage(error);
-      console.log(errorMessage);
+      toast.success(`Failed to Sign out. ${errorMessage}`);
     }
   };
 

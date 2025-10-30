@@ -109,7 +109,7 @@ const MainLayout = ({ children }: MainLayoutProps) => {
                 onPreviousSection={handlePreviousSection}
                 onNextSection={handleNextSection}
                 onSearch={(query) => {
-                  console.log("Search query:", query);
+                  // console.log("Search query:", query);
                 }}
                 searchQuery={searchQuery}
                 setSearchQuery={setSearchQuery}

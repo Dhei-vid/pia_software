@@ -9,7 +9,6 @@ export const UserService = {
       return response.data;
     } catch (error) {
       const errorMessage = extractErrorMessage(error);
-      console.log(errorMessage);
       throw new Error(errorMessage);
     }
   },
@@ -20,7 +19,6 @@ export const UserService = {
       return response.data;
     } catch (error) {
       const errorMessage = extractErrorMessage(error);
-      console.log(errorMessage);
       throw new Error(errorMessage);
     }
   },
@@ -31,7 +29,6 @@ export const UserService = {
       return response.data;
     } catch (error) {
       const errorMessage = extractErrorMessage(error);
-      console.log(errorMessage);
       throw new Error(errorMessage);
     }
   },
