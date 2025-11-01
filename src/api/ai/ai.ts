@@ -2,10 +2,13 @@ import axiosInstance from "@/utils/axios-instance";
 import { extractErrorMessage } from "@/common/helpers";
 
 export const AIService = {
-  search: async (documentId: string) => {
+  search: async (documentId: string, query: string) => {
     try {
       const response = await axiosInstance.post(
-        `/api/v1/documents/${documentId}/search`
+        `/api/v1/documents/${documentId}/search`,
+        {
+          query: query,
+        }
       );
       return response.data;
     } catch (error) {

@@ -4,6 +4,7 @@ import { useNotes } from "@/hooks/useNotes";
 import { Note } from "@/api/notes/notes-type";
 import { Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import LoadingSpinner from "@/components/ui/loading";
 
 const SavedNotes = () => {
   const { notes, loading, error, getAllNotes, deleteNote } = useNotes();
@@ -25,7 +26,10 @@ const SavedNotes = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-8">
-        <div className="text-gray-400 text-sm">Loading notes...</div>
+        <div className="flex items-center gap-2">
+          <LoadingSpinner size="sm" />
+          <div className="text-gray-400 text-sm">Loading notes...</div>
+        </div>
       </div>
     );
   }

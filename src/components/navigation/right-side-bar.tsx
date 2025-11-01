@@ -184,7 +184,7 @@ const RightSideBar: FC<RightSideBarProps> = ({ tools }) => {
     <div className="h-full flex flex-col relative">
       {/* Fixed Header */}
       <div className="flex-shrink-0 p-6">
-        <h3 className="text-lg font-semibold text-white">Tools</h3>
+        <h3 className="text-lg font-semibold text-foreground/70">Tools</h3>
       </div>
 
       {/* Scrollable Content */}
@@ -220,7 +220,9 @@ const RightSideBar: FC<RightSideBarProps> = ({ tools }) => {
           </div>
         </div>
 
-        <div className={"border-t border-lightgrey"} />
+        <div
+          className={"border-t border-foreground/20 dark:border-lightgrey"}
+        />
 
         <div className="space-y-3">
           {tools.map((tool, index) => (
@@ -228,7 +230,7 @@ const RightSideBar: FC<RightSideBarProps> = ({ tools }) => {
               key={index}
               variant="ghost"
               onClick={() => handleToolClick(tool.label)}
-              className={`w-full justify-start text-gray-300 hover:text-white hover:!bg-lightgrey ${
+              className={`w-full justify-start text-foreground/70 hover:text-foreground hover:!bg-lightgrey ${
                 tool.active ? "bg-lightgrey text-white" : ""
               }`}
             >

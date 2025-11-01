@@ -37,9 +37,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     
     if (theme === 'dark') {
       root.classList.add('dark');
-      root.classList.remove('light');
     } else {
-      root.classList.add('light');
       root.classList.remove('dark');
     }
     

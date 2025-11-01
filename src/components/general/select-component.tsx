@@ -32,7 +32,7 @@ const SelectComp: React.FC<ISelectComp> = ({
 }) => {
   return (
     <Select onValueChange={onValueChange}>
-      <SelectTrigger className="w-[180px] border-lightgrey">
+      <SelectTrigger className="w-[180px] border-foreground/30">
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent>

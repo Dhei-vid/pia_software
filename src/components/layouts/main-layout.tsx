@@ -1,10 +1,10 @@
 "use client";
 
 import { useState, ReactNode } from "react";
+import { useRouter } from "next/navigation";
 import { FileText, SquareCheck } from "lucide-react";
 import { LeftSideBar } from "@/components/navigation/left-side-bar";
 import RightSideBar from "@/components/navigation/right-side-bar";
-import DocumentViewer from "@/components/general/document-viewer";
 import { DocumentSection } from "@/utils/documentParser";
 
 interface MainLayoutProps {
@@ -12,8 +12,8 @@ interface MainLayoutProps {
 }
 
 const MainLayout = ({ children }: MainLayoutProps) => {
+  const router = useRouter();
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [isLightMode, setIsLightMode] = useState<boolean>(false);
   const [selectedSection, setSelectedSection] =
     useState<DocumentSection | null>(null);
   const [chapterTitle, setChapterTitle] = useState<string>("");
@@ -51,16 +51,20 @@ const MainLayout = ({ children }: MainLayoutProps) => {
         <LeftSideBar
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
-          isLightMode={isLightMode}
-          setIsLightMode={setIsLightMode}
-          onSectionSelect={(section, chapterTitle, partTitle, sections) => {
-            setSelectedSection(section);
-            setChapterTitle(chapterTitle);
-            setPartTitle(partTitle);
-            setCurrentPartSections(sections);
-            setCurrentSectionIndex(
-              sections.findIndex((s) => s.id === section.id)
-            );
+          onSectionSelect={(
+            section,
+            chapterTitle,
+            partTitle,
+            sections,
+            partId
+          ) => {
+            setSelectedSection(null);
+            setChapterTitle("");
+            setPartTitle("");
+            setCurrentPartSections([]);
+            setCurrentSectionIndex(0);
+            // Navigate to docs page with section info when a section is selected
+            router.push(`/chat/doc?sectionId=${section.id}&partId=${partId}`);
           }}
         />
       </div>
@@ -68,56 +72,7 @@ const MainLayout = ({ children }: MainLayoutProps) => {
       {/* Main Content Area */}
       <div className="flex-1 p-5 h-full overflow-y-auto scrollbar-width">
         <div className="min-h-full rounded-xl bg-dark p-4 sm:p-6 lg:p-8">
-          <div className="max-w-4xl mx-auto">
-            {selectedSection ? (
-              <DocumentViewer
-                selectedSection={selectedSection}
-                chapterTitle={chapterTitle}
-                partTitle={partTitle}
-                previousSectionTitle={
-                  currentSectionIndex > 0
-                    ? currentPartSections[currentSectionIndex - 1].title
-                    : ""
-                }
-                nextSectionTitle={
-                  currentSectionIndex < currentPartSections.length - 1
-                    ? currentPartSections[currentSectionIndex + 1].title
-                    : ""
-                }
-                previousSectionNumber={
-                  currentSectionIndex > 0
-                    ? parseInt(
-                        currentPartSections[currentSectionIndex - 1].id.replace(
-                          "section-",
-                          ""
-                        )
-                      )
-                    : 0
-                }
-                nextSectionNumber={
-                  currentSectionIndex < currentPartSections.length - 1
-                    ? parseInt(
-                        currentPartSections[currentSectionIndex + 1].id.replace(
-                          "section-",
-                          ""
-                        )
-                      )
-                    : 0
-                }
-                currentSectionIndex={currentSectionIndex}
-                totalSections={currentPartSections.length}
-                onPreviousSection={handlePreviousSection}
-                onNextSection={handleNextSection}
-                onSearch={(query) => {
-                  // console.log("Search query:", query);
-                }}
-                searchQuery={searchQuery}
-                setSearchQuery={setSearchQuery}
-              />
-            ) : (
-              children
-            )}
-          </div>
+          <div className="max-w-4xl mx-auto">{children}</div>
         </div>
       </div>
 

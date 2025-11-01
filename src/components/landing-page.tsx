@@ -11,7 +11,9 @@ const LandingPage = () => {
           <div className={"flex items-center justify-between"}>
             <div className={"flex items-center space-x-3"}>
               <Image src={"/logo.png"} alt={"Logo"} width={40} height={40} />
-              <h1 className={"text-xl font-semibold text-white"}>WRIGHT PIA</h1>
+              <h1 className={"text-xl font-semibold text-foreground/70"}>
+                WRIGHT PIA
+              </h1>
             </div>
 
             <div className={"flex items-center"}>
@@ -32,12 +34,12 @@ const LandingPage = () => {
 
         <div className="relative container mx-auto px-6 text-center">
           <div className="max-w-4xl mx-auto">
-            <h1 className="text-4xl lg:text-6xl font-bold text-white mb-6 leading-tight">
+            <h1 className="text-4xl lg:text-6xl font-bold text-foreground/70 mb-6 leading-tight">
               Transform Nigeria&apos;s Petroleum Law into Your Digital
               Advantage.
             </h1>
 
-            <p className="text-xl text-white/90 mb-12 leading-relaxed max-w-3xl mx-auto">
+            <p className="text-xl text-muted-foreground mb-12 leading-relaxed max-w-3xl mx-auto">
               Navigate the complexities of the Petroleum Industry Act (PIA) 2021
               with an AI-powered platform. Search, verify, and draft legal
               documents with unparalleled speed and accuracy.
@@ -45,14 +47,14 @@ const LandingPage = () => {
 
             <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
               <Link href={"/signup"}>
-                <Button className="bg-green hover:bg-green/90 text-white text-lg px-8 py-4 rounded">
+                <Button className="bg-green hover:bg-green/90 text-white px-8 py-4 rounded">
                   Request a Demo
                 </Button>
               </Link>
               <Link href={"/chat"}>
                 <Button
                   variant="outline"
-                  className="border-white text-dark hover:bg-white hover:text-dark text-lg px-8 py-4 rounded"
+                  className="border-foreground/30 text-foreground/70 hover:bg-white hover:text-dark px-8 py-4 rounded"
                 >
                   Learn More
                 </Button>
@@ -74,7 +76,7 @@ const LandingPage = () => {
                 muted
                 playsInline
               >
-                <source src={"/video/PIA SAMPLE GIF.MP4"} type="video/mp4" />
+                <source src={"/video/PIA AI video 1.MP4"} type="video/mp4" />
                 Your browser does not support the video tag.
               </video>
             </div>

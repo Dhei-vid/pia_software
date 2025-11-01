@@ -4,6 +4,7 @@ import { ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { HelpCircle } from "lucide-react";
+import LoadingSpinner from "@/components/ui/loading";
 import ProfileSidebar from "@/components/navigation/profile-sidebar";
 import { useUser } from "@/contexts/UserContext";
 
@@ -25,16 +26,19 @@ const UserProfileLayout: React.FC<ProfileLayoutProps> = ({ children }) => {
   if (!user) {
     return (
       <div className="h-full p-8 flex items-center justify-center">
-        <p className="text-gray-400">Loading...</p>
+        <div className="flex items-center gap-2">
+          <LoadingSpinner size="sm" />
+          <p className="text-gray-400">Loading...</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="h-full p-2 2xl:p-5 bg-black">
+    <div className="h-full p-2 2xl:p-5 bg-dark">
       <div className="relative h-full bg-grey flex overflow-hidden rounded-lg">
         {/* Profile Sidebar */}
-        <div className="border-r border-lightgrey">
+        <div className="border-r border-foreground/30">
           <ProfileSidebar activePage={getActivePage()} />
         </div>
 

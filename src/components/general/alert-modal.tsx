@@ -64,9 +64,9 @@ interface IModalTrigger {
 
 const ModalTrigger: FC<IModalTrigger> = ({ Icon, label }) => {
   return (
-    <div className="rounded-md h-9 px-4 py-2 cursor-pointer flex flex-row gap-3 items-center w-full justify-start text-gray-300 hover:text-white hover:bg-lightgrey">
+    <div className="rounded-md h-9 px-4 py-2 cursor-pointer flex flex-row gap-3 items-center w-full justify-start text-foreground/70 hover:text-foreground hover:bg-lightgrey">
       {Icon && <Icon size={15} />}
-      <p>{label}</p>
+      <p className="text-sm font-medium">{label}</p>
     </div>
   );
 };

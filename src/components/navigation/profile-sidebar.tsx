@@ -39,14 +39,16 @@ const ProfileSidebar: React.FC<ProfileSidebarProps> = ({ activePage }) => {
         {/* Back Button */}
         <Link
           href="/chat"
-          className="flex items-center space-x-2 text-gray-300 hover:text-white transition-colors mb-8"
+          className="flex items-center space-x-2 text-foreground/70 hover:text-foreground transition-colors mb-8"
         >
           <ChevronLeft size={20} />
           <span>Back</span>
         </Link>
 
         {/* Navigation Title */}
-        <h2 className="text-lg font-semibold text-white mb-8">Account</h2>
+        <h2 className="text-lg font-semibold text-foreground/70 mb-8">
+          Account
+        </h2>
 
         {/* Navigation Items */}
         <div className="space-y-2">
@@ -60,8 +62,8 @@ const ProfileSidebar: React.FC<ProfileSidebarProps> = ({ activePage }) => {
                 href={item.href}
                 className={`flex items-center space-x-3 p-3 rounded-md transition-colors ${
                   isActive
-                    ? "bg-dark border border-lightgrey text-white"
-                    : "text-gray-300 hover:text-white hover:bg-[#3a3a3a]"
+                    ? "bg-dark border border-lightgrey text-foreground/70"
+                    : "text-foreground/70 hover:text-foreground hover:bg-lightgrey"
                 }`}
               >
                 <Icon size={20} />

@@ -7,11 +7,11 @@ import React, {
   useEffect,
   ReactNode,
 } from "react";
-import { User } from "@/common/types";
 import { getCookie, setCookie, deleteCookie } from "cookies-next";
 import { useRouter } from "next/navigation";
-import { UserService } from "@/api/user/user";
+import { User } from "@/common/types";
 import AuthService from "@/api/auth/auth";
+// import { UserService } from "@/api/user/user";
 
 interface AuthData {
   token: string;
@@ -40,39 +40,33 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Initialize user from token and register logout function
+  // ✅ Initialize from cookies/localStorage on mount
   useEffect(() => {
     const initializeAuth = async () => {
       try {
-        const mlToken = getCookie("mlToken");
+        const savedToken = getCookie("mlToken");
+        const savedUser = localStorage.getItem("mlUser");
 
-        if (mlToken && typeof mlToken === "string") {
-          // Token is a plain backend token - validate it and fetch user data
-          setToken(mlToken);
+        if (savedToken && typeof savedToken === "string") {
+          setToken(savedToken);
 
-          try {
-            // Fetch user profile from backend to validate token and get user data
-            const userData = await UserService.getUserProfile();
-
-            if (userData.success && userData.data) {
-              setUser(userData.data);
-            } else {
-              throw new Error("Invalid user data received");
-            }
-          } catch (fetchError) {
-            console.error("Error fetching user profile:", fetchError);
-            // Clear invalid token
-            deleteCookie("mlToken");
-            setToken(null);
-            setUser(null);
+          if (savedUser) {
+            // Restore user data from localStorage
+            setUser(JSON.parse(savedUser));
+          } else {
+            // Optionally fetch from backend to validate
+            // const userData = await UserService.getUserProfile();
+            // if (userData.success && userData.data) {
+            //   setUser(userData.data);
+            //   localStorage.setItem("mlUser", JSON.stringify(userData.data));
+            // } else {
+            //   throw new Error("Invalid user data");
+            // }
           }
         }
       } catch (error) {
         console.error("Error initializing authentication:", error);
-        // Clear invalid token
-        deleteCookie("mlToken");
-        setToken(null);
-        setUser(null);
+        handleClearAuth();
       } finally {
         setIsLoading(false);
       }
@@ -81,12 +75,14 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
     initializeAuth();
   }, []);
 
+  // ✅ Login: save token + user
   const login = (authData: AuthData) => {
     try {
-      // Store the backend token directly in cookie
-      setCookie("mlToken", authData.token);
+      // Store token in cookie
+      setCookie("mlToken", authData.token, { maxAge: 60 * 60 * 24 * 7 }); // 7 days
+      // Store user in localStorage
+      localStorage.setItem("mlUser", JSON.stringify(authData.user));
 
-      // Set user data and token in state
       setUser(authData.user);
       setToken(authData.token);
     } catch (error) {
@@ -95,8 +91,20 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
     }
   };
 
+  // ✅ Logout: clear everything
+  const handleClearAuth = () => {
+    deleteCookie("mlToken");
+    localStorage.removeItem("mlUser");
+    setUser(null);
+    setToken(null);
+  };
+
   const logout = async () => {
-    await AuthService.logout(router);
+    try {
+      await AuthService.logout(router);
+    } finally {
+      handleClearAuth();
+    }
   };
 
   const value: UserContextType = {
@@ -114,7 +122,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
 
 export const useUser = (): UserContextType => {
   const context = useContext(UserContext);
-  if (context === undefined) {
+  if (!context) {
     throw new Error("useUser must be used within a UserProvider");
   }
   return context;

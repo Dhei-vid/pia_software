@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import NoteCard from "@/components/ui/note-card";
+import LoadingSpinner from "@/components/ui/loading";
 import { useNotes } from "@/hooks/useNotes";
 import { toast } from "sonner";
 import { EditNoteDialog } from "@/components/modals/edit-note-dialog";
@@ -119,7 +120,12 @@ export default function Page() {
       )}
 
       {loading && notes.length === 0 && (
-        <div className="text-center text-gray-400 py-4">Loading notes...</div>
+        <div className="text-center text-gray-400 py-4">
+          <div className="flex items-center justify-center gap-2">
+            <LoadingSpinner size="sm" />
+            <p>Loading notes...</p>
+          </div>
+        </div>
       )}
 
       {/* Search & Filter */}

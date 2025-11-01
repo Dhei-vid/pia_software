@@ -1,25 +1,16 @@
-import React from "react";
+import { Loader } from "lucide-react";
 
-interface LoadingSpinnerProps {
-  size?: "sm" | "md" | "lg";
-  className?: string;
-}
+import { cn } from "@/lib/utils";
 
-const LoadingSpinner = ({
-  size = "md",
-  className = "",
-}: LoadingSpinnerProps) => {
-  const sizeClasses = {
-    sm: "h-4 w-4",
-    md: "h-8 w-8",
-    lg: "h-12 w-12",
-  };
-
+function Spinner({ className, ...props }: React.ComponentProps<"svg">) {
   return (
-    <div
-      className={`animate-spin rounded-full border-2 border-gray-300 border-t-black ${sizeClasses[size]} ${className}`}
+    <Loader
+      role="status"
+      aria-label="Loading"
+      className={cn("size-4 animate-spin", className)}
+      {...props}
     />
   );
-};
+}
 
-export default LoadingSpinner;
+export { Spinner };

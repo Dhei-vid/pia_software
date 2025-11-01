@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { CircleCheck, X } from "lucide-react";
 import { AvatarProfile } from "@/components/ui/avatar-profile";
+import LoadingSpinner from "@/components/ui/loading";
 import { useUser } from "@/contexts/UserContext";
 import { toast } from "sonner";
 import AuthService from "@/api/auth/auth";
@@ -86,7 +87,7 @@ const UserProfilePage = () => {
       toast.success("Logged out successfully");
     } catch (error) {
       const errorMessage = extractErrorMessage(error);
-      toast.success(`Failed to Sign out. ${errorMessage}`);
+      toast.error(`Failed to Sign out. ${errorMessage}`);
     }
   };
 
@@ -98,7 +99,10 @@ const UserProfilePage = () => {
   if (!user) {
     return (
       <div className="h-full p-8 flex items-center justify-center">
-        <p className="text-gray-400">Loading user profile...</p>
+        <div className="flex items-center gap-2">
+          <LoadingSpinner size="sm" />
+          <p className="text-gray-400">Loading user profile...</p>
+        </div>
       </div>
     );
   }
@@ -106,17 +110,17 @@ const UserProfilePage = () => {
   return (
     <div className="min-h-full p-8 2xl:px-12 space-y-6">
       {/* Header */}
-      <div className="border-b border-lightgrey">
-        <h1 className="text-3xl font-serif text-white mb-6">Account</h1>
+      <div className="border-b border-foreground/30">
+        <h1 className="text-3xl font-serif text-foreground/70 mb-6">Account</h1>
       </div>
 
       {/* Profile Photo Section */}
-      <div className="grid grid-cols-2 mb-8 pb-8 border-b border-lightgrey">
+      <div className="grid grid-cols-2 mb-8 pb-8 border-b border-foreground/30">
         <div>
-          <h3 className="text-lg font-semibold text-white mb-2">
+          <h3 className="text-lg font-semibold text-foreground/70 mb-2">
             Profile Photo
           </h3>
-          <p className="text-gray-400 mb-6">
+          <p className="text-muted-foreground mb-6">
             This image will be displayed on your profile
           </p>
 
@@ -125,7 +129,7 @@ const UserProfilePage = () => {
               size={"lg"}
               variant="outline"
               onClick={() => fileInputRef.current?.click()}
-              className="border-gray-100/10 bg-transparent text-white hover:bg-lightgrey hover:text-white"
+              className="bg-transparent text-foreground/70 hover:bg-lightgrey"
             >
               Change Profile Picture
             </Button>
@@ -151,7 +155,7 @@ const UserProfilePage = () => {
             {profileImage && (
               <button
                 onClick={removeProfileImage}
-                className="cursor-pointer absolute -top-2 -right-1 w-6 h-6 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center transition-colors"
+                className="cursor-pointer absolute -top-2 -right-1 w-6 h-6 bg-red-500 hover:bg-red-600 text-foreground/70 rounded-full flex items-center justify-center transition-colors"
               >
                 <X size={12} />
               </button>
@@ -161,9 +165,9 @@ const UserProfilePage = () => {
       </div>
 
       {/* Personal Information Section */}
-      <div className="grid grid-cols-3 mb-8 pb-8 border-b border-[#3a3a3a]">
+      <div className="grid grid-cols-3 mb-8 pb-8 border-b border-foreground/30">
         <div className={"cols-span-1"}>
-          <h3 className="text-lg font-semibold text-white mb-2">
+          <h3 className="text-lg font-semibold text-foreground/70 mb-2">
             Personal Information
           </h3>
           <p className="text-gray-400 mb-6">
@@ -174,7 +178,7 @@ const UserProfilePage = () => {
             size={"lg"}
             variant="outline"
             onClick={handleSaveChanges}
-            className="border-gray-100/10 bg-transparent text-white hover:bg-lightgrey hover:text-white"
+            className="bg-transparent text-foreground/70 hover:bg-lightgrey"
           >
             Save Changes
           </Button>
@@ -183,34 +187,36 @@ const UserProfilePage = () => {
         <div className="h-full space-y-8 col-span-2 mb-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-foreground/70 mb-2">
                 First Name
               </label>
               <Input
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
-                className="bg-transparent border-[#3a3a3a] text-white placeholder:text-gray-400 focus:border-yellow-400"
+                className="bg-transparent border-foreground/30 text-foreground/70 placeholder:text-gray-400"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-foreground/70 mb-2">
                 Last Name
               </label>
               <Input
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
-                className="bg-[#2a2a2a] border-[#3a3a3a] text-white placeholder:text-gray-400 focus:border-yellow-400"
+                className="bg-transparent border-foreground/30 text-foreground/70 placeholder:text-gray-400"
               />
             </div>
           </div>
 
           <div className="w-full mb-6 h-15">
-            <label className="block text-sm font-medium text-gray-300 mb-2">
+            <label className="block text-sm font-medium text-foreground/70 mb-2">
               Email Address
             </label>
-            <div className="p-4 flex items-center space-x-3 rounded-md bg-grey border-gray-100/10 border">
+            <div className="p-4 flex items-center space-x-3 rounded-md bg-grey border-foreground/30 border">
               <div className="flex-1">
-                <p className="text-sm text-white">{user?.email || ""}</p>
+                <p className="text-sm text-foreground/70">
+                  {user?.email || ""}
+                </p>
               </div>
               {isEmailVerified && (
                 <div className="flex items-center space-x-2 text-green">
@@ -227,15 +233,17 @@ const UserProfilePage = () => {
         {/* Support Section */}
         <div className="flex flex-row justify-between">
           <div>
-            <h3 className="text-lg font-semibold text-white">Support</h3>
-            <p className="text-gray-400 mb-4">Contact our team here.</p>
+            <h3 className="text-lg font-semibold text-foreground/70">
+              Support
+            </h3>
+            <p className="text-muted-foreground mb-4">Contact our team here.</p>
           </div>
           <div className="">
             <Button
               size={"lg"}
               onClick={handleContactSupport}
               variant="outline"
-              className="border-gray-100/10 bg-transparent text-white hover:bg-lightgrey hover:text-white"
+              className="bg-transparent text-foreground/70 hover:bg-lightgrey"
             >
               Contact Support
             </Button>
@@ -244,7 +252,7 @@ const UserProfilePage = () => {
 
         {/* Sign Out Section */}
         <div className="flex flex-row justify-between">
-          <p className="text-lg font-semibold text-white  mb-4">
+          <p className="text-lg font-semibold text-foreground/70 mb-4">
             You are signed in as {`${fullname}`}
           </p>
           <div className="flex justify-end">
@@ -252,7 +260,7 @@ const UserProfilePage = () => {
               size={"lg"}
               onClick={handleSignOut}
               variant="outline"
-              className="border-gray-100/10 bg-transparent text-white hover:bg-lightgrey hover:text-white"
+              className="bg-transparent text-foreground/70 hover:bg-lightgrey"
             >
               Sign Out
             </Button>
@@ -262,8 +270,10 @@ const UserProfilePage = () => {
         {/* Delete Account Section */}
         <div className="flex flex-row justify-between">
           <div>
-            <h3 className="text-lg font-semibold text-white">Delete Account</h3>
-            <p className="text-gray-400 mb-4">
+            <h3 className="text-lg font-semibold text-foreground/70">
+              Delete Account
+            </h3>
+            <p className="text-muted-foreground mb-4">
               Permanently delete your account and data
             </p>
           </div>

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useParams } from "next/navigation";
 import { Switch } from "@/components/ui/switch";
+import LoadingSpinner from "@/components/ui/loading";
 import { useUser } from "@/contexts/UserContext";
 
 const UserNotificationPage = () => {
@@ -32,7 +33,10 @@ const UserNotificationPage = () => {
   if (!user) {
     return (
       <div className="h-full p-8 flex items-center justify-center">
-        <p className="text-gray-400">Loading user notifications...</p>
+        <div className="flex items-center gap-2">
+          <LoadingSpinner size="sm" />
+          <p className="text-gray-400">Loading user notifications...</p>
+        </div>
       </div>
     );
   }
@@ -40,18 +44,20 @@ const UserNotificationPage = () => {
   return (
     <div className="min-h-full p-8">
       {/* Header */}
-      <div className="border-b border-lightgrey mb-8">
-        <h1 className="text-3xl font-serif text-white mb-8">Notifications</h1>
+      <div className="border-b border-foreground/30 mb-8">
+        <h1 className="text-3xl font-serif text-foreground/70 mb-8">
+          Notifications
+        </h1>
       </div>
 
       {/* Email Notifications Setting */}
       <div className="mb-8">
         <div className="flex items-center justify-between">
           <div className="flex-1">
-            <h3 className="text-lg font-semibold text-white mb-2">
+            <h3 className="text-lg font-semibold text-foreground/70 mb-2">
               Email Notifications
             </h3>
-            <p className="text-gray-400">
+            <p className="text-muted-foreground">
               Receive notifications, newsletters and updates.
             </p>
           </div>

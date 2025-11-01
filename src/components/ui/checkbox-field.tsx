@@ -25,7 +25,7 @@ export const CheckboxField: React.FC<ICheckboxField> = ({
         onCheckedChange={onCheckedChange}
         {...props}
       />
-      <Label className="text-sm font-light text-white" htmlFor={id}>
+      <Label className="text-sm font-light text-foreground/70" htmlFor={id}>
         {label}
       </Label>
     </div>

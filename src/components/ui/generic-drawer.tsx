@@ -105,11 +105,16 @@ const GenericDrawer: React.FC<GenericDrawerProps> = ({
             }}
           >
             {/* Header */}
-            <div className="flex items-center justify-between p-4 border-b border-lightgrey flex-shrink-0">
+            <div
+              className={cn(
+                position === "right" ? "flex-row-reverse" : "",
+                "flex items-center justify-between p-4 border-b border-lightgrey flex-shrink-0"
+              )}
+            >
               <h2
                 className={cn(
                   headerStyle ? headerStyle : "text-lg font-semibold",
-                  "text-white"
+                  "text-foreground/70"
                 )}
               >
                 {title}
@@ -119,7 +124,12 @@ const GenericDrawer: React.FC<GenericDrawerProps> = ({
                 className="cursor-pointer p-2 rounded-md hover:bg-[#3a3a3a] transition-colors"
               >
                 {isHeaderArrow && (
-                  <ChevronRight className="w-5 h-5 text-gray-400" />
+                  <ChevronRight
+                    className={cn(
+                      position === "right" && "rotate-180",
+                      "w-5 h-5 text-gray-400"
+                    )}
+                  />
                 )}
               </button>
             </div>

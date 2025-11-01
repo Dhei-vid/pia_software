@@ -14,27 +14,27 @@ import { Document } from "@/api/documents/document-types";
 import { DocumentService } from "@/api/documents/document";
 import { useDocumentParser } from "@/hooks/useDocumentParser";
 import { DocumentSection } from "@/utils/documentParser";
+import { AIService } from "@/api/ai/ai";
+import { useTheme } from "@/contexts/ThemeContext";
 
 interface ILeftSideBarProps {
   searchQuery: string;
   setSearchQuery: Dispatch<SetStateAction<string>>;
-  isLightMode: boolean;
-  setIsLightMode: Dispatch<SetStateAction<boolean>>;
   onSectionSelect?: (
     section: DocumentSection,
     chapterTitle: string,
     partTitle: string,
-    sections: DocumentSection[]
+    sections: DocumentSection[],
+    partId: string
   ) => void;
 }
 
 export const LeftSideBar: FC<ILeftSideBarProps> = ({
   searchQuery,
   setSearchQuery,
-  isLightMode,
-  setIsLightMode,
   onSectionSelect,
 }) => {
+  const { theme, toggleTheme } = useTheme();
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [historySearchQuery, setHistorySearchQuery] = useState("");
   const [expandedChapters, setExpandedChapters] = useState<Set<string>>(
@@ -52,6 +52,7 @@ export const LeftSideBar: FC<ILeftSideBarProps> = ({
     null
   );
 
+  // Get document
   useEffect(() => {
     const fetchDocument = async () => {
       const response = await DocumentService.getAllDocuments();
@@ -118,7 +119,6 @@ export const LeftSideBar: FC<ILeftSideBarProps> = ({
     setSelectedPart(partId);
     setSelectedPartForDrawer({ id: partId, title: partTitle });
     setIsSectionsDrawerOpen(true);
-    console.log(`Selected part: ${partId}`);
   };
 
   // Use only parsed chapters from the API
@@ -136,12 +136,12 @@ export const LeftSideBar: FC<ILeftSideBarProps> = ({
         {/* Search Bar */}
         <div className="space-y-3">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input
               placeholder="New Query"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 bg-dark border-lightgrey text-white placeholder:text-gray-400 focus:border-yellow-400"
+              className="pl-10 bg-dark border-lightgrey text-foreground placeholder:text-muted-foreground focus:border-yellow-400"
             />
           </div>
 
@@ -150,7 +150,7 @@ export const LeftSideBar: FC<ILeftSideBarProps> = ({
             <Button
               variant="ghost"
               onClick={() => setIsHistoryOpen(true)}
-              className="w-full justify-start text-gray-300 hover:text-white hover:!bg-lightgrey"
+              className="w-full justify-start text-foreground/70 hover:text-foreground hover:!bg-lightgrey"
             >
               <RotateCw className="w-4 h-4 mr-3" />
               History
@@ -164,7 +164,7 @@ export const LeftSideBar: FC<ILeftSideBarProps> = ({
         {/* Document Selector */}
         {documents.length > 1 && (
           <div className="mb-6">
-            <label className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-2 block">
+            <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2 block">
               Select Document
             </label>
             <select
@@ -173,7 +173,7 @@ export const LeftSideBar: FC<ILeftSideBarProps> = ({
                 const doc = documents.find((d) => d.id === e.target.value);
                 setSelectedDocument(doc || null);
               }}
-              className="w-full bg-dark border border-lightgrey text-white rounded-md px-3 py-2 text-sm focus:border-yellow-400 focus:outline-none"
+              className="w-full bg-dark border border-lightgrey text-foreground rounded-md px-3 py-2 text-sm focus:border-yellow-400 focus:outline-none"
             >
               {documents.map((doc) => (
                 <option key={doc.id} value={doc.id}>
@@ -186,7 +186,7 @@ export const LeftSideBar: FC<ILeftSideBarProps> = ({
 
         {/* Document Structure */}
         <div className="mb-8 pt-6 border-t border-lightgrey">
-          <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-4">
+          <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-4">
             {selectedDocument
               ? `${selectedDocument.title}`
               : "Document Structure"}
@@ -194,7 +194,7 @@ export const LeftSideBar: FC<ILeftSideBarProps> = ({
           <div className="space-y-2 w-full">
             {displayChapters.length === 0 ? (
               <div className="text-center py-8">
-                <p className="text-gray-400 text-sm">
+                <p className="text-muted-foreground text-sm">
                   {!selectedDocument
                     ? "No document selected"
                     : "No chapters found in this document"}
@@ -209,11 +209,11 @@ export const LeftSideBar: FC<ILeftSideBarProps> = ({
                     className={cn(
                       expandedChapters.has(chapter.id) &&
                         "bg-dark border border-lightgrey",
-                      "flex flex-row items-center w-full justify-between text-gray-300 hover:text-white hover:bg-lightgrey text-left rounded-md cursor-pointer p-2 group"
+                      "flex flex-row items-center w-full justify-between text-foreground/70 hover:text-foreground hover:bg-lightgrey text-left rounded-md cursor-pointer p-2 group"
                     )}
                   >
                     <div className="flex flex-col w-[13rem]">
-                      <span className="text-base text-white truncate">
+                      <span className="text-base text-foreground truncate">
                         {chapter.title}
                       </span>
                       <span className="text-xs font-light truncate capitalize!">
@@ -224,12 +224,12 @@ export const LeftSideBar: FC<ILeftSideBarProps> = ({
                       {expandedChapters.has(chapter.id) ? (
                         <ChevronDown
                           size={16}
-                          className="text-gray-400 group-hover:text-white"
+                          className="text-muted-foreground group-hover:text-foreground"
                         />
                       ) : (
                         <ChevronRight
                           size={16}
-                          className="text-gray-400 group-hover:text-white"
+                          className="text-muted-foreground group-hover:text-foreground"
                         />
                       )}
                     </div>
@@ -244,8 +244,8 @@ export const LeftSideBar: FC<ILeftSideBarProps> = ({
                           onClick={() => handlePartClick(part.id, part.title)}
                           className={`flex flex-row items-center w-full justify-between text-left rounded-md cursor-pointer p-2 transition-colors ${
                             selectedPart === part.id
-                              ? "bg-dark text-white border border-lightgrey"
-                              : "text-gray-400 hover:text-white hover:bg-dark"
+                              ? "bg-dark text-foreground border border-lightgrey"
+                              : "text-muted-foreground hover:text-foreground hover:bg-dark"
                           }`}
                         >
                           <div className="flex-1 min-w-0">
@@ -266,14 +266,16 @@ export const LeftSideBar: FC<ILeftSideBarProps> = ({
       <div className="w-full flex-shrink-0 p-6 border-t border-lightgrey">
         {/* Light Mode Toggle */}
         <div className="flex flex-row items-center justify-between mb-8">
-          <div className="flex flex-row items-center justify-start text-gray-300 hover:text-white hover:bg-[#3a3a3a]">
+          <div className="flex flex-row items-center justify-start text-foreground/70 hover:text-foreground hover:bg-lightgrey">
             <Sun className="w-4 h-4 mr-3" />
             <p>Light mode</p>
           </div>
           <Switch
             id={"lightmode"}
-            checked={isLightMode}
-            onCheckedChange={setIsLightMode}
+            checked={theme === "light"}
+            onCheckedChange={(checked) => {
+              toggleTheme();
+            }}
           />
         </div>
 
@@ -311,18 +313,20 @@ export const LeftSideBar: FC<ILeftSideBarProps> = ({
                 >
                   <div className="flex items-center space-x-3 flex-1 min-w-0">
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm text-white truncate">
+                      <p className="text-sm text-foreground truncate">
                         {item.query}
                       </p>
-                      <p className="text-xs text-gray-400">{item.timestamp}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {item.timestamp}
+                      </p>
                     </div>
                   </div>
                 </div>
               ))
             ) : (
               <div className="text-center py-8">
-                <Search className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-                <p className="text-gray-400 text-sm">
+                <Search className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
+                <p className="text-muted-foreground text-sm">
                   {historySearchQuery
                     ? "No matching history found"
                     : "No history yet"}
@@ -358,7 +362,7 @@ export const LeftSideBar: FC<ILeftSideBarProps> = ({
           {selectedPartForDrawer ? (
             getSectionsForPart(selectedPartForDrawer.id).length === 0 ? (
               <div className="text-center py-8">
-                <p className="text-gray-400 text-sm">
+                <p className="text-muted-foreground text-sm">
                   No sections found for this part
                 </p>
               </div>
@@ -395,7 +399,8 @@ export const LeftSideBar: FC<ILeftSideBarProps> = ({
                               section,
                               chapter.title,
                               part.title,
-                              sections
+                              sections,
+                              selectedPartForDrawer.id
                             );
                           }
                         }

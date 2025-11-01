@@ -13,6 +13,7 @@ import { ArrowLeft, Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import AuthService from "@/api/auth/auth";
 import { useUser } from "@/contexts/UserContext";
+import LoadingSpinner from "@/components/ui/loading";
 
 const SignInPage = () => {
   const router = useRouter();
@@ -99,7 +100,9 @@ const SignInPage = () => {
                 />
               </div>
             </div>
-            <h1 className="text-2xl font-bold text-white mb-2">Welcome Back</h1>
+            <h1 className="text-2xl font-bold text-foreground/70 mb-2">
+              Welcome Back
+            </h1>
             <p className="text-muted-foreground">
               Sign in to continue to your AI assistant
             </p>
@@ -189,10 +192,17 @@ const SignInPage = () => {
 
                 <Button
                   type="submit"
-                  className="w-full text-lg py-6 mt-6 bg-grey hover:bg-grey/80 dark:text-white/80"
+                  className="w-full py-6 mt-6 bg-grey hover:bg-grey/80 dark:text-white/80"
                   disabled={isPending}
                 >
-                  {isPending ? "Signing In..." : "Sign In"}
+                  {isPending ? (
+                    <div className="flex flex-row gap-1 items-center">
+                      <LoadingSpinner size="sm" />
+                      <p>Signing In...</p>
+                    </div>
+                  ) : (
+                    "Sign In"
+                  )}
                 </Button>
               </form>
 

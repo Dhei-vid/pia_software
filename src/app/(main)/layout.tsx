@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useUser } from "@/contexts/UserContext";
 import Header from "../../components/general/header";
 import MainLayout from "../../components/layouts/main-layout";
+import LoadingSpinner from "../../components/ui/loading";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading } = useUser();
@@ -20,7 +21,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   if (isLoading) {
     return (
       <div className="h-screen flex items-center justify-center bg-dark">
-        <div className="text-white text-lg">Loading...</div>
+        <div className="flex items-center gap-2">
+          <LoadingSpinner size="md" className="text-white" />
+          <div className="text-white text-lg">Loading...</div>
+        </div>
       </div>
     );
   }

@@ -13,7 +13,7 @@ const Header = () => {
           height={25}
           className="object-contain"
         />
-        <h1 className="text-base 2xl:text-lg text-white">
+        <h1 className="text-base 2xl:text-lg text-foreground/70">
           Wright PIA Software
         </h1>
       </div>

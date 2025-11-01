@@ -15,28 +15,28 @@ export const useDocumentParser = (document: Document | null) => {
       return null;
     }
 
-    console.log("Document content length:", document.content.length);
-    console.log("Document content preview:", document.content.substring(0, 500));
-    
+    // console.log("Document content length:", document.content.length);
+    // console.log("Document content preview:", document.content.substring(0, 500));
+
     const parsed = DocumentParser.parseDocumentContent(
       document.id,
       document.title,
       document.content
     );
-    
-    console.log("Parsed document sections count:", parsed.sections.length);
-    console.log("Parsed document chapters count:", parsed.chapters.length);
-    console.log("Parsed document parts count:", parsed.parts.length);
-    
+
+    // console.log("Parsed document sections count:", parsed.sections.length);
+    // console.log("Parsed document chapters count:", parsed.chapters.length);
+    // console.log("Parsed document parts count:", parsed.parts.length);
+
     // Get detailed statistics
     const stats = DocumentParser.getDocumentStatistics(parsed);
-    console.log("Document Statistics:", stats);
-    console.log("Section Distribution by Part:", stats.sectionDistribution);
-    
+    // console.log("Document Statistics:", stats);
+    // console.log("Section Distribution by Part:", stats.sectionDistribution);
+
     // Validate structure
     const validation = DocumentParser.validateDocumentStructure(parsed);
-    console.log("Structure Validation:", validation);
-    
+    // console.log("Structure Validation:", validation);
+
     return parsed;
   }, [document]);
 

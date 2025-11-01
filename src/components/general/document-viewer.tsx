@@ -74,10 +74,10 @@ const DocumentViewer: FC<IDocumentViewerProps> = ({
     return (
       <div className="h-full flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-2xl font-semibold text-white mb-4">
+          <h2 className="text-2xl font-semibold text-foreground mb-4">
             Select a Section
           </h2>
-          <p className="text-gray-400">
+          <p className="text-muted-foreground">
             Choose a section from the left sidebar to view its content
           </p>
         </div>
@@ -90,14 +90,14 @@ const DocumentViewer: FC<IDocumentViewerProps> = ({
       {/* Header */}
       <div className="mb-6">
         {chapterTitle && (
-          <h1 className="text-2xl font-semibold text-white mb-2">
+          <h1 className="text-2xl font-semibold text-foreground mb-2">
             {chapterTitle}
           </h1>
         )}
         {partTitle && (
-          <h2 className="text-lg text-gray-300 mb-4">{partTitle}</h2>
+          <h2 className="text-lg text-foreground/70 mb-4">{partTitle}</h2>
         )}
-        <h3 className="text-xl font-bold text-white">
+        <h3 className="text-xl font-bold text-foreground">
           {selectedSection.title}
         </h3>
       </div>
@@ -125,9 +125,9 @@ const DocumentViewer: FC<IDocumentViewerProps> = ({
                   <div key={index} className="flex items-start gap-3">
                     <div className="flex-1">
                       <p
-                        className={`text-white leading-relaxed ${
+                        className={`text-foreground leading-relaxed ${
                           isSectionTitle
-                            ? "font-bold text-lg mb-3 text-gray-400"
+                            ? "font-bold text-lg mb-3 text-muted-foreground"
                             : isSubPointA
                             ? "font-semibold text-base mb-2 ml-4"
                             : isSubPointB
@@ -145,7 +145,7 @@ const DocumentViewer: FC<IDocumentViewerProps> = ({
                     <button className="cursor-pointer flex-shrink-0 p-1 hover:bg-lightgrey rounded transition-colors">
                       <Link
                         size={16}
-                        className="text-gray-400 hover:text-white"
+                        className="text-muted-foreground hover:text-foreground"
                       />
                     </button>
                   </div>
@@ -154,7 +154,7 @@ const DocumentViewer: FC<IDocumentViewerProps> = ({
             </div>
           ) : (
             <div className="text-center py-8">
-              <p className="text-gray-400">
+              <p className="text-muted-foreground">
                 No content available for this section
               </p>
             </div>
@@ -170,7 +170,7 @@ const DocumentViewer: FC<IDocumentViewerProps> = ({
             onClick={onPreviousSection}
             disabled={currentSectionIndex === 0}
             className={cn(
-              "cursor-pointer flex items-center gap-2 w-1/2 justify-start px-4 h-20 text-gray-300 hover:text-white hover:bg-lightgrey",
+              "cursor-pointer flex items-center gap-2 w-1/2 justify-start px-4 h-20 text-foreground/70 hover:text-foreground hover:bg-lightgrey",
               currentSectionIndex === 0 && "opacity-50 cursor-not-allowed"
             )}
           >
@@ -191,7 +191,7 @@ const DocumentViewer: FC<IDocumentViewerProps> = ({
             onClick={onNextSection}
             disabled={currentSectionIndex === totalSections - 1}
             className={cn(
-              "cursor-pointer flex items-center gap-2 w-1/2 justify-end px-4 h-20 text-gray-300 hover:text-white hover:bg-lightgrey",
+              "cursor-pointer flex items-center gap-2 w-1/2 justify-end px-4 h-20 text-foreground/70 hover:text-foreground hover:bg-lightgrey",
               currentSectionIndex === totalSections - 1 &&
                 "opacity-50 cursor-not-allowed"
             )}
@@ -215,7 +215,7 @@ const DocumentViewer: FC<IDocumentViewerProps> = ({
             onChange={(e) => setSearchQuery?.(e.target.value)}
             onKeyPress={handleKeyPress}
             placeholder="Search for a section, keyword, or citation"
-            className="bg-transparent border-none text-white placeholder:text-gray-400 focus:border-none focus:ring-0"
+            className="bg-transparent border-none text-foreground placeholder:text-muted-foreground focus:border-none focus:ring-0"
           />
         </div>
         <div className="p-3 flex flex-row items-center justify-between border-t border-lightgrey">
@@ -224,16 +224,16 @@ const DocumentViewer: FC<IDocumentViewerProps> = ({
             size="sm"
             className="w-10 h-10 hover:bg-lightgrey border border-lightgrey bg-transparent rounded-full"
           >
-            <Plus size={20} className="text-gray-400" />
+            <Plus size={20} className="text-muted-foreground" />
           </Button>
 
           <Button
             onClick={handleSearch}
-            className="group w-10 h-10 border border-green bg-transparent hover:bg-green text-white p-2 rounded-lg"
+            className="group w-10 h-10 border border-green bg-transparent hover:bg-green text-foreground p-2 rounded-lg"
           >
             <SendHorizontal
               size={20}
-              className="text-green group-hover:text-white"
+              className="text-green group-hover:text-white dark:group-hover:text-white"
             />
           </Button>
         </div>

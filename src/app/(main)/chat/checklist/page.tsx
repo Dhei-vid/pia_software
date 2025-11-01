@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import DateFilter from "@/components/general/date-filter";
 import { Input } from "@/components/ui/input";
 import ChecklistCard from "@/components/ui/checklist-card";
+import LoadingSpinner from "@/components/ui/loading";
 import { DeleteConfirmationDialog } from "@/components/modals/delete-confirmation-dialog";
 import { EditChecklistDialog } from "@/components/modals/edit-checklist-dialog";
 import { useChecklists } from "@/hooks/useChecklists";
@@ -72,7 +73,6 @@ export default function Page() {
     if (checklist) {
       try {
         await updateChecklist(id, { completed: !checklist.completed });
-        toast.success("Checklist updated");
       } catch (error) {
         const errorMessage = extractErrorMessage(error);
         toast.error(`Failed to update checklist: ${errorMessage}`);
@@ -151,7 +151,10 @@ export default function Page() {
       {/* Loading indicator */}
       {loading && checklists.length === 0 && (
         <div className="text-center text-gray-400 py-4">
-          Loading checklists...
+          <div className="flex items-center justify-center gap-2">
+            <LoadingSpinner size="sm" />
+            <p>Loading checklists...</p>
+          </div>
         </div>
       )}
 

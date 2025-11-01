@@ -2,6 +2,7 @@
 
 import { FC, useState, useEffect } from "react";
 import { CheckboxField } from "../ui/checkbox-field";
+import LoadingSpinner from "../ui/loading";
 import { useChecklists } from "@/hooks/useChecklists";
 import { useUser } from "@/contexts/UserContext";
 import { Checklist } from "@/api/checklist/checklist-type";
@@ -31,7 +32,10 @@ const CheckList = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-8">
-        <div className="text-gray-400 text-sm">Loading checklist...</div>
+        <div className="flex items-center gap-2">
+          <LoadingSpinner size="sm" />
+          <div className="text-gray-400 text-sm">Loading checklist...</div>
+        </div>
       </div>
     );
   }
