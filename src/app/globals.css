@@ -8,7 +8,7 @@
   --color-grey: var(--grey);
   --color-lightgrey: var(--lightgrey);
   --color-green: var(--green);
-  
+
   /* Text color variables for theme-aware text */
   --color-text-primary: var(--text-primary);
   --color-text-secondary: var(--text-secondary);
@@ -60,7 +60,7 @@
   --lightgrey: #e8e8e8;
   --green: #007a48;
   --gold: #cebb57;
-  
+
   /* Text colors for light mode */
   --text-primary: #1a1a1a;
   --text-secondary: #525252;
@@ -107,7 +107,7 @@
   --lightgrey: #3a3a3a;
   --green: #007a48;
   --gold: #cebb57;
-  
+
   /* Text colors for dark mode */
   --text-primary: #ffffff;
   --text-secondary: #d4d4d4;

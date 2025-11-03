@@ -2,10 +2,13 @@ import { Button } from "./ui/button";
 import Link from "next/link";
 import Image from "next/image";
 
+import HeroVideoLayout from "./layouts/hero-video-layout";
+
 const LandingPage = () => {
   return (
     <div className={"min-h-screen bg-dark"}>
       {/* Header */}
+
       <header className={"bg-dark border-b header-gradient sticky top-0 z-50"}>
         <div className={"container mx-auto px-6 py-4"}>
           <div className={"flex items-center justify-between"}>
@@ -16,53 +19,55 @@ const LandingPage = () => {
               </h1>
             </div>
 
-            <div className={"flex items-center"}>
+            {/* <div className={"flex items-center"}>
               <Link href={"/signin"}>
                 <Button className="bg-green hover:bg-green/90 text-white border-0 transition-all duration-300 hover:shadow-lg px-6 py-2">
                   Request a Demo
                 </Button>
               </Link>
-            </div>
+            </div> */}
           </div>
         </div>
       </header>
 
-      {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center">
-        {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(16,185,129,0.35),transparent_50%)] backdrop-blur-sm"></div>
+      <HeroVideoLayout video={"/video/PIA AI video 1.MP4"}>
+        {/* Hero Section */}
+        <section className="h-[38rem] md:h-[35rem] 2xl:h-[50rem] 3xl:h-[55rem] flex items-center justify-center">
+          {/* Gradient overlay */}
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(16,185,129,0.35),transparent_50%)] backdrop-blur-sm"></div>
 
-        <div className="relative container mx-auto px-6 text-center">
-          <div className="max-w-4xl mx-auto">
-            <h1 className="text-4xl lg:text-6xl font-bold text-foreground/70 mb-6 leading-tight">
-              Transform Nigeria&apos;s Petroleum Law into Your Digital
-              Advantage.
-            </h1>
+          <div className="relative container mx-auto px-6 text-center">
+            <div className="max-w-4xl mx-auto">
+              <h1 className="text-4xl lg:text-6xl font-bold text-lightgrey mb-6 leading-tight">
+                Transform Nigeria&apos;s Petroleum Law into Your Digital
+                Advantage.
+              </h1>
 
-            <p className="text-xl text-muted-foreground mb-12 leading-relaxed max-w-3xl mx-auto">
-              Navigate the complexities of the Petroleum Industry Act (PIA) 2021
-              with an AI-powered platform. Search, verify, and draft legal
-              documents with unparalleled speed and accuracy.
-            </p>
+              <p className="text-xl text-lightgrey/70 mb-12 leading-relaxed max-w-3xl mx-auto">
+                Navigate the complexities of the Petroleum Industry Act (PIA)
+                2021 with an AI-powered platform. Search, verify, and draft
+                legal documents with unparalleled speed and accuracy.
+              </p>
 
-            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
-              <Link href={"/signup"}>
-                <Button className="bg-green hover:bg-green/90 text-white px-8 py-4 rounded">
-                  Request a Demo
-                </Button>
-              </Link>
-              <Link href={"/chat"}>
-                <Button
-                  variant="outline"
-                  className="border-foreground/30 text-foreground/70 hover:bg-white hover:text-dark px-8 py-4 rounded"
-                >
-                  Learn More
-                </Button>
-              </Link>
+              <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
+                <Link href={"/signup"}>
+                  <Button className="bg-green hover:bg-green/90 text-white px-8 py-4">
+                    Request a Demo
+                  </Button>
+                </Link>
+                <Link href={"/chat"}>
+                  <Button
+                    variant="outline"
+                    className="border-foreground/30 text-foreground/70 hover:bg-white px-8 py-4"
+                  >
+                    Learn More
+                  </Button>
+                </Link>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </HeroVideoLayout>
 
       {/* Content Placeholder Section */}
       <section className="pt-10 pb-24 px-6">
@@ -76,7 +81,7 @@ const LandingPage = () => {
                 muted
                 playsInline
               >
-                <source src={"/video/PIA AI video 1.MP4"} type="video/mp4" />
+                <source src={"/video/PIA SAMPLE GIF.MP4"} type="video/mp4" />
                 Your browser does not support the video tag.
               </video>
             </div>
