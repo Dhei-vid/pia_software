@@ -114,7 +114,8 @@ const GenericDrawer: React.FC<GenericDrawerProps> = ({
               <h2
                 className={cn(
                   headerStyle ? headerStyle : "text-lg font-semibold",
-                  "text-foreground/70"
+                  "",
+                  "!text-foreground"
                 )}
               >
                 {title}

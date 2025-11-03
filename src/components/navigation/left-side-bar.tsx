@@ -353,7 +353,7 @@ export const LeftSideBar: FC<ILeftSideBarProps> = ({
           setIsSectionsDrawerOpen(false);
           setSelectedPartForDrawer(null);
         }}
-        headerStyle="text-sm opacity-50"
+        headerStyle="text-sm"
         isHeaderArrow={false}
         title={selectedPartForDrawer?.title || "Sections"}
         position="left"
@@ -412,8 +412,12 @@ export const LeftSideBar: FC<ILeftSideBarProps> = ({
                       )}
                     >
                       <div className="flex-1 min-w-0 text-sm font-medium">
-                        <p className="opacity-50">Section {sectionNumber}</p>
-                        <p className="line-clamp-2">{sectionTitle}</p>
+                        <p className="opacity-50 text-muted-foreground">
+                          Section {sectionNumber}
+                        </p>
+                        <p className="line-clamp-2 text-foreground">
+                          {sectionTitle}
+                        </p>
                       </div>
                       <ChevronRight
                         size={16}

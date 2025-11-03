@@ -84,10 +84,10 @@ const NotesSideBarItems: FC<INotesSideBarItems> = ({ note, onDelete }) => {
   return (
     <div className="text-left flex flex-row gap-5 justify-between hover:bg-lightgrey cursor-pointer transition-all duration-200 ease-in-out rounded-md group">
       <div className="flex-1" onClick={handleNoteClick}>
-        <p className="text-sm text-white truncate text-wrap line-clamp-2">
+        <p className="text-sm text-foreground truncate text-wrap line-clamp-2">
           {note.body}
         </p>
-        <p className="text-xs text-nowrap text-gray-400 mt-1">
+        <p className="text-xs text-nowrap text-muted-foreground mt-1">
           {formatTimeAgo(new Date(note.createdAt))}
         </p>
       </div>
