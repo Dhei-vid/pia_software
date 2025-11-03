@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Plus, SendHorizontal } from "lucide-react";
+import { SendHorizontal } from "lucide-react"; // commented out Plus
 import { useUser } from "@/contexts/UserContext";
 import LoadingSpinner from "@/components/ui/loading";
 import { extractErrorMessage } from "@/common/helpers";
@@ -112,18 +112,18 @@ const ChatPage = () => {
           />
         </div>
         <div className="p-3 flex flex-row items-center justify-between">
-          <Button
+          {/* <Button
             variant="outline"
             size="sm"
             className="w-12 h-12 hover:bg-[#3a3a3a] border border-foreground/50 bg-transparent rounded-full"
           >
             <Plus size={30} className="text-foreground/50" />
-          </Button>
+          </Button> */}
 
           <Button
             disabled={loading}
             onClick={() => handleSearch()}
-            className="group w-12 h-12 border border-green bg-transparent hover:bg-green p-2 rounded-lg text-green hover:text-white"
+            className="ml-auto group w-12 h-12 border border-green bg-transparent hover:bg-green p-2 rounded-lg text-green hover:text-white"
           >
             {loading ? (
               <LoadingSpinner size={"sm"} />

@@ -69,6 +69,12 @@ const LandingPage = () => {
         </section>
       </HeroVideoLayout>
 
+      <div className="container text-right py-4">
+        <p className="text-lg text-green font-bold">
+          Powered by Engr. Farouk Ahmed
+        </p>
+      </div>
+
       {/* Content Placeholder Section */}
       <section className="pt-10 pb-24 px-6">
         <div className="container mx-auto">
@@ -88,10 +94,6 @@ const LandingPage = () => {
           </div>
         </div>
       </section>
-
-      <div className="container text-right py-4 pr-4">
-        <p className="text-sm text-green">Powered by Engr. Farouk Ahmed</p>
-      </div>
     </div>
   );
 };

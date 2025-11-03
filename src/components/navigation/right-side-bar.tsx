@@ -246,7 +246,7 @@ const RightSideBar: FC<RightSideBarProps> = ({ tools }) => {
         <Button
           variant="ghost"
           size="sm"
-          className="w-12 h-12 rounded-full bg-[#3a3a3a] hover:bg-[#4a4a4a] p-0"
+          className="w-12 h-12 rounded-full bg-dark hover:bg-dark/70 p-0"
         >
           <HelpCircle size={20} className="text-gray-400" />
         </Button>
