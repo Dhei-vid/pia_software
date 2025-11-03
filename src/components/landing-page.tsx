@@ -38,12 +38,12 @@ const LandingPage = () => {
 
           <div className="relative container mx-auto px-6 text-center">
             <div className="max-w-4xl mx-auto">
-              <h1 className="text-4xl lg:text-6xl font-bold text-lightgrey mb-6 leading-tight">
+              <h1 className="text-3xl 2xl:text-4xl lg:text-6xl font-bold text-lightgrey mb-6 leading-tight">
                 Transform Nigeria&apos;s Petroleum Law into Your Digital
                 Advantage.
               </h1>
 
-              <p className="text-xl text-lightgrey/70 mb-12 leading-relaxed max-w-3xl mx-auto">
+              <p className="text-base 2xl:text-xl text-lightgrey/70 mb-12 leading-relaxed max-w-3xl mx-auto">
                 Navigate the complexities of the Petroleum Industry Act (PIA)
                 2021 with an AI-powered platform. Search, verify, and draft
                 legal documents with unparalleled speed and accuracy.
@@ -89,7 +89,7 @@ const LandingPage = () => {
         </div>
       </section>
 
-      <div className="container text-right py-4">
+      <div className="container text-right py-4 pr-4">
         <p className="text-sm text-green">Powered by Engr. Farouk Ahmed</p>
       </div>
     </div>
