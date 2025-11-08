@@ -3,12 +3,13 @@
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { SendHorizontal } from "lucide-react"; // commented out Plus
+import { SendHorizontal, Plus, Paperclip } from "lucide-react"; // commented out
 import { useUser } from "@/contexts/UserContext";
 import LoadingSpinner from "@/components/ui/loading";
 import { extractErrorMessage } from "@/common/helpers";
 import SearchResultCard from "@/components/ui/search-result-card";
 import { SearchResult } from "@/api/ai/ai-type";
+import { Dropdown } from "@/components/general/dropdown";
 
 // APIs
 import { AIService } from "@/api/ai/ai";
@@ -112,13 +113,21 @@ const ChatPage = () => {
           />
         </div>
         <div className="p-3 flex flex-row items-center justify-between">
-          {/* <Button
-            variant="outline"
-            size="sm"
-            className="w-12 h-12 hover:bg-[#3a3a3a] border border-foreground/50 bg-transparent rounded-full"
-          >
-            <Plus size={30} className="text-foreground/50" />
-          </Button> */}
+          <Dropdown
+            button={
+              <div className="cursor-pointer flex items-center justify-center group h-12 w-12 hover:bg-lightgrey border border-foreground/30 bg-transparent rounded-full duration-300">
+                <Plus size={20} className="text-foreground/50" />
+              </div>
+            }
+            contentStyle="ml-27"
+            items={[
+              {
+                title: "Attach Document",
+                Icon: Paperclip,
+                onAction: () => {},
+              },
+            ]}
+          />
 
           <Button
             disabled={loading}

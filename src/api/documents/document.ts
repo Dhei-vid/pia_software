@@ -3,7 +3,7 @@ import { extractErrorMessage } from "@/common/helpers";
 import {
   Document,
   DocumentResponse,
-  SearchHistoryItem,
+  HistoryResponse,
   AIProcessingStatus,
   SearchRequest,
   SearchResponse,
@@ -24,12 +24,12 @@ export const DocumentService = {
   },
 
   // Get search history: {{baseURL}}/api/v1/documents/search-history
-  getSearchHistory: async (): Promise<SearchHistoryItem[]> => {
+  getSearchHistory: async (): Promise<HistoryResponse> => {
     try {
       const response = await axiosInstance.get(
         `/api/v1/documents/search-history`
       );
-      return response.data.data;
+      return response.data;
     } catch (error) {
       const errorMessage = extractErrorMessage(error);
       throw new Error(errorMessage);
@@ -118,6 +118,35 @@ export const DocumentService = {
         `/api/v1/documents?page=${page}&limit=${limit}`
       );
       return response.data.data;
+    } catch (error) {
+      const errorMessage = extractErrorMessage(error);
+      throw new Error(errorMessage);
+    }
+  },
+
+  // Get chapter TOC
+  getChapterTOC: async (documentId: string) => {
+    try {
+      const response = await axiosInstance.get(
+        `/api/v1/documents/${documentId}/toc`
+      );
+      return response.data;
+    } catch (error) {
+      const errorMessage = extractErrorMessage(error);
+      throw new Error(errorMessage);
+    }
+  },
+
+  // Get documents contents
+  getAllDocumentContent: async (
+    documentId: string,
+    format: "structured" | "raw"
+  ) => {
+    try {
+      const response = await axiosInstance.get(
+        `/api/v1/documents/${documentId}/content?format=${format}`
+      );
+      return response.data;
     } catch (error) {
       const errorMessage = extractErrorMessage(error);
       throw new Error(errorMessage);

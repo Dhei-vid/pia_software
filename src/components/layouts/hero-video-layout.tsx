@@ -7,7 +7,7 @@ interface IHeroVideoLayout {
 
 const HeroVideoLayout: FC<IHeroVideoLayout> = ({ video, children }) => {
   return (
-    <div className="relative h-[38rem] md:h-[35rem] 2xl:h-[50rem] 3xl:h-[55rem]">
+    <div className="relative h-[38rem] lg:h-[33rem] 2xl:h-[38rem] 3xl:h-[55rem]">
       {/* Background video */}
       <video
         className="absolute top-0 left-0 w-full h-full object-cover"

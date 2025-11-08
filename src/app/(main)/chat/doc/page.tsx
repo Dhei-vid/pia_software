@@ -77,11 +77,13 @@ export default function Page() {
     if (partId) {
       // First try to find by partId directly
       part = parsedParts.find((p) => p.id === partId);
-      
+
       // If not found, look for it in chapters
       if (!part) {
         for (const chapter of parsedChapters) {
-          const foundPart = chapter.subsections?.find((sub) => sub.id === partId);
+          const foundPart = chapter.subsections?.find(
+            (sub) => sub.id === partId
+          );
           if (foundPart) {
             part = foundPart;
             setChapterTitle(chapter.title);
@@ -126,7 +128,7 @@ export default function Page() {
       setCurrentPartSections(sections);
       const index = sections.findIndex((s) => s.id === sectionId);
       setCurrentSectionIndex(index >= 0 ? index : 0);
-      
+
       // Try to find chapter and part from parentId
       const chapter = parsedChapters.find((ch) => ch.id === section.parentId);
       if (chapter) {
@@ -165,10 +167,7 @@ export default function Page() {
   };
 
   const handleNextSection = () => {
-    if (
-      currentSectionIndex < currentPartSections.length - 1 &&
-      partId
-    ) {
+    if (currentSectionIndex < currentPartSections.length - 1 && partId) {
       const newIndex = currentSectionIndex + 1;
       const newSection = currentPartSections[newIndex];
       setCurrentSectionIndex(newIndex);
@@ -197,7 +196,7 @@ export default function Page() {
         {/* Back Button */}
         <button
           onClick={() => router.push("/chat")}
-          className="flex items-center space-x-2 text-gray-300 hover:text-white transition-colors mb-6"
+          className="flex items-center space-x-2 text-foreground hover:text-white transition-colors mb-6"
         >
           <ChevronLeft size={20} />
           <span>Back to Chat</span>
@@ -241,7 +240,11 @@ export default function Page() {
           <div className="text-center">
             <p className="text-gray-400 mb-2">Section not found: {sectionId}</p>
             <p className="text-xs text-gray-500 mb-4">
-              Available sections: {parsedDocument.sections.slice(0, 5).map((s) => s.id).join(", ")}
+              Available sections:{" "}
+              {parsedDocument.sections
+                .slice(0, 5)
+                .map((s) => s.id)
+                .join(", ")}
             </p>
             <div className="space-y-2">
               <button
@@ -281,46 +284,46 @@ export default function Page() {
       </button>
 
       <DocumentViewer
-      selectedSection={selectedSection}
-      chapterTitle={chapterTitle}
-      partTitle={partTitle}
-      previousSectionTitle={
-        currentSectionIndex > 0
-          ? currentPartSections[currentSectionIndex - 1].title
-          : ""
-      }
-      nextSectionTitle={
-        currentSectionIndex < currentPartSections.length - 1
-          ? currentPartSections[currentSectionIndex + 1].title
-          : ""
-      }
-      previousSectionNumber={
-        currentSectionIndex > 0
-          ? parseInt(
-              currentPartSections[currentSectionIndex - 1].id.replace(
-                "section-",
-                ""
+        selectedSection={selectedSection}
+        chapterTitle={chapterTitle}
+        partTitle={partTitle}
+        previousSectionTitle={
+          currentSectionIndex > 0
+            ? currentPartSections[currentSectionIndex - 1].title
+            : ""
+        }
+        nextSectionTitle={
+          currentSectionIndex < currentPartSections.length - 1
+            ? currentPartSections[currentSectionIndex + 1].title
+            : ""
+        }
+        previousSectionNumber={
+          currentSectionIndex > 0
+            ? parseInt(
+                currentPartSections[currentSectionIndex - 1].id.replace(
+                  "section-",
+                  ""
+                )
               )
-            )
-          : 0
-      }
-      nextSectionNumber={
-        currentSectionIndex < currentPartSections.length - 1
-          ? parseInt(
-              currentPartSections[currentSectionIndex + 1].id.replace(
-                "section-",
-                ""
+            : 0
+        }
+        nextSectionNumber={
+          currentSectionIndex < currentPartSections.length - 1
+            ? parseInt(
+                currentPartSections[currentSectionIndex + 1].id.replace(
+                  "section-",
+                  ""
+                )
               )
-            )
-          : 0
-      }
-      currentSectionIndex={currentSectionIndex}
-      totalSections={currentPartSections.length}
-      onPreviousSection={handlePreviousSection}
-      onNextSection={handleNextSection}
-      onSearch={() => {}}
-      searchQuery=""
-      setSearchQuery={() => {}}
+            : 0
+        }
+        currentSectionIndex={currentSectionIndex}
+        totalSections={currentPartSections.length}
+        onPreviousSection={handlePreviousSection}
+        onNextSection={handleNextSection}
+        onSearch={() => {}}
+        searchQuery=""
+        setSearchQuery={() => {}}
       />
     </div>
   );

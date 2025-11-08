@@ -113,26 +113,28 @@ const GenericDrawer: React.FC<GenericDrawerProps> = ({
             >
               <h2
                 className={cn(
-                  headerStyle ? headerStyle : "text-lg font-semibold",
+                  headerStyle ? headerStyle : "text-base font-semibold",
                   "",
                   "!text-foreground"
                 )}
               >
                 {title}
               </h2>
-              <button
-                onClick={onArrowClick || onClose}
-                className="cursor-pointer p-2 rounded-md hover:bg-[#3a3a3a] transition-colors"
-              >
-                {isHeaderArrow && (
-                  <ChevronRight
-                    className={cn(
-                      position === "right" && "rotate-180",
-                      "w-5 h-5 text-gray-400"
-                    )}
-                  />
-                )}
-              </button>
+              {isHeaderArrow && (
+                <button
+                  onClick={onArrowClick || onClose}
+                  className="cursor-pointer p-2 rounded-md hover:bg-[#3a3a3a] transition-colors"
+                >
+                  {isHeaderArrow && (
+                    <ChevronRight
+                      className={cn(
+                        position === "right" && "rotate-180",
+                        "w-5 h-5 text-gray-400"
+                      )}
+                    />
+                  )}
+                </button>
+              )}
             </div>
 
             {/* Content */}
