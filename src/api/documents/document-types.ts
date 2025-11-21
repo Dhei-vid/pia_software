@@ -24,6 +24,14 @@ export interface AIProcessingStatus {
   processingStatus: string | null;
 }
 
+export interface SearchHistoryItem {
+  id: string;
+  query: string;
+  documentId: string;
+  createdAt: string;
+  results?: SearchResult[];
+}
+
 export interface SearchRequest {
   query: string;
   filters?: {

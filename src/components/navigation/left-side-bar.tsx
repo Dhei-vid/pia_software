@@ -61,7 +61,7 @@ export const LeftSideBar: FC<ILeftSideBarProps> = ({
 
   // const filteredHistory = query?.searches.map((item) => item.query);
 
-  console.log("Filtered History ", query);
+  // console.log("Filtered History ", query);
 
   return (
     <div className="h-full flex flex-col overflow-hidden">

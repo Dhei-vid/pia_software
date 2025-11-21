@@ -1,7 +1,7 @@
 "use client";
 
-import { FC, ReactNode } from "react";
-import { LucideIcon } from "lucide-react";
+import { Dispatch, FC, ReactNode, SetStateAction } from "react";
+// import { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 import {
@@ -14,12 +14,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 interface DropDownItems {
-  title?: string;
-  Icon: LucideIcon;
-  onAction: () => void;
+  components: ReactNode;
+  // onAction: () => void;
 }
 
 interface IDropDown {
+  open: boolean;
+  setOpen: Dispatch<SetStateAction<boolean>>;
   items: DropDownItems[];
   button: ReactNode;
   label?: string;
@@ -27,13 +28,15 @@ interface IDropDown {
 }
 
 export const Dropdown: FC<IDropDown> = ({
+  open,
+  setOpen,
   items,
   button,
   label,
   contentStyle,
 }) => {
   return (
-    <DropdownMenu>
+    <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger>{button}</DropdownMenuTrigger>
       <DropdownMenuContent className={cn(contentStyle)}>
         {label && (
@@ -45,14 +48,11 @@ export const Dropdown: FC<IDropDown> = ({
 
         {items.map((item, index) => (
           <DropdownMenuItem
-            onClick={item.onAction}
+            // onClick={item.onAction}
             key={index}
-            className="hover:bg-lightgrey"
+            className="hover:!bg-lightgrey"
           >
-            <div className="flex flex-row items-center gap-2">
-              <item.Icon size={15} />
-              <p className="text-sm">{item.title}</p>
-            </div>
+            {item.components}
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>

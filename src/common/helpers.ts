@@ -26,24 +26,24 @@ export function formatTimeAgo(date: string | Date) {
 
 // Extract error message
 export const extractErrorMessage = (error: unknown): string => {
-  if (error && typeof error === 'object') {
+  if (error && typeof error === "object") {
     const errorObj = error as Record<string, unknown>;
-    
+
     // Check for axios-style error structure
-    if (errorObj.response && typeof errorObj.response === 'object') {
+    if (errorObj.response && typeof errorObj.response === "object") {
       const response = errorObj.response as Record<string, unknown>;
-      if (response.data && typeof response.data === 'object') {
+      if (response.data && typeof response.data === "object") {
         const data = response.data as Record<string, unknown>;
-        if (typeof data.message === 'string') return data.message;
-        if (typeof data.error === 'string') return data.error;
+        if (typeof data.message === "string") return data.message;
+        if (typeof data.error === "string") return data.error;
       }
     }
-    
+
     // Check for standard error message
-    if (typeof errorObj.message === 'string') {
+    if (typeof errorObj.message === "string") {
       return errorObj.message;
     }
   }
-  
+
   return "An unexpected error occurred";
 };

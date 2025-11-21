@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { SendHorizontal, Plus, Paperclip } from "lucide-react"; // commented out
+import { SendHorizontal, Plus } from "lucide-react";
 import { useUser } from "@/contexts/UserContext";
 import LoadingSpinner from "@/components/ui/loading";
 import { extractErrorMessage } from "@/common/helpers";
@@ -11,9 +11,14 @@ import SearchResultCard from "@/components/ui/search-result-card";
 import { SearchResult } from "@/api/ai/ai-type";
 import { Dropdown } from "@/components/general/dropdown";
 
+import FileUploader from "@/components/ui/file-uploader";
+import { Separator } from "@/components/ui/separator";
+import { SelectedFIleUI } from "@/components/ui/selected-file";
+
 // APIs
 import { AIService } from "@/api/ai/ai";
 import { SearchResponse } from "@/api/ai/ai-type";
+import { ComplianceDocument } from "@/api/compliance/compliance";
 
 const ChatPage = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -21,10 +26,14 @@ const ChatPage = () => {
   const [isQueryResult, setIsQueryResult] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
+
   const { user } = useUser();
 
-  const scrollRef = useRef<HTMLDivElement>(null); // 👈 for auto-scroll
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [openDropDown, setOpenDropDown] = useState<boolean>(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
+  // Handle Search
   const handleSearch = async () => {
     setLoading(true);
     try {
@@ -59,6 +68,17 @@ const ChatPage = () => {
       });
     }
   }, [searchResults]);
+
+  // check compliance document
+  useEffect(() => {
+    const checkFileCompliance = async () => {
+      if (selectedFile === null || !selectedFile) return;
+
+      await ComplianceDocument.uploadDocument(selectedFile as File);
+    };
+
+    checkFileCompliance();
+  }, [selectedFile]);
 
   return (
     <div className={`flex flex-col w-full h-full overflow-hidden`}>
@@ -114,6 +134,8 @@ const ChatPage = () => {
         </div>
         <div className="p-3 flex flex-row items-center justify-between">
           <Dropdown
+            open={openDropDown}
+            setOpen={setOpenDropDown}
             button={
               <div className="cursor-pointer flex items-center justify-center group h-12 w-12 hover:bg-lightgrey border border-foreground/30 bg-transparent rounded-full duration-300">
                 <Plus size={20} className="text-foreground/50" />
@@ -122,13 +144,22 @@ const ChatPage = () => {
             contentStyle="ml-27"
             items={[
               {
-                title: "Attach Document",
-                Icon: Paperclip,
-                onAction: () => {},
+                components: (
+                  <div onClick={(e) => e.stopPropagation()}>
+                    <FileUploader
+                      file={selectedFile}
+                      setFile={(e) => {
+                        setSelectedFile(e);
+                        setOpenDropDown(false);
+                      }}
+                      onFIleupload={() => {}}
+                      btnText="Add Files"
+                    />
+                  </div>
+                ),
               },
             ]}
           />
-
           <Button
             disabled={loading}
             onClick={() => handleSearch()}
@@ -141,6 +172,19 @@ const ChatPage = () => {
             )}
           </Button>
         </div>
+
+        {selectedFile && (
+          <div className="space-y-4">
+            <Separator />
+            {selectedFile ? (
+              <SelectedFIleUI
+                fileName={selectedFile.name}
+                fileType={selectedFile.type}
+                onDelete={() => setSelectedFile(null)}
+              />
+            ) : null}
+          </div>
+        )}
       </div>
     </div>
   );
