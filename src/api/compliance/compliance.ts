@@ -1,15 +1,24 @@
 import axiosInstance from "@/utils/axios-instance";
-// import { extractErrorMessage } from "@/common/helpers";
+import axiosInstanceDoc from "@/utils/axios-instance-doc";
+import { extractErrorMessage } from "@/common/helpers";
 
 export const ComplianceDocument = {
   // Document Upload
   uploadDocument: async (document: File) => {
-    const response = await axiosInstance.post(
-      "/api/v1/document-comparison/compare",
-      document
-    );
-    console.log("Document upload response ", response);
-    return response.data;
+    const formData = new FormData();
+    formData.append("document", document);
+
+    try {
+      const response = await axiosInstanceDoc.post(
+        `https://wrightenergy.onrender.com/api/v1/document-comparison/compare`,
+        formData
+      );
+
+      return response.data;
+    } catch (error) {
+      const errorMessage = extractErrorMessage(error);
+      console.error(errorMessage);
+    }
   },
 
   // comparison History
