@@ -255,7 +255,7 @@ export default function Page() {
               </button>
               <button
                 onClick={() => router.push("/chat")}
-                className="flex items-center space-x-2 text-gray-300 hover:text-white transition-colors"
+                className="flex items-center space-x-2 text-sm text-gray-300 hover:text-white transition-colors cursor-pointer rounded-md border p-2"
               >
                 <ChevronLeft size={16} />
                 <span>Back to Chat</span>
@@ -277,9 +277,9 @@ export default function Page() {
       {/* Back Button */}
       <button
         onClick={() => router.push("/chat")}
-        className="flex items-center space-x-2 text-gray-300 hover:text-white transition-colors mb-6"
+        className="cursor-pointer flex items-center text-sm space-x-2 text-gray-300 hover:text-white transition-colors mb-6 rounded-md border p-2"
       >
-        <ChevronLeft size={20} />
+        <ChevronLeft size={18} />
         <span>Back to Chat</span>
       </button>
 

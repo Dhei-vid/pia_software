@@ -3,7 +3,9 @@
 import { useState, ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { FileText, SquareCheck } from "lucide-react";
-import { LeftSideBar } from "@/components/navigation/left-side-bar";
+// import { LeftSideBar } from "@/components/navigation/left-side-bar";
+
+import { LeftSideBar } from "../navigation/left-side-bar-old";
 import RightSideBar from "@/components/navigation/right-side-bar";
 import { DocumentSection } from "@/utils/documentParser";
 

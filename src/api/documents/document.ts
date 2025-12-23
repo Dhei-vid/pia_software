@@ -12,10 +12,12 @@ import {
 } from "./document-types";
 
 export const DocumentService = {
-  // Get the document: {{baseURL}}/api/v1/notes/:documentId
+  // Get the document: {{baseURL}}/api/v1/documents/:documentId
   getDocument: async (documentId: string): Promise<Document> => {
     try {
-      const response = await axiosInstance.get(`/api/v1/notes/${documentId}`);
+      const response = await axiosInstance.get(
+        `/api/v1/documents/${documentId}`
+      );
       return response.data.data;
     } catch (error) {
       const errorMessage = extractErrorMessage(error);

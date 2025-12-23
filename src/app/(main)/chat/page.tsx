@@ -19,6 +19,7 @@ import { SelectedFIleUI } from "@/components/ui/selected-file";
 import { AIService } from "@/api/ai/ai";
 import { SearchResponse } from "@/api/ai/ai-type";
 import { ComplianceDocument } from "@/api/compliance/compliance";
+import { DocumentService } from "@/api/documents/document";
 
 const ChatPage = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -69,6 +70,16 @@ const ChatPage = () => {
     }
   }, [searchResults]);
 
+  // Handle get document
+  useEffect(() => {
+    const fetchDocument = async () => {
+      const response = await DocumentService.getAllDocuments();
+      console.log("All Documents ", response.documents);
+    };
+
+    fetchDocument();
+  });
+
   // check compliance document
   useEffect(() => {
     const checkFileCompliance = async () => {
@@ -84,7 +95,7 @@ const ChatPage = () => {
     <div className={`flex flex-col w-full h-full overflow-hidden`}>
       <div
         ref={scrollRef}
-        className="flex-1 overflow-y-auto scrollbar-width p-4 space-y-6"
+        className="flex-1 overflow-y-auto scrollbar-width space-y-6"
       >
         {/* Greeting */}
         {(!isQueryResult || !searchQuery) && (

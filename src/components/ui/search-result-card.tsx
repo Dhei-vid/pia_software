@@ -26,7 +26,7 @@ const SearchResultCard: FC<SearchResultCardProps> = ({
       )}
     >
       <div>
-        <h3 className="text-lg font-semibold text-foreground/70 hover:text-foreground mb-2">
+        <h3 className="text-base font-semibold text-foreground/70 hover:text-foreground mb-2 line-clamp-2">
           {title}
         </h3>
         <p className="text-muted-foreground text-sm mb-4 line-clamp-3">
