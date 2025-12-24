@@ -25,7 +25,7 @@ axiosInstanceDoc.interceptors.request.use(
 axiosInstanceDoc.interceptors.response.use(
   (response) => {
     const { success, message } = response.data;
-    if (success && message) toast.success(message);
+    // if (success && message) toast.success(message);
     return response;
   },
   async (error) => {

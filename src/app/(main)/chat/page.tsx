@@ -74,7 +74,6 @@ const ChatPage = () => {
   useEffect(() => {
     const fetchDocument = async () => {
       const response = await DocumentService.getAllDocuments();
-      console.log("All Documents ", response.documents);
     };
 
     fetchDocument();

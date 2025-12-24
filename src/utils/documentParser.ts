@@ -38,7 +38,6 @@ export class DocumentParser {
     let currentPart: DocumentSection | null = null;
     let globalSectionCounter = 0;
 
-
     // First pass: Identify all structural elements from TOC
     const structuralElements: Array<{
       type: "chapter" | "part" | "section";
@@ -54,20 +53,24 @@ export class DocumentParser {
     // Find the TOC section
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i].trim();
-      
+
       // Start of TOC
-      if (line.match(/^ARRANGEMENT OF SECTIONS/i) || line.match(/^TABLE OF CONTENTS/i)) {
+      if (
+        line.match(/^ARRANGEMENT OF SECTIONS/i) ||
+        line.match(/^TABLE OF CONTENTS/i)
+      ) {
         inTOC = true;
         continue;
       }
-      
+
       // End of TOC (document body starts)
-      if (inTOC && (
-        line.match(/^PETROLEUM INDUSTRY ACT, 2021/i) ||
-        line.match(/^ACT No\. 6/i) ||
-        line.match(/^ENACTED by the National Assembly/i) ||
-        line.match(/^COMMENCEMENT/i)
-      )) {
+      if (
+        inTOC &&
+        (line.match(/^PETROLEUM INDUSTRY ACT, 2021/i) ||
+          line.match(/^ACT No\. 6/i) ||
+          line.match(/^ENACTED by the National Assembly/i) ||
+          line.match(/^COMMENCEMENT/i))
+      ) {
         tocEndLine = i;
         break;
       }
@@ -81,16 +84,14 @@ export class DocumentParser {
             line,
             level: 1,
           });
-        }
-        else if (line.match(/^PART\s+[IVX]+[—\-]/i)) {
+        } else if (line.match(/^PART\s+[IVX]+[—\-]/i)) {
           structuralElements.push({
             type: "part",
             lineIndex: i,
             line,
             level: 2,
           });
-        }
-        else if (line.match(/^\d+\.\s+/)) {
+        } else if (line.match(/^\d+\.\s+/)) {
           const sectionNumberMatch = line.match(/^(\d+)\.\s+/);
           const sectionNumber = sectionNumberMatch
             ? parseInt(sectionNumberMatch[1])
@@ -107,15 +108,17 @@ export class DocumentParser {
       }
     }
 
-
     // Second pass: Build the hierarchy with proper section grouping
+    let chapterId = "";
+    let partId = "";
+    let partsInCurrentChapter = 0; // Track parts per chapter
     for (let i = 0; i < structuralElements.length; i++) {
       const element = structuralElements[i];
       const lineIndex = element.lineIndex;
       const line = element.line;
 
       if (element.type === "chapter") {
-        const chapterId = `chapter-${chapters.length + 1}`;
+        chapterId = `ch${chapters.length + 1}`;
         const chapterNumber = chapters.length + 1;
         const chapterTitle = line.replace(/^CHAPTER\s+\d+[—\-]\s*/i, "");
         currentChapter = {
@@ -133,8 +136,10 @@ export class DocumentParser {
         chapters.push(currentChapter);
         sections.push(currentChapter);
         currentPart = null; // Reset current part when new chapter starts
+        partsInCurrentChapter = 0; // Reset part counter for new chapter
       } else if (element.type === "part") {
-        const partId = `part-${parts.length + 1}`;
+        partsInCurrentChapter++; // Increment parts counter for current chapter
+        partId = `${chapterId}-pt${partsInCurrentChapter}`;
         const partTitle = line.replace(/^PART\s+[IVX]+[—\-]\s*/i, "");
         currentPart = {
           id: partId,
@@ -159,7 +164,7 @@ export class DocumentParser {
       } else if (element.type === "section") {
         globalSectionCounter++;
         const sectionNumber = element.sectionNumber || globalSectionCounter;
-        const sectionId = `section-${sectionNumber}`;
+        const sectionId = `${partId}-s${sectionNumber}`;
         const sectionTitle = line.replace(/^\d+\.\s+/, "");
 
         // Extract the full content for this section
@@ -199,8 +204,6 @@ export class DocumentParser {
       }
     }
 
-
-
     return {
       id: documentId,
       title,
@@ -236,14 +239,17 @@ export class DocumentParser {
     const sectionPattern = new RegExp(`^${sectionNumber}\\.\\s+`, "i");
     let currentChapterMatch = false;
     let currentPartMatch = false;
-    const foundMatches: Array<{line: number, content: string}> = [];
+    const foundMatches: Array<{ line: number; content: string }> = [];
 
     // Extract part number for matching
     const partTitleNumberMatch = partTitle.match(/PART\s+([IVX]+)/i);
-    const searchPartNumber = partTitleNumberMatch ? partTitleNumberMatch[1] : "";
+    const searchPartNumber = partTitleNumberMatch
+      ? partTitleNumberMatch[1]
+      : "";
 
     // Find all potential matches - SKIP TOC AREA (before line 942)
-    for (let i = 943; i < lines.length; i++) { // Start AFTER TOC ends
+    for (let i = 943; i < lines.length; i++) {
+      // Start AFTER TOC ends
       const trimmedLine = lines[i].trim();
 
       // Track current chapter
@@ -258,23 +264,32 @@ export class DocumentParser {
       if (trimmedLine.match(/^PART\s+[IVX]+[—\-]/i) && currentChapterMatch) {
         const partNumberMatch = trimmedLine.match(/^PART\s+([IVX]+)/i);
         const partNumber = partNumberMatch ? partNumberMatch[1] : "";
-        currentPartMatch = partNumber.toUpperCase() === searchPartNumber.toUpperCase();
+        currentPartMatch =
+          partNumber.toUpperCase() === searchPartNumber.toUpperCase();
       }
 
       // Collect all matches in the right context
-      if (currentChapterMatch && currentPartMatch && sectionPattern.test(trimmedLine)) {
-        foundMatches.push({line: i, content: trimmedLine});
+      if (
+        currentChapterMatch &&
+        currentPartMatch &&
+        sectionPattern.test(trimmedLine)
+      ) {
+        foundMatches.push({ line: i, content: trimmedLine });
       }
     }
 
     // Use the LAST match (body content, not TOC)
     if (foundMatches.length === 0) {
       // Fallback: search under chapter only (some parts don't exist in body)
-      return this.findSectionContentByChapter(lines, sectionNumber, chapterTitle);
+      return this.findSectionContentByChapter(
+        lines,
+        sectionNumber,
+        chapterTitle
+      );
     }
 
     const bestMatch = foundMatches[foundMatches.length - 1];
-    
+
     // Extract content
     const sectionContent: string[] = [lines[bestMatch.line].trim()];
     let i = bestMatch.line + 1;
@@ -287,7 +302,9 @@ export class DocumentParser {
         contentTrimmed.match(/^PART\s+[IVX]+[—\-]/i) ||
         contentTrimmed.match(/^SCHEDULE/i) ||
         contentTrimmed.match(/^APPENDIX/i) ||
-        (contentTrimmed.match(/^\d+\.\s+/) && !lines[i].startsWith(" ") && !lines[i].startsWith("\t"))
+        (contentTrimmed.match(/^\d+\.\s+/) &&
+          !lines[i].startsWith(" ") &&
+          !lines[i].startsWith("\t"))
       ) {
         break;
       }
@@ -307,7 +324,7 @@ export class DocumentParser {
     const sectionPattern = new RegExp(`^${sectionNumber}\\.\\s+`, "i");
     let currentChapterMatch = false;
     let inChapterBody = false;
-    const foundMatches: Array<{line: number, content: string}> = [];
+    const foundMatches: Array<{ line: number; content: string }> = [];
 
     // Find matches under chapter body but BEFORE any PART (content directly under chapter)
     for (let i = 0; i < lines.length; i++) {
@@ -331,7 +348,7 @@ export class DocumentParser {
 
       // Collect matches that are directly under chapter (between CHAPTER and first PART)
       if (inChapterBody && sectionPattern.test(trimmedLine)) {
-        foundMatches.push({line: i, content: trimmedLine});
+        foundMatches.push({ line: i, content: trimmedLine });
       }
     }
 
@@ -354,7 +371,9 @@ export class DocumentParser {
         contentTrimmed.match(/^PART\s+[IVX]+[—\-]/i) ||
         contentTrimmed.match(/^SCHEDULE/i) ||
         contentTrimmed.match(/^APPENDIX/i) ||
-        (contentTrimmed.match(/^\d+\.\s+/) && !lines[i].startsWith(" ") && !lines[i].startsWith("\t"))
+        (contentTrimmed.match(/^\d+\.\s+/) &&
+          !lines[i].startsWith(" ") &&
+          !lines[i].startsWith("\t"))
       ) {
         break;
       }
@@ -374,7 +393,11 @@ export class DocumentParser {
     const foundSection = false;
     const sectionContent: string[] = [];
     let inDocumentBody = false;
-    const possibleMatches: Array<{lineIndex: number, line: string, nextContent: string}> = [];
+    const possibleMatches: Array<{
+      lineIndex: number;
+      line: string;
+      nextContent: string;
+    }> = [];
 
     // First pass: find all lines that match the section number
     for (let i = 0; i < lines.length; i++) {
@@ -405,11 +428,11 @@ export class DocumentParser {
             break;
           }
         }
-        
+
         possibleMatches.push({
           lineIndex: i,
           line: trimmedLine,
-          nextContent: nextContent
+          nextContent: nextContent,
         });
       }
     }
@@ -417,10 +440,12 @@ export class DocumentParser {
     // Find the match with substantial content (not TOC)
     // TOC entries will have another numbered section immediately after
     // Real content will have actual text
-    const bestMatch = possibleMatches.find(match => 
-      match.nextContent.length > 50 && 
-      !match.line.toLowerCase().includes("vesting of petroleum.")
-    ) || possibleMatches[possibleMatches.length - 1]; // Default to last match
+    const bestMatch =
+      possibleMatches.find(
+        (match) =>
+          match.nextContent.length > 50 &&
+          !match.line.toLowerCase().includes("vesting of petroleum.")
+      ) || possibleMatches[possibleMatches.length - 1]; // Default to last match
 
     if (!bestMatch) {
       return "";
@@ -642,9 +667,7 @@ export class DocumentParser {
     // Find the part and return its subsections (which should be sections)
     const part = parsedDocument.parts.find((p) => p.id === partId);
     if (part && part.subsections) {
-      return part.subsections.filter(
-        (section) => section.type === "section"
-      );
+      return part.subsections.filter((section) => section.type === "section");
     }
 
     // Fallback: look for sections with parentId === partId

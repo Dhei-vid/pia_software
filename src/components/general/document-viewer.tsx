@@ -1,6 +1,6 @@
 "use client";
 
-import React, { FC } from "react";
+import React, { FC, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -10,13 +10,13 @@ import {
   SendHorizontal,
   Link,
 } from "lucide-react";
-import { DocumentSection } from "@/utils/documentParser";
 import { cn } from "@/lib/utils";
+import { DocumentContent } from "@/api/documents/document-types";
 
 interface IDocumentViewerProps {
-  selectedSection: DocumentSection | null;
-  chapterTitle?: string;
-  partTitle?: string;
+  documentContent: DocumentContent | null;
+  sectionId: string | null;
+  partId: string | null;
   currentSectionIndex?: number;
   totalSections?: number;
   previousSectionTitle: string;
@@ -31,9 +31,9 @@ interface IDocumentViewerProps {
 }
 
 const DocumentViewer: FC<IDocumentViewerProps> = ({
-  selectedSection,
-  chapterTitle,
-  partTitle,
+  documentContent,
+  sectionId,
+  partId,
   previousSectionTitle,
   nextSectionTitle,
   previousSectionNumber = 0,
@@ -46,22 +46,37 @@ const DocumentViewer: FC<IDocumentViewerProps> = ({
   searchQuery = "",
   setSearchQuery,
 }) => {
+  console.log("Document Content ", documentContent);
+  // Find the section, chapter, and part from document content structure
+  const { section, chapter, part } = useMemo(() => {
+    if (!documentContent || !sectionId) {
+      return { section: null, chapter: null, part: null };
+    }
+
+    // Search through chapters -> parts -> sections
+    for (const chapterItem of documentContent.chapters) {
+      for (const partItem of chapterItem.parts) {
+        if (partId && partItem.id !== partId) continue;
+
+        const foundSection = partItem.sections.find((s) => s.id === sectionId);
+        if (foundSection) {
+          return {
+            section: foundSection,
+            chapter: chapterItem,
+            part: partItem,
+          };
+        }
+      }
+    }
+
+    return { section: null, chapter: null, part: null };
+  }, [documentContent, sectionId, partId]);
+
   const handleSearch = () => {
     if (onSearch && searchQuery.trim()) {
       onSearch(searchQuery);
     }
   };
-
-  // Helper function to extract section number from section ID
-  const getSectionNumber = (sectionId: string): number => {
-    const match = sectionId.match(/section-(\d+)/);
-    return match ? parseInt(match[1]) : 0;
-  };
-
-  // Get current section number for display
-  const currentSectionNumber = selectedSection
-    ? getSectionNumber(selectedSection.id)
-    : 0;
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -70,7 +85,7 @@ const DocumentViewer: FC<IDocumentViewerProps> = ({
     }
   };
 
-  if (!selectedSection) {
+  if (!section || !chapter || !part) {
     return (
       <div className="h-full flex items-center justify-center">
         <div className="text-center">
@@ -85,29 +100,36 @@ const DocumentViewer: FC<IDocumentViewerProps> = ({
     );
   }
 
+  // Get section content from markdownContent
+  const sectionContent = Array.isArray(section.markdownContent)
+    ? section.markdownContent.join("\n")
+    : section.markdownContent || "";
+
   return (
     <div className="h-full flex flex-col">
       {/* Header */}
       <div className="mb-6">
-        {chapterTitle && (
-          <h1 className="text-2xl font-semibold text-foreground mb-2">
-            {chapterTitle}
+        {chapter.chapterTitle && (
+          <h1 className="text-2xl font-semibold text-foreground mb-2 capitalize">
+            Chapter {chapter.chapterNumber}: {chapter.chapterTitle}
           </h1>
         )}
-        {partTitle && (
-          <h2 className="text-lg text-foreground/70 mb-4">{partTitle}</h2>
+        {part.partTitle && (
+          <h2 className="text-base text-foreground/70 mb-4">
+            {part.partTitle}
+          </h2>
         )}
-        <h3 className="text-xl font-bold text-foreground">
-          {selectedSection.title}
+        <h3 className="text-base font-bold text-foreground">
+          {section.sectionTitle}
         </h3>
       </div>
 
       {/* Document Content */}
       <div className="flex-1 overflow-y-auto mb-6">
         <div className="prose prose-invert max-w-none">
-          {selectedSection.content ? (
+          {sectionContent ? (
             <div className="space-y-3">
-              {selectedSection.content.split("\n").map((paragraph, index) => {
+              {sectionContent.split("\n").map((paragraph, index) => {
                 if (!paragraph.trim()) {
                   // Preserve empty lines for spacing
                   return <div key={index} className="h-2" />;

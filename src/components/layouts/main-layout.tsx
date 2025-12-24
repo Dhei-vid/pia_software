@@ -7,7 +7,6 @@ import { FileText, SquareCheck } from "lucide-react";
 
 import { LeftSideBar } from "../navigation/left-side-bar-old";
 import RightSideBar from "@/components/navigation/right-side-bar";
-import { DocumentSection } from "@/utils/documentParser";
 
 interface MainLayoutProps {
   children: ReactNode;
@@ -16,35 +15,11 @@ interface MainLayoutProps {
 const MainLayout = ({ children }: MainLayoutProps) => {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [selectedSection, setSelectedSection] =
-    useState<DocumentSection | null>(null);
-  const [chapterTitle, setChapterTitle] = useState<string>("");
-  const [partTitle, setPartTitle] = useState<string>("");
-  const [currentPartSections, setCurrentPartSections] = useState<
-    DocumentSection[]
-  >([]);
-  const [currentSectionIndex, setCurrentSectionIndex] = useState<number>(0);
 
   const HistoryTools = [
     { icon: FileText, label: "Saved Notes", active: false },
     { icon: SquareCheck, label: "Your Checklist", active: false },
   ];
-
-  const handlePreviousSection = () => {
-    if (currentSectionIndex > 0) {
-      const newIndex = currentSectionIndex - 1;
-      setCurrentSectionIndex(newIndex);
-      setSelectedSection(currentPartSections[newIndex]);
-    }
-  };
-
-  const handleNextSection = () => {
-    if (currentSectionIndex < currentPartSections.length - 1) {
-      const newIndex = currentSectionIndex + 1;
-      setCurrentSectionIndex(newIndex);
-      setSelectedSection(currentPartSections[newIndex]);
-    }
-  };
 
   return (
     <div className="h-full flex overflow-hidden">
@@ -60,11 +35,6 @@ const MainLayout = ({ children }: MainLayoutProps) => {
             sections,
             partId
           ) => {
-            setSelectedSection(null);
-            setChapterTitle("");
-            setPartTitle("");
-            setCurrentPartSections([]);
-            setCurrentSectionIndex(0);
             // Navigate to docs page with section info when a section is selected
             router.push(`/chat/doc?sectionId=${section.id}&partId=${partId}`);
           }}

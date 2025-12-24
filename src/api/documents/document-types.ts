@@ -157,7 +157,7 @@ interface DocumentChapter {
   parts: DocumentParts[];
 }
 
-interface DocumentContent {
+export interface DocumentContent {
   id: string;
   actNumber: string;
   title: string;

@@ -1,10 +1,6 @@
 import { useState, useCallback, useMemo } from "react";
 import { Document } from "@/api/documents/document-types";
-import {
-  DocumentParser,
-  // ParsedDocument,
-  DocumentSection,
-} from "@/utils/documentParser";
+import { DocumentParser, DocumentSection } from "@/utils/documentParser";
 
 export const useDocumentParser = (document: Document | null) => {
   const [selectedSection, setSelectedSection] =
@@ -15,27 +11,11 @@ export const useDocumentParser = (document: Document | null) => {
       return null;
     }
 
-    // console.log("Document content length:", document.content.length);
-    // console.log("Document content preview:", document.content.substring(0, 500));
-
     const parsed = DocumentParser.parseDocumentContent(
       document.id,
       document.title,
       document.content
     );
-
-    // console.log("Parsed document sections count:", parsed.sections.length);
-    // console.log("Parsed document chapters count:", parsed.chapters.length);
-    // console.log("Parsed document parts count:", parsed.parts.length);
-
-    // Get detailed statistics
-    const stats = DocumentParser.getDocumentStatistics(parsed);
-    // console.log("Document Statistics:", stats);
-    // console.log("Section Distribution by Part:", stats.sectionDistribution);
-
-    // Validate structure
-    const validation = DocumentParser.validateDocumentStructure(parsed);
-    // console.log("Structure Validation:", validation);
 
     return parsed;
   }, [document]);
@@ -110,7 +90,6 @@ export const useDocumentParser = (document: Document | null) => {
     getSectionsForPart,
     validateStructure,
     getDocumentStatistics,
-    // Convenience getters
     chapters: parsedDocument?.chapters || [],
     parts: parsedDocument?.parts || [],
     sections: parsedDocument?.sections || [],

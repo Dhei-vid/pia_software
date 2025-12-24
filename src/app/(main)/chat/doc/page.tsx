@@ -1,184 +1,131 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { ChevronLeft } from "lucide-react";
 import DocumentViewer from "@/components/general/document-viewer";
 import LoadingSpinner from "@/components/ui/loading";
-import { Document } from "@/api/documents/document-types";
 import { DocumentService } from "@/api/documents/document";
-import { useDocumentParser } from "@/hooks/useDocumentParser";
-import { DocumentSection } from "@/utils/documentParser";
+import { DocumentContent } from "@/api/documents/document-types";
+import useAuth from "@/hooks/useAuth";
 
 export default function Page() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const sectionId = searchParams.get("sectionId");
   const partId = searchParams.get("partId");
+  const { user } = useAuth();
 
-  const [document, setDocument] = useState<Document | null>(null);
+  const [documentContent, setDocumentContent] =
+    useState<DocumentContent | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [selectedSection, setSelectedSection] =
-    useState<DocumentSection | null>(null);
-  const [chapterTitle, setChapterTitle] = useState<string>("");
-  const [partTitle, setPartTitle] = useState<string>("");
-  const [currentPartSections, setCurrentPartSections] = useState<
-    DocumentSection[]
-  >([]);
-  const [currentSectionIndex, setCurrentSectionIndex] = useState<number>(0);
 
-  const {
-    parsedDocument,
-    chapters: parsedChapters,
-    parts: parsedParts,
-    getSectionsForPart,
-  } = useDocumentParser(document);
-
-  // Fetch document
+  // Fetch document content
   useEffect(() => {
-    const fetchDocument = async () => {
+    const fetchData = async () => {
+      if (!user?.documentId) return;
+
       try {
         setIsLoading(true);
-        const response = await DocumentService.getAllDocuments();
-        const docs = Array.isArray(response.documents)
-          ? response.documents
-          : [];
-        // Use the first document as default
-        if (docs.length > 0) {
-          setDocument(docs[0]);
+        const contentResponse = await DocumentService.getAllDocumentContent(
+          user.documentId,
+          "structured"
+        );
+
+        if (contentResponse.success && contentResponse.data?.content) {
+          setDocumentContent(contentResponse.data.content);
         }
       } catch (error) {
-        console.error("Error fetching document:", error);
+        console.error("Error fetching document content:", error);
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchDocument();
-  }, []);
+    fetchData();
+  }, [user?.documentId]);
 
-  // Find and set the selected section when sectionId or parsedDocument changes
-  useEffect(() => {
-    if (!parsedDocument || !sectionId) {
-      return;
+  // Find the selected section, chapter, and part from document content
+  const { part, currentSectionIndex, totalSections } = useMemo(() => {
+    if (!documentContent || !sectionId) {
+      return {
+        part: null,
+        currentSectionIndex: 0,
+        totalSections: 0,
+      };
     }
 
-    // Find the section by ID
-    const section = parsedDocument.sections.find((s) => s.id === sectionId);
-    if (!section) {
-      console.warn("Section not found:", sectionId);
-      return;
-    }
+    // Search through chapters -> parts -> sections
+    for (const chapterItem of documentContent.chapters) {
+      for (const partItem of chapterItem.parts) {
+        if (partId && partItem.id !== partId) continue;
 
-    setSelectedSection(section);
-
-    // Find the part that contains this section
-    let part = null;
-    if (partId) {
-      // First try to find by partId directly
-      part = parsedParts.find((p) => p.id === partId);
-
-      // If not found, look for it in chapters
-      if (!part) {
-        for (const chapter of parsedChapters) {
-          const foundPart = chapter.subsections?.find(
-            (sub) => sub.id === partId
-          );
-          if (foundPart) {
-            part = foundPart;
-            setChapterTitle(chapter.title);
-            break;
-          }
-        }
-      } else {
-        // Find the chapter containing this part
-        const chapter = parsedChapters.find((ch) =>
-          ch.subsections?.some((sub) => sub.id === partId)
-        );
-        if (chapter) {
-          setChapterTitle(chapter.title);
-        }
-      }
-    } else {
-      // Fallback: find part by section's parentId
-      const foundPart = parsedParts.find((p) => p.id === section.parentId);
-      if (foundPart) {
-        part = foundPart;
-        // Find the chapter containing this part
-        const chapter = parsedChapters.find((ch) =>
-          ch.subsections?.some((sub) => sub.id === foundPart.id)
-        );
-        if (chapter) {
-          setChapterTitle(chapter.title);
+        const section = partItem.sections.find((s) => s.id === sectionId);
+        if (section) {
+          const index = partItem.sections.findIndex((s) => s.id === sectionId);
+          return {
+            part: partItem,
+            currentSectionIndex: index >= 0 ? index : 0,
+            totalSections: partItem.sections.length,
+          };
         }
       }
     }
 
-    if (part) {
-      const sections = getSectionsForPart(part.id);
-      setCurrentPartSections(sections);
-      const index = sections.findIndex((s) => s.id === sectionId);
-      setCurrentSectionIndex(index >= 0 ? index : 0);
-      setPartTitle(part.title);
-    } else {
-      // Fallback: if part not found, try to find sections with same parentId
-      const sections = parsedDocument.sections.filter(
-        (s) => s.type === "section" && s.parentId === section.parentId
-      );
-      setCurrentPartSections(sections);
-      const index = sections.findIndex((s) => s.id === sectionId);
-      setCurrentSectionIndex(index >= 0 ? index : 0);
+    return {
+      part: null,
+      currentSectionIndex: 0,
+      totalSections: 0,
+    };
+  }, [documentContent, sectionId, partId]);
 
-      // Try to find chapter and part from parentId
-      const chapter = parsedChapters.find((ch) => ch.id === section.parentId);
-      if (chapter) {
-        setChapterTitle(chapter.title);
-      } else {
-        const foundPart = parsedParts.find((p) => p.id === section.parentId);
-        if (foundPart) {
-          setPartTitle(foundPart.title);
-          const parentChapter = parsedChapters.find((ch) =>
-            ch.subsections?.some((sub) => sub.id === foundPart.id)
-          );
-          if (parentChapter) {
-            setChapterTitle(parentChapter.title);
-          }
-        }
-      }
+  // Get previous and next section info
+  const {
+    previousSectionTitle,
+    nextSectionTitle,
+    previousSectionNumber,
+    nextSectionNumber,
+  } = useMemo(() => {
+    if (!part || part.sections.length === 0) {
+      return {
+        previousSectionTitle: "",
+        nextSectionTitle: "",
+        previousSectionNumber: 0,
+        nextSectionNumber: 0,
+      };
     }
-  }, [
-    parsedDocument,
-    sectionId,
-    partId,
-    parsedChapters,
-    parsedParts,
-    getSectionsForPart,
-  ]);
+
+    const previousSection =
+      currentSectionIndex > 0 ? part.sections[currentSectionIndex - 1] : null;
+    const nextSection =
+      currentSectionIndex < part.sections.length - 1
+        ? part.sections[currentSectionIndex + 1]
+        : null;
+
+    return {
+      previousSectionTitle: previousSection?.sectionTitle || "",
+      nextSectionTitle: nextSection?.sectionTitle || "",
+      previousSectionNumber: previousSection?.sectionNumber || 0,
+      nextSectionNumber: nextSection?.sectionNumber || 0,
+    };
+  }, [part, currentSectionIndex]);
 
   const handlePreviousSection = () => {
-    if (currentSectionIndex > 0 && partId) {
-      const newIndex = currentSectionIndex - 1;
-      const newSection = currentPartSections[newIndex];
-      setCurrentSectionIndex(newIndex);
-      setSelectedSection(newSection);
-      // Update URL
+    if (currentSectionIndex > 0 && partId && part) {
+      const newSection = part.sections[currentSectionIndex - 1];
       router.push(`/chat/doc?sectionId=${newSection.id}&partId=${partId}`);
     }
   };
 
   const handleNextSection = () => {
-    if (currentSectionIndex < currentPartSections.length - 1 && partId) {
-      const newIndex = currentSectionIndex + 1;
-      const newSection = currentPartSections[newIndex];
-      setCurrentSectionIndex(newIndex);
-      setSelectedSection(newSection);
-      // Update URL
+    if (currentSectionIndex < part!.sections.length - 1 && partId && part) {
+      const newSection = part.sections[currentSectionIndex + 1];
       router.push(`/chat/doc?sectionId=${newSection.id}&partId=${partId}`);
     }
   };
 
   // Show loading state while fetching document
-  if (isLoading || (sectionId && !parsedDocument)) {
+  if (isLoading || (sectionId && !documentContent)) {
     return (
       <div className="flex items-center justify-center h-full">
         <div className="flex items-center gap-2">
@@ -221,54 +168,13 @@ export default function Page() {
     );
   }
 
-  // If sectionId exists but section not found yet, try to find it directly
-  if (sectionId && parsedDocument && !selectedSection) {
-    const section = parsedDocument.sections.find((s) => s.id === sectionId);
-    if (section) {
-      return (
-        <div className="flex items-center justify-center h-full">
-          <div className="flex items-center gap-2">
-            <LoadingSpinner size="sm" />
-            <p className="text-gray-400">Loading section...</p>
-          </div>
-        </div>
-      );
-    } else {
-      // Section doesn't exist in document - show error
-      return (
-        <div className="flex items-center justify-center h-full">
-          <div className="text-center">
-            <p className="text-gray-400 mb-2">Section not found: {sectionId}</p>
-            <p className="text-xs text-gray-500 mb-4">
-              Available sections:{" "}
-              {parsedDocument.sections
-                .slice(0, 5)
-                .map((s) => s.id)
-                .join(", ")}
-            </p>
-            <div className="space-y-2">
-              <button
-                onClick={() => router.push("/chat/doc")}
-                className="text-blue-400 hover:text-blue-300 mr-4"
-              >
-                Go back to documents
-              </button>
-              <button
-                onClick={() => router.push("/chat")}
-                className="flex items-center space-x-2 text-sm text-gray-300 hover:text-white transition-colors cursor-pointer rounded-md border p-2"
-              >
-                <ChevronLeft size={16} />
-                <span>Back to Chat</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      );
-    }
+  // If sectionId exists but section not found, show nothing (silent failure)
+  if (sectionId && documentContent && !part && !isLoading) {
+    return null;
   }
 
   // Show DocumentViewer when a section is selected
-  if (!selectedSection) {
+  if (!sectionId || !documentContent) {
     return null;
   }
 
@@ -284,41 +190,15 @@ export default function Page() {
       </button>
 
       <DocumentViewer
-        selectedSection={selectedSection}
-        chapterTitle={chapterTitle}
-        partTitle={partTitle}
-        previousSectionTitle={
-          currentSectionIndex > 0
-            ? currentPartSections[currentSectionIndex - 1].title
-            : ""
-        }
-        nextSectionTitle={
-          currentSectionIndex < currentPartSections.length - 1
-            ? currentPartSections[currentSectionIndex + 1].title
-            : ""
-        }
-        previousSectionNumber={
-          currentSectionIndex > 0
-            ? parseInt(
-                currentPartSections[currentSectionIndex - 1].id.replace(
-                  "section-",
-                  ""
-                )
-              )
-            : 0
-        }
-        nextSectionNumber={
-          currentSectionIndex < currentPartSections.length - 1
-            ? parseInt(
-                currentPartSections[currentSectionIndex + 1].id.replace(
-                  "section-",
-                  ""
-                )
-              )
-            : 0
-        }
+        documentContent={documentContent}
+        sectionId={sectionId}
+        partId={partId}
+        previousSectionTitle={previousSectionTitle}
+        nextSectionTitle={nextSectionTitle}
+        previousSectionNumber={previousSectionNumber}
+        nextSectionNumber={nextSectionNumber}
         currentSectionIndex={currentSectionIndex}
-        totalSections={currentPartSections.length}
+        totalSections={totalSections}
         onPreviousSection={handlePreviousSection}
         onNextSection={handleNextSection}
         onSearch={() => {}}
