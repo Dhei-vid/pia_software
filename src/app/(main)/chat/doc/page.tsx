@@ -14,6 +14,9 @@ export default function Page() {
   const searchParams = useSearchParams();
   const sectionId = searchParams.get("sectionId");
   const partId = searchParams.get("partId");
+  const chapterTitle = searchParams.get("chapterTitle");
+  const partTitle = searchParams.get("partTitle");
+  const sectionTitle = searchParams.get("sectionTitle");
   const { user } = useAuth();
 
   const [documentContent, setDocumentContent] =
@@ -136,47 +139,6 @@ export default function Page() {
     );
   }
 
-  // If no section is selected, show the default page
-  if (!sectionId) {
-    return (
-      <>
-        {/* Back Button */}
-        <button
-          onClick={() => router.push("/chat")}
-          className="flex items-center space-x-2 text-foreground hover:text-white transition-colors mb-6"
-        >
-          <ChevronLeft size={20} />
-          <span>Back to Chat</span>
-        </button>
-
-        <div className="mb-8 text-center">
-          <h1 className="text-2xl sm:text-3xl lg:text-3xl font-serif text-white mb-2">
-            Documents
-          </h1>
-          <p className="text-gray-400">View and manage your documents</p>
-        </div>
-
-        <div className="space-y-6">
-          <div className="bg-dark border border-gray-700 rounded-xl p-6">
-            <h2 className="text-xl font-semibold text-white mb-4">
-              Recent Documents
-            </h2>
-            <p className="text-gray-400">Your documents will appear here</p>
-          </div>
-        </div>
-      </>
-    );
-  }
-
-  // If sectionId exists but section not found, show nothing (silent failure)
-  if (sectionId && documentContent && !part && !isLoading) {
-    return null;
-  }
-
-  // Show DocumentViewer when a section is selected
-  if (!sectionId || !documentContent) {
-    return null;
-  }
 
   return (
     <div>
@@ -193,6 +155,9 @@ export default function Page() {
         documentContent={documentContent}
         sectionId={sectionId}
         partId={partId}
+        chapterTitle={chapterTitle}
+        partTitle={partTitle}
+        sectionTitle={sectionTitle}
         previousSectionTitle={previousSectionTitle}
         nextSectionTitle={nextSectionTitle}
         previousSectionNumber={previousSectionNumber}

@@ -12,11 +12,15 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { DocumentContent } from "@/api/documents/document-types";
+import { extractCPS } from "@/common/helpers";
 
 interface IDocumentViewerProps {
   documentContent: DocumentContent | null;
   sectionId: string | null;
   partId: string | null;
+  chapterTitle?: string | null;
+  partTitle?: string | null;
+  sectionTitle?: string | null;
   currentSectionIndex?: number;
   totalSections?: number;
   previousSectionTitle: string;
@@ -34,6 +38,9 @@ const DocumentViewer: FC<IDocumentViewerProps> = ({
   documentContent,
   sectionId,
   partId,
+  chapterTitle,
+  partTitle,
+  sectionTitle,
   previousSectionTitle,
   nextSectionTitle,
   previousSectionNumber = 0,
@@ -46,7 +53,7 @@ const DocumentViewer: FC<IDocumentViewerProps> = ({
   searchQuery = "",
   setSearchQuery,
 }) => {
-  console.log("Document Content ", documentContent);
+  const {partNumber, sectionNumber} = extractCPS(sectionId || "ch0-pt0-s0");
   // Find the section, chapter, and part from document content structure
   const { section, chapter, part } = useMemo(() => {
     if (!documentContent || !sectionId) {
@@ -109,18 +116,14 @@ const DocumentViewer: FC<IDocumentViewerProps> = ({
     <div className="h-full flex flex-col">
       {/* Header */}
       <div className="mb-6">
-        {chapter.chapterTitle && (
           <h1 className="text-2xl font-semibold text-foreground mb-2 capitalize">
-            Chapter {chapter.chapterNumber}: {chapter.chapterTitle}
+            Chapter {chapter.chapterNumber}: {chapterTitle}
           </h1>
-        )}
-        {part.partTitle && (
           <h2 className="text-base text-foreground/70 mb-4">
-            {part.partTitle}
+            Part {partNumber}: {partTitle}
           </h2>
-        )}
-        <h3 className="text-base font-bold text-foreground">
-          {section.sectionTitle}
+        <h3 className="text-base text-foreground">
+          Section {sectionNumber}: {sectionTitle}
         </h3>
       </div>
 

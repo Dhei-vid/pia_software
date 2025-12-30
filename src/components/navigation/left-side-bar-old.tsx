@@ -62,9 +62,8 @@ export const LeftSideBar: FC<ILeftSideBarProps> = ({
     const fetchDocument = async () => {
       if (!user) return;
 
-      const [documentData, tocData] = await Promise.all([
-        DocumentService.getAllDocuments(),
-        DocumentService.getChapterTOC(user?.documentId),
+      const [documentData] = await Promise.all([
+        DocumentService.getAllDocuments()
       ]);
 
       // Checking Document validity
@@ -104,7 +103,7 @@ export const LeftSideBar: FC<ILeftSideBarProps> = ({
   }, [isHistoryOpen]);
 
   // Use document parser for the selected document
-  const { chapters: parsedChapters, getSectionsForPart } =
+  const { chapters: parsedChapters, getSectionsForPart, getSectionByTitle } =
     useDocumentParser(selectedDocument);
 
   const handleChapterClick = (chapterId: string) => {
@@ -127,6 +126,9 @@ export const LeftSideBar: FC<ILeftSideBarProps> = ({
 
   // Use only parsed chapters from the parser
   const displayChapters = parsedChapters;
+
+  console.log("Parsed Chapters in Sidebar: ", parsedChapters);
+
 
   return (
     <div className="h-full flex flex-col overflow-hidden">
@@ -352,10 +354,12 @@ export const LeftSideBar: FC<ILeftSideBarProps> = ({
                             const sections = getSectionsForPart(
                               selectedPartForDrawer.id
                             );
+
+                            console.log("Section ", section)
                             onSectionSelect(
                               section,
-                              chapter.title,
-                              part.title,
+                              chapter!.description ?? "",
+                              part!.description ?? "",
                               sections,
                               selectedPartForDrawer.id
                             );

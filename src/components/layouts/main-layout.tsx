@@ -36,7 +36,7 @@ const MainLayout = ({ children }: MainLayoutProps) => {
             partId
           ) => {
             // Navigate to docs page with section info when a section is selected
-            router.push(`/chat/doc?sectionId=${section.id}&partId=${partId}`);
+            router.push(`/chat/doc?sectionId=${section.id}&partId=${partId}&chapterTitle=${encodeURIComponent(chapterTitle)}&partTitle=${encodeURIComponent(partTitle)}&sectionTitle=${encodeURIComponent(section.title)}`);
           }}
         />
       </div>

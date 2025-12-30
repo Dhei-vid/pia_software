@@ -47,3 +47,22 @@ export const extractErrorMessage = (error: unknown): string => {
 
   return "An unexpected error occurred";
 };
+
+
+// Extract chapter, part, and section numbers from string like "ch1-pt2-s3"
+export function extractCPS(input: string) {
+  const regex = /ch(\d+)-pt(\d+)-s(\d+)/i;
+  const match = input.match(regex);
+
+  if (!match) {
+    throw new Error("Invalid format");
+  }
+
+  const [, chapter, part, section] = match;
+
+  return {
+    chapterNumber: Number(chapter),
+    partNumber: Number(part),
+    sectionNumber: Number(section),
+  };
+}
