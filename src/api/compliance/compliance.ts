@@ -1,6 +1,10 @@
 import axiosInstance from "@/utils/axios-instance";
 import axiosInstanceDoc from "@/utils/axios-instance-doc";
 import { extractErrorMessage } from "@/common/helpers";
+import {
+  ComplianceAnalysisResponse,
+  GetComplianceDocumentResponse,
+} from "./compliance-type";
 
 export const ComplianceDocument = {
   // Document Upload
@@ -10,11 +14,11 @@ export const ComplianceDocument = {
 
     try {
       const response = await axiosInstanceDoc.post(
-        `https://wrightenergy.onrender.com/api/v1/document-comparison/compare`,
+        `/api/v1/document-comparison/compare`,
         formData
       );
 
-      return response.data;
+      return response.data as ComplianceAnalysisResponse;
     } catch (error) {
       const errorMessage = extractErrorMessage(error);
       console.error(errorMessage);
@@ -26,8 +30,7 @@ export const ComplianceDocument = {
     const response = await axiosInstance.get(
       "/api/v1/document-comparison/history"
     );
-    console.log("Comparison Hostory Response ", response);
-    return response.data;
+    return response.data as GetComplianceDocumentResponse;
   },
 
   // Get by comparison ID
@@ -35,7 +38,6 @@ export const ComplianceDocument = {
     const response = await axiosInstance.get(
       `/api/v1/document-comparison/${id}`
     );
-    console.log("Comparison Document by ID response ", response);
     return response.data;
   },
 };

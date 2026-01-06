@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { SendHorizontal, Plus } from "lucide-react";
@@ -10,6 +11,7 @@ import { extractErrorMessage } from "@/common/helpers";
 import SearchResultCard from "@/components/ui/search-result-card";
 import { SearchResult } from "@/api/ai/ai-type";
 import { Dropdown } from "@/components/general/dropdown";
+import { toast } from "sonner";
 
 import FileUploader from "@/components/ui/file-uploader";
 import { Separator } from "@/components/ui/separator";
@@ -22,6 +24,7 @@ import { ComplianceDocument } from "@/api/compliance/compliance";
 import { DocumentService } from "@/api/documents/document";
 
 const ChatPage = () => {
+  const router = useRouter();
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [searchResults, setSearchResults] = useState<SearchResult | null>(null);
   const [isQueryResult, setIsQueryResult] = useState<boolean>(false);
@@ -33,6 +36,7 @@ const ChatPage = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [openDropDown, setOpenDropDown] = useState<boolean>(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
 
   // Handle Search
   const handleSearch = async () => {
@@ -84,7 +88,16 @@ const ChatPage = () => {
     const checkFileCompliance = async () => {
       if (selectedFile === null || !selectedFile) return;
 
-      await ComplianceDocument.uploadDocument(selectedFile as File);
+      const response = await ComplianceDocument.uploadDocument(selectedFile as File);
+
+      if (response?.success) {
+        toast.loading("Redirecting to compliance report...", { id: "compliance-report" });
+        router.push(`/chat/compliance-report?comparisonId=${response.data.comparisonId}`);
+
+        toast.success("Redirected to compliance report", { id: "compliance-report" });
+      }
+      
+      console.log("Compliance Response ", response);
     };
 
     checkFileCompliance();
