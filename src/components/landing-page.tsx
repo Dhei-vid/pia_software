@@ -69,7 +69,7 @@ const LandingPage = () => {
         </section>
       </HeroVideoLayout>
 
-      <div className="container text-right p-4 2xl:px-0">
+      <div className="container text-right p-4 2xl:px-2">
         <p className="text-base lg:text-lg text-green font-bold">
           Powered by Saidu Aliyu Mohammed
         </p>
