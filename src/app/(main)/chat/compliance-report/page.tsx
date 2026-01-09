@@ -19,8 +19,6 @@ export default function Page() {
   const [complianceReport, setComplianceReport] =
     useState<ComplianceComparisonData | null>(null);
 
-  console.log("Compliance Report ", complianceReport);
-
   useEffect(() => {
     const getComplianceReportByID = async (id: string) => {
       if (!id) return;
@@ -75,11 +73,13 @@ export default function Page() {
               <div>
                 <p className="font-bold">Major Compliance Areas:</p>
               </div>
-              <div className="grid md:grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                 {complianceReport?.results?.overview?.majorComplianceAreas.map(
                   (areas, index) => (
                     <div key={index} className="rounded-md border p-4">
-                      <p className="text-foreground/80 text-sm">{areas}</p>
+                      <p className="text-foreground/80 text-sm text-wrap">
+                        {areas}
+                      </p>
                     </div>
                   )
                 )}

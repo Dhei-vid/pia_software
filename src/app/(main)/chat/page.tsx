@@ -37,7 +37,6 @@ const ChatPage = () => {
   const [openDropDown, setOpenDropDown] = useState<boolean>(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
-
   // Handle Search
   const handleSearch = async () => {
     setLoading(true);
@@ -77,7 +76,7 @@ const ChatPage = () => {
   // Handle get document
   useEffect(() => {
     const fetchDocument = async () => {
-      const response = await DocumentService.getAllDocuments();
+      await DocumentService.getAllDocuments();
     };
 
     fetchDocument();
@@ -88,16 +87,22 @@ const ChatPage = () => {
     const checkFileCompliance = async () => {
       if (selectedFile === null || !selectedFile) return;
 
-      const response = await ComplianceDocument.uploadDocument(selectedFile as File);
+      const response = await ComplianceDocument.uploadDocument(
+        selectedFile as File
+      );
 
       if (response?.success) {
-        toast.loading("Redirecting to compliance report...", { id: "compliance-report" });
-        router.push(`/chat/compliance-report?comparisonId=${response.data.comparisonId}`);
+        toast.loading("Redirecting to compliance report...", {
+          id: "compliance-report",
+        });
+        router.push(
+          `/chat/compliance-report?comparisonId=${response.data.comparisonId}`
+        );
 
-        toast.success("Redirected to compliance report", { id: "compliance-report" });
+        toast.success("Redirected to compliance report", {
+          id: "compliance-report",
+        });
       }
-      
-      console.log("Compliance Response ", response);
     };
 
     checkFileCompliance();
