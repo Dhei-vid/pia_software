@@ -33,7 +33,12 @@ const UserProfilePage = () => {
   const [profileImage, setProfileImage] = useState<string | null>(
     user?.avatar || null
   );
+  const [mail,setMail] = useState<string|null>("info@wrightenergytech.com") 
+  const [subject,setSubject] = useState<string|null>("Support: ") 
+  const [message,setMessage] = useState<string|null>("Looking for support...") 
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const mailTo = "mailto:" + mail + "?subject=" + subject + "&body=" + message;
 
   const handleSaveChanges = async () => {
     if (isOwnProfile && user) {
@@ -76,8 +81,16 @@ const UserProfilePage = () => {
   };
 
   // Contact Support
-  const handleContactSupport = () => {
-    console.log("Contacting support...");
+  const handleContactSupport = (e: React.MouseEvent<HTMLButtonElement>): void => {
+    e.preventDefault();
+    if (mail && subject && message) {
+      window.location.href = mailTo;
+      setMail(null);
+      setSubject(null);
+      setMessage(null);
+    } else {
+      alert("No mail, subject or message");
+    }
   };
 
   // Sign User Out
