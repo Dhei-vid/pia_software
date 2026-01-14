@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import AuthService from "@/api/auth/auth";
 import { UserService } from "@/api/user/user";
 import { extractErrorMessage } from "@/common/helpers";
+import { SupportDialog } from "@/components/modals/support-modal";
 
 const UserProfilePage = () => {
   const params = useParams();
@@ -33,7 +34,16 @@ const UserProfilePage = () => {
   const [profileImage, setProfileImage] = useState<string | null>(
     user?.avatar || null
   );
+
+  const [openSupportModal, setOpenSupportModal] = useState<boolean>(false);
+  const [mail, setMail] = useState<string | null>("info@wrightenergytech.com");
+  const [subject, setSubject] = useState<string | null>("Support: ");
+  const [message, setMessage] = useState<string | null>(
+    "Looking for support..."
+  );
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const mailTo = "mailto:" + mail + "?subject=" + subject + "&body=" + message;
 
   const handleSaveChanges = async () => {
     if (isOwnProfile && user) {
@@ -76,8 +86,20 @@ const UserProfilePage = () => {
   };
 
   // Contact Support
-  const handleContactSupport = () => {
-    console.log("Contacting support...");
+  const handleContactSupport = (
+    e: React.MouseEvent<HTMLButtonElement>
+  ): void => {
+    e.preventDefault();
+    if (mail && subject && message) {
+      window.location.href = mailTo;
+      setMail(null);
+      setSubject(null);
+      setMessage(null);
+    } else {
+      alert("No mail, subject or message");
+    }
+
+    setOpenSupportModal(false);
   };
 
   // Sign User Out
@@ -229,6 +251,19 @@ const UserProfilePage = () => {
         </div>
       </div>
 
+      <SupportDialog
+        open={!!openSupportModal}
+        title={"Contact Support"}
+        description={"Find different to contact our support team"}
+        phoneNumbers={[
+          "+234 913 580 8584",
+          "+1 214 436 3646",
+          "+1 713 818 8292",
+        ]}
+        onClose={() => setOpenSupportModal(false)}
+        onConfirm={(e) => handleContactSupport(e)}
+      />
+
       <div className="space-y-6">
         {/* Support Section */}
         <div className="flex flex-row justify-between">
@@ -241,7 +276,7 @@ const UserProfilePage = () => {
           <div className="">
             <Button
               size={"lg"}
-              onClick={handleContactSupport}
+              onClick={() => setOpenSupportModal(true)}
               variant="outline"
               className="bg-transparent text-foreground/70 hover:bg-lightgrey"
             >
