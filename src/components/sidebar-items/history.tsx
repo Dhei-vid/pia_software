@@ -15,6 +15,7 @@ interface IHistoryList {
 
 const HistoryList: FC<IHistoryList> = ({ history, isLoading, error }) => {
   const router = useRouter();
+  //  router.push(`/chat/compliance-report?comparisonId=${response.data.comparisonId}`);
 
   if (isLoading) {
     return (
@@ -40,8 +41,11 @@ const HistoryList: FC<IHistoryList> = ({ history, isLoading, error }) => {
         {history && history.length > 0 ? (
           history.map((item) => (
             <button
+              onClick={() =>
+                router.push(`/chat/compliance-report?comparisonId=${item.id}`)
+              }
               key={item.id}
-              className="group py-3 rounded-md hover:bg-lightgrey cursor-pointer transition-colors w-full"
+              className="group py-3 px-2 rounded-md hover:bg-lightgrey cursor-pointer transition-colors w-full"
             >
               <div className="flex space-x-3 flex-1 overflow-hidden">
                 <div className="text-balance text-ellipsis">

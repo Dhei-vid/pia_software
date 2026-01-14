@@ -19,8 +19,6 @@ export default function Page() {
   const [complianceReport, setComplianceReport] =
     useState<ComplianceComparisonData | null>(null);
 
-  console.log("Compliance Report ", complianceReport);
-
   useEffect(() => {
     const getComplianceReportByID = async (id: string) => {
       if (!id) return;
