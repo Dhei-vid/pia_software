@@ -1,17 +1,32 @@
 "use client";
 
 import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 import { FC, useEffect, useState } from "react";
 import { ChevronRight, ChevronDown } from "lucide-react";
 
 import useAuth from "@/hooks/useAuth";
-import { TOC } from "@/api/documents/document-types";
-import { DocumentService } from "@/api/documents/document";
+// import { TOC } from "@/api/documents/document-types";
 import { GenericDrawer } from "@/components/ui/generic-drawer";
+import { keepLettersAndSpaces } from "@/common/helpers";
 
-const TableOfContent = () => {
+import { DocumentService } from "@/api/documents/document";
+import { DocumentContent } from "@/api/documents/document-types";
+import { DocumentSection } from "@/api/documents/document-types";
+
+interface NewTableOfContentProps {
+  onSectionSelect?: (
+    section: DocumentSection,
+    chapterTitle: string,
+    partTitle: string,
+    sections: DocumentSection[],
+    partId: string
+  ) => void;
+}
+
+const NewTableOfContent: FC<NewTableOfContentProps> = ({ onSectionSelect }) => {
   const { user } = useAuth();
-  const [toc, setToc] = useState<TOC>();
+  const [document, setDocument] = useState<DocumentContent | null>(null);
 
   const [selectedPart, setSelectedPart] = useState<string>("");
   const [isSectionsDrawerOpen, setIsSectionsDrawerOpen] =
@@ -27,14 +42,17 @@ const TableOfContent = () => {
 
   // Calling the TOC
   useEffect(() => {
-    const fetchTOC = async () => {
+    const fetchData = async () => {
       if (!user) return;
 
-      const response = await DocumentService.getChapterTOC(user?.documentId);
-      setToc(response.data);
+      const response = await DocumentService.getAllDocumentContent(
+        user?.documentId,
+        "structured"
+      );
+      setDocument(response.data.content);
     };
 
-    fetchTOC();
+    fetchData();
   }, [user]);
 
   // Handle chapter toggle
@@ -65,7 +83,7 @@ const TableOfContent = () => {
     setIsSectionsDrawerOpen(true);
   };
 
-  if (!toc) {
+  if (!document) {
     return (
       <div className="flex items-center justify-center">
         <p className="text-sm text-muted-foreground">
@@ -79,13 +97,13 @@ const TableOfContent = () => {
     <div className="space-y-2 flex-1 px-6 pb-6 overflow-y-auto scrollbar-width">
       {/* Table of Content Title */}
       <div className="px-2">
-        <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2 block">
-          {toc?.tableOfContents.title}
+        <p className="text-xs text-muted-foreground uppercase tracking-wider mb-2 block">
+          {document?.title}
         </p>
       </div>
       {/* Document TOC */}
       <div className="space-y-1">
-        {toc?.tableOfContents?.chapters.map((chapter, index) => {
+        {document?.chapters.map((chapter, index) => {
           return (
             <div key={index} className="space-y-1">
               <button
@@ -166,22 +184,23 @@ const TableOfContent = () => {
         }`}
         position="left"
       >
-        <DocumentPart selectedPart={selectedPart} toc={toc} />
+        <DocumentPart selectedPart={selectedPart} document={document} />
       </GenericDrawer>
     </div>
   );
 };
 
-export default TableOfContent;
+export default NewTableOfContent;
 
 interface IDocumentPart {
   selectedPart: string;
-  toc: TOC;
+  document: DocumentContent;
 }
 
-const DocumentPart: FC<IDocumentPart> = ({ selectedPart, toc }) => {
-  const getSelectedPart = (selectedPart: string, toc: TOC) => {
-    for (const chapter of toc.tableOfContents?.chapters ?? []) {
+const DocumentPart: FC<IDocumentPart> = ({ selectedPart, document }) => {
+  const router = useRouter();
+  const getSelectedPart = (selectedPart: string, document: DocumentContent) => {
+    for (const chapter of document?.chapters ?? []) {
       const found = chapter.parts.find((part) => part.id === selectedPart);
       if (found) {
         return found;
@@ -190,9 +209,11 @@ const DocumentPart: FC<IDocumentPart> = ({ selectedPart, toc }) => {
     return null;
   };
 
-  const partSection = getSelectedPart(selectedPart, toc);
+  const partSection = getSelectedPart(selectedPart, document);
 
-  console.log(getSelectedPart(selectedPart, toc));
+  // router.push(
+  //   `/chat/doc?sectionId=${selectedPart.id}&partId=${partId}&chapterTitle=${encodeURIComponent(chapterTitle)}&partTitle=${encodeURIComponent(partTitle)}&sectionTitle=${encodeURIComponent(section.title)}`
+  // );
 
   return (
     <div className="flex flex-col space-y-3">
@@ -200,15 +221,17 @@ const DocumentPart: FC<IDocumentPart> = ({ selectedPart, toc }) => {
         partSection.sections.map((section, index) => (
           <button
             key={index}
+            onClick={() => router.push(`/chat/doc?sectionId=${section?.id}`)}
             className="cursor-pointer text-left hover:bg-lightgrey w-full space-y-1 p-2 rounded-md transition-colors"
           >
             <p className="text-xs text-muted-foreground">
-              Section {section.sectionNumber}
+              Section {section?.sectionNumber}
             </p>
-            <p className="text-xs text-foreground">{section.sectionTitle}</p>
+            <p className="text-xs text-foreground line-clamp-1">
+              {keepLettersAndSpaces(section?.sectionTitle)}
+            </p>
           </button>
         ))}
-      <button></button>
     </div>
   );
 };

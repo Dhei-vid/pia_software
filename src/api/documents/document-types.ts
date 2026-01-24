@@ -133,7 +133,7 @@ interface DocumentSchedule {
   markdownContent: string;
 }
 
-interface DocumentSection {
+export interface DocumentSection {
   id: string;
   markdownContent: string;
   section: string;
@@ -144,12 +144,12 @@ interface DocumentSection {
 export interface DocumentParts {
   id: string;
   part: string;
-  partNumber: string;
+  partNumber: number;
   partTitle: string;
   sections: DocumentSection[];
 }
 
-interface DocumentChapter {
+export interface DocumentChapter {
   chapter: string;
   chapterNumber: number;
   chapterTitle: string;

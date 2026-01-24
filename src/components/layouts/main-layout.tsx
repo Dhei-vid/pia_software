@@ -3,9 +3,9 @@
 import { useState, ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { FileText, SquareCheck } from "lucide-react";
-// import { LeftSideBar } from "@/components/navigation/left-side-bar";
 
-import { LeftSideBar } from "../navigation/left-side-bar-old";
+import { LeftSideBar } from "@/components/navigation/left-side-bar";
+// import { LeftSideBar } from "../navigation/left-side-bar-old";
 import RightSideBar from "@/components/navigation/right-side-bar";
 
 interface MainLayoutProps {
@@ -36,7 +36,9 @@ const MainLayout = ({ children }: MainLayoutProps) => {
             partId
           ) => {
             // Navigate to docs page with section info when a section is selected
-            router.push(`/chat/doc?sectionId=${section.id}&partId=${partId}&chapterTitle=${encodeURIComponent(chapterTitle)}&partTitle=${encodeURIComponent(partTitle)}&sectionTitle=${encodeURIComponent(section.title)}`);
+            router.push(
+              `/chat/doc?sectionId=${section.id}&partId=${partId}&chapterTitle=${encodeURIComponent(chapterTitle)}&partTitle=${encodeURIComponent(partTitle)}&sectionTitle=${encodeURIComponent(section.title)}`
+            );
           }}
         />
       </div>

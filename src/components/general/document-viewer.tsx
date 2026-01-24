@@ -17,7 +17,7 @@ import { extractCPS } from "@/common/helpers";
 interface IDocumentViewerProps {
   documentContent: DocumentContent | null;
   sectionId: string | null;
-  partId: string | null;
+  partId?: string | null;
   chapterTitle?: string | null;
   partTitle?: string | null;
   sectionTitle?: string | null;
@@ -53,7 +53,7 @@ const DocumentViewer: FC<IDocumentViewerProps> = ({
   searchQuery = "",
   setSearchQuery,
 }) => {
-  const {partNumber, sectionNumber} = extractCPS(sectionId || "ch0-pt0-s0");
+  const { partNumber, sectionNumber } = extractCPS(sectionId || "ch0-pt0-s0");
   // Find the section, chapter, and part from document content structure
   const { section, chapter, part } = useMemo(() => {
     if (!documentContent || !sectionId) {
@@ -116,12 +116,12 @@ const DocumentViewer: FC<IDocumentViewerProps> = ({
     <div className="h-full flex flex-col">
       {/* Header */}
       <div className="mb-6">
-          <h1 className="text-2xl font-semibold text-foreground mb-2 capitalize">
-            Chapter {chapter.chapterNumber}: {chapterTitle}
-          </h1>
-          <h2 className="text-base text-foreground/70 mb-4">
-            Part {partNumber}: {partTitle}
-          </h2>
+        <h1 className="text-2xl font-semibold text-foreground mb-2 capitalize">
+          Chapter {chapter.chapterNumber}: {chapterTitle}
+        </h1>
+        <h2 className="text-base text-foreground/70 mb-4">
+          Part {partNumber}: {partTitle}
+        </h2>
         <h3 className="text-base text-foreground">
           Section {sectionNumber}: {sectionTitle}
         </h3>
@@ -154,14 +154,14 @@ const DocumentViewer: FC<IDocumentViewerProps> = ({
                           isSectionTitle
                             ? "font-bold text-lg mb-3 text-muted-foreground"
                             : isSubPointA
-                            ? "font-semibold text-base mb-2 ml-4"
-                            : isSubPointB
-                            ? "text-base mb-1 ml-8"
-                            : isSubPointC
-                            ? "text-sm mb-1 ml-12"
-                            : isIndented
-                            ? "text-base ml-4"
-                            : "text-base"
+                              ? "font-semibold text-base mb-2 ml-4"
+                              : isSubPointB
+                                ? "text-base mb-1 ml-8"
+                                : isSubPointC
+                                  ? "text-sm mb-1 ml-12"
+                                  : isIndented
+                                    ? "text-base ml-4"
+                                    : "text-base"
                         }`}
                       >
                         {paragraph}

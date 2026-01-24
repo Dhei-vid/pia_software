@@ -3,93 +3,119 @@
 import { useState, useEffect, useMemo } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { ChevronLeft } from "lucide-react";
+
 import DocumentViewer from "@/components/general/document-viewer";
 import LoadingSpinner from "@/components/ui/loading";
 import { DocumentService } from "@/api/documents/document";
-import { DocumentContent } from "@/api/documents/document-types";
+import {
+  DocumentContent,
+  DocumentChapter,
+  DocumentSection,
+} from "@/api/documents/document-types";
 import useAuth from "@/hooks/useAuth";
+
+/**
+ * Resolve a section and its context safely
+ */
+function resolveSectionContext(
+  chapters: DocumentChapter[] | null | undefined,
+  sectionId: string | null
+): {
+  part: DocumentChapter["parts"][number];
+  sectionIndex: number;
+  totalSections: number;
+} | null {
+  if (!sectionId || !Array.isArray(chapters)) return null;
+
+  for (const chapter of chapters) {
+    if (!Array.isArray(chapter?.parts)) continue;
+
+    for (const part of chapter.parts) {
+      if (!Array.isArray(part?.sections)) continue;
+
+      const index = part.sections.findIndex((s) => s?.id === sectionId);
+
+      if (index !== -1) {
+        return {
+          part,
+          sectionIndex: index,
+          totalSections: part.sections.length,
+        };
+      }
+    }
+  }
+
+  return null;
+}
 
 export default function Page() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const sectionId = searchParams.get("sectionId");
-  const partId = searchParams.get("partId");
-  const chapterTitle = searchParams.get("chapterTitle");
-  const partTitle = searchParams.get("partTitle");
-  const sectionTitle = searchParams.get("sectionTitle");
   const { user } = useAuth();
 
   const [documentContent, setDocumentContent] =
     useState<DocumentContent | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Fetch document content
+  /**
+   * Fetch document content
+   */
   useEffect(() => {
-    const fetchData = async () => {
-      if (!user?.documentId) return;
+    if (!user?.documentId) return;
 
+    let isMounted = true;
+
+    const fetchData = async () => {
       try {
         setIsLoading(true);
-        const contentResponse = await DocumentService.getAllDocumentContent(
+
+        const response = await DocumentService.getAllDocumentContent(
           user.documentId,
           "structured"
         );
 
-        if (contentResponse.success && contentResponse.data?.content) {
-          setDocumentContent(contentResponse.data.content);
+        if (isMounted && response.success && response.data?.content) {
+          setDocumentContent(response.data.content);
         }
       } catch (error) {
         console.error("Error fetching document content:", error);
       } finally {
-        setIsLoading(false);
+        if (isMounted) setIsLoading(false);
       }
     };
 
     fetchData();
+
+    return () => {
+      isMounted = false;
+    };
   }, [user?.documentId]);
 
-  // Find the selected section, chapter, and part from document content
-  const { part, currentSectionIndex, totalSections } = useMemo(() => {
-    if (!documentContent || !sectionId) {
-      return {
-        part: null,
-        currentSectionIndex: 0,
-        totalSections: 0,
-      };
-    }
+  /**
+   * Resolve section context
+   */
+  const resolved = useMemo(
+    () => resolveSectionContext(documentContent?.chapters, sectionId),
+    [documentContent?.chapters, sectionId]
+  );
 
-    // Search through chapters -> parts -> sections
-    for (const chapterItem of documentContent.chapters) {
-      for (const partItem of chapterItem.parts) {
-        if (partId && partItem.id !== partId) continue;
+  console.log("Resolved ", resolved);
 
-        const section = partItem.sections.find((s) => s.id === sectionId);
-        if (section) {
-          const index = partItem.sections.findIndex((s) => s.id === sectionId);
-          return {
-            part: partItem,
-            currentSectionIndex: index >= 0 ? index : 0,
-            totalSections: partItem.sections.length,
-          };
-        }
-      }
-    }
+  const part = resolved?.part ?? null;
+  const currentSectionIndex = resolved?.sectionIndex ?? 0;
+  const totalSections = resolved?.totalSections ?? 0;
 
-    return {
-      part: null,
-      currentSectionIndex: 0,
-      totalSections: 0,
-    };
-  }, [documentContent, sectionId, partId]);
-
-  // Get previous and next section info
+  /**
+   * Previous / next section metadata
+   */
   const {
     previousSectionTitle,
     nextSectionTitle,
     previousSectionNumber,
     nextSectionNumber,
   } = useMemo(() => {
-    if (!part || part.sections.length === 0) {
+    if (!part || !Array.isArray(part.sections)) {
       return {
         previousSectionTitle: "",
         nextSectionTitle: "",
@@ -98,36 +124,46 @@ export default function Page() {
       };
     }
 
-    const previousSection =
+    const prev =
       currentSectionIndex > 0 ? part.sections[currentSectionIndex - 1] : null;
-    const nextSection =
+
+    const next =
       currentSectionIndex < part.sections.length - 1
         ? part.sections[currentSectionIndex + 1]
         : null;
 
     return {
-      previousSectionTitle: previousSection?.sectionTitle || "",
-      nextSectionTitle: nextSection?.sectionTitle || "",
-      previousSectionNumber: previousSection?.sectionNumber || 0,
-      nextSectionNumber: nextSection?.sectionNumber || 0,
+      previousSectionTitle: prev?.sectionTitle ?? "",
+      nextSectionTitle: next?.sectionTitle ?? "",
+      previousSectionNumber: prev?.sectionNumber ?? 0,
+      nextSectionNumber: next?.sectionNumber ?? 0,
     };
   }, [part, currentSectionIndex]);
 
+  /**
+   * Navigation handlers
+   */
   const handlePreviousSection = () => {
-    if (currentSectionIndex > 0 && partId && part) {
-      const newSection = part.sections[currentSectionIndex - 1];
-      router.push(`/chat/doc?sectionId=${newSection.id}&partId=${partId}`);
+    if (!part || currentSectionIndex <= 0) return;
+
+    const target = part.sections[currentSectionIndex - 1];
+    if (target?.id) {
+      router.push(`/chat/doc?sectionId=${target.id}`);
     }
   };
 
   const handleNextSection = () => {
-    if (currentSectionIndex < part!.sections.length - 1 && partId && part) {
-      const newSection = part.sections[currentSectionIndex + 1];
-      router.push(`/chat/doc?sectionId=${newSection.id}&partId=${partId}`);
+    if (!part || currentSectionIndex >= part.sections.length - 1) return;
+
+    const target = part.sections[currentSectionIndex + 1];
+    if (target?.id) {
+      router.push(`/chat/doc?sectionId=${target.id}`);
     }
   };
 
-  // Show loading state while fetching document
+  /**
+   * Loading state
+   */
   if (isLoading || (sectionId && !documentContent)) {
     return (
       <div className="flex items-center justify-center h-full">
@@ -138,7 +174,6 @@ export default function Page() {
       </div>
     );
   }
-
 
   return (
     <div>
@@ -154,10 +189,9 @@ export default function Page() {
       <DocumentViewer
         documentContent={documentContent}
         sectionId={sectionId}
-        partId={partId}
-        chapterTitle={chapterTitle}
-        partTitle={partTitle}
-        sectionTitle={sectionTitle}
+        // chapterTitle={chapterTitle}
+        // partTitle={partTitle}
+        // sectionTitle={sectionTitle}
         previousSectionTitle={previousSectionTitle}
         nextSectionTitle={nextSectionTitle}
         previousSectionNumber={previousSectionNumber}

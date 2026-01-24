@@ -48,7 +48,6 @@ export const extractErrorMessage = (error: unknown): string => {
   return "An unexpected error occurred";
 };
 
-
 // Extract chapter, part, and section numbers from string like "ch1-pt2-s3"
 export function extractCPS(input: string) {
   const regex = /ch(\d+)-pt(\d+)-s(\d+)/i;
@@ -88,10 +87,10 @@ export function formatDescriptionWithLists(text: string): string {
   // We'll process in reverse to maintain correct string positions
   const matches: Array<{ match: string; index: number }> = [];
   let match;
-  
+
   // Reset regex lastIndex to ensure we get all matches
   listPattern.lastIndex = 0;
-  
+
   // Collect all matches
   while ((match = listPattern.exec(text)) !== null) {
     matches.push({
@@ -99,38 +98,46 @@ export function formatDescriptionWithLists(text: string): string {
       index: match.index,
     });
   }
-  
+
   // Build formatted string by processing matches in reverse order
   let formatted = text;
   for (let i = matches.length - 1; i >= 0; i--) {
     const { match: listItem, index } = matches[i];
-    
+
     // Skip if at the start of the string
     if (index === 0) continue;
-    
+
     // Check the character before the match
     const charBefore = text[index - 1];
-    
+
     // If there's already a newline, skip
-    if (charBefore === '\n') continue;
-    
+    if (charBefore === "\n") continue;
+
     // If there's a space before, check preceding context
-    if (charBefore === ' ') {
+    if (charBefore === " ") {
       // Look backwards through whitespace to find if there's already a newline
       let j = index - 1;
-      while (j >= 0 && (text[j] === ' ' || text[j] === '\t')) {
+      while (j >= 0 && (text[j] === " " || text[j] === "\t")) {
         j--;
       }
-      if (j >= 0 && text[j] === '\n') continue;
+      if (j >= 0 && text[j] === "\n") continue;
     }
-    
+
     // Insert newline before the list item
-    formatted = formatted.slice(0, index) + '\n' + formatted.slice(index);
+    formatted = formatted.slice(0, index) + "\n" + formatted.slice(index);
   }
 
   // Clean up multiple consecutive newlines (more than 2) to max 2
-  formatted = formatted.replace(/\n{3,}/g, '\n\n');
+  formatted = formatted.replace(/\n{3,}/g, "\n\n");
 
   // Trim leading/trailing whitespace but preserve intentional formatting
   return formatted.trim();
+}
+
+export function keepLettersOnly(message: string): string {
+  return message.replace(/[^a-zA-Z]/g, "");
+}
+
+export function keepLettersAndSpaces(message: string): string {
+  return message.replace(/[^a-zA-Z\s]/g, "");
 }

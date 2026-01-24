@@ -11,12 +11,14 @@ import UserProfile from "./user-profile";
 import { HistoryData } from "@/api/documents/document-types";
 
 import HistoryList from "../sidebar-items/history";
+import NewTableOfContent from "../sidebar-items/new-table-of-content";
 import TableOfContent from "../sidebar-items/table-of-content";
 import { DocumentSection } from "@/utils/documentParser";
 import { useTheme } from "@/contexts/ThemeContext";
 import { extractErrorMessage } from "@/common/helpers";
 
 // API
+import useAuth from "@/hooks/useAuth";
 import { DocumentService } from "@/api/documents/document";
 
 interface ILeftSideBarProps {
@@ -36,18 +38,28 @@ export const LeftSideBar: FC<ILeftSideBarProps> = ({
   setSearchQuery,
   onSectionSelect,
 }) => {
+  const { user } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [query, setQuery] = useState<HistoryData>();
 
+  const [documentContent, setDocumentContent] = useState(null);
+
   useEffect(() => {
-    const fetchHistory = async () => {
+    const fetchData = async () => {
+      if (!user) return;
+
       setIsLoading(true);
       try {
-        const response = await DocumentService.getSearchHistory();
-        setQuery(response.data);
+        const historyResponse = await DocumentService.getSearchHistory();
+        const documentContent = await DocumentService.getAllDocumentContent(
+          user?.documentId,
+          "structured"
+        );
+        setQuery(historyResponse.data);
+        setDocumentContent(documentContent.data.content);
       } catch (error) {
         const errorMessage = extractErrorMessage(error);
         setError(errorMessage);
@@ -56,12 +68,10 @@ export const LeftSideBar: FC<ILeftSideBarProps> = ({
       }
     };
 
-    fetchHistory();
-  }, [isHistoryOpen]);
+    fetchData();
+  }, [isHistoryOpen, user]);
 
-  // const filteredHistory = query?.searches.map((item) => item.query);
-
-  // console.log("Filtered History ", query);
+  console.log("Document Data ", documentContent);
 
   return (
     <div className="h-full flex flex-col overflow-hidden">
@@ -99,7 +109,7 @@ export const LeftSideBar: FC<ILeftSideBarProps> = ({
       </div>
 
       {/* Table of Content */}
-      <TableOfContent />
+      <NewTableOfContent onSectionSelect={() => onSectionSelect} />
 
       {/* Fixed Footer Section */}
       <div className="w-full flex-shrink-0 p-6 border-t border-lightgrey">

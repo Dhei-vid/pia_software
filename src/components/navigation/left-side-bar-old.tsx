@@ -106,7 +106,7 @@ export const LeftSideBar: FC<ILeftSideBarProps> = ({
   const {
     chapters: parsedChapters,
     getSectionsForPart,
-    getSectionByTitle,
+    // getSectionByTitle,
   } = useDocumentParser(selectedDocument);
 
   const handleChapterClick = (chapterId: string) => {

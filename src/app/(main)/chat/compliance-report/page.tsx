@@ -16,8 +16,47 @@ export default function Page() {
   const searchParams = useSearchParams();
   const comparisonId = searchParams.get("comparisonId");
 
+  const [trans, setTrans] = useState<string | null>("");
+
   const [complianceReport, setComplianceReport] =
     useState<ComplianceComparisonData | null>(null);
+
+  async function translateText({
+    text,
+    sourceLang,
+    targetLang,
+  }: {
+    text: string;
+    sourceLang: string;
+    targetLang: string;
+  }) {
+    const res = await fetch("/api/translate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text, sourceLang, targetLang }),
+    });
+
+    if (!res.ok) {
+      throw new Error("Translation failed");
+    }
+
+    const data = await res.json();
+    return data.translation;
+  }
+
+  const fetchTranslatedText = async () => {
+    console.log("Start....");
+    const translated = await translateText({
+      text: "Hello, how are you?",
+      sourceLang: "English",
+      targetLang: "Spanish",
+    });
+
+    console.log("Translated ", translated);
+    setTrans(translated);
+  };
+
+  console.log(trans);
 
   useEffect(() => {
     const getComplianceReportByID = async (id: string) => {
@@ -35,8 +74,18 @@ export default function Page() {
     getComplianceReportByID(comparisonId as string);
   }, [comparisonId]);
 
+  if (!complianceReport) {
+    return (
+      <div className="flex items-center justify-center">
+        <p className="text-foreground">Result not found</p>
+      </div>
+    );
+  }
+
   return (
     <div>
+      <button onClick={fetchTranslatedText}>Translate</button>
+
       {/* Back Button */}
       <button
         onClick={() => router.back()}
@@ -63,7 +112,7 @@ export default function Page() {
               <p className="font-bold text-lg text-foreground">Overview</p>
               <div>
                 <p className="text-sm text-foreground/70">
-                  {complianceReport?.results?.overview.summary}.
+                  {complianceReport?.results?.overview?.summary}.
                 </p>
               </div>
             </div>
@@ -74,7 +123,7 @@ export default function Page() {
                 <p className="font-bold">Major Compliance Areas:</p>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                {complianceReport?.results?.overview?.majorComplianceAreas.map(
+                {complianceReport?.results?.overview?.majorComplianceAreas?.map(
                   (areas, index) => (
                     <div key={index} className="rounded-md border p-4">
                       <p className="text-foreground/80 text-sm text-wrap">
@@ -92,7 +141,7 @@ export default function Page() {
                 <p className="font-bold">Detailed Findings:</p>
               </div>
               <div className="grid grid-cols-2 gap-3 space-y-3">
-                {complianceReport?.results?.detailedFindings.map(
+                {complianceReport?.results?.detailedFindings?.map(
                   (finding, index) => (
                     <DetailedFindingsCard key={index} {...finding} />
                   )
