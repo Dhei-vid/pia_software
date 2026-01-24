@@ -8,7 +8,8 @@ import {
   ChevronRight,
   Plus,
   SendHorizontal,
-  Link,
+  // Link,
+  Frown
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { DocumentContent } from "@/api/documents/document-types";
@@ -53,9 +54,8 @@ const DocumentViewer: FC<IDocumentViewerProps> = ({
   searchQuery = "",
   setSearchQuery,
 }) => {
-  const { partNumber, sectionNumber } = extractCPS(sectionId || "ch0-pt0-s0");
   // Find the section, chapter, and part from document content structure
-  const { section, chapter, part } = useMemo(() => {
+  const { section: resolvedSection, chapter: resolvedChapter, part: resolvedPart } = useMemo(() => {
     if (!documentContent || !sectionId) {
       return { section: null, chapter: null, part: null };
     }
@@ -79,6 +79,15 @@ const DocumentViewer: FC<IDocumentViewerProps> = ({
     return { section: null, chapter: null, part: null };
   }, [documentContent, sectionId, partId]);
 
+  // Use resolved data or fallback to props
+  const section = resolvedSection;
+  const chapter = resolvedChapter || (documentContent?.chapters.find(ch => ch.chapterTitle === chapterTitle) ?? null);
+  const part = resolvedPart || (chapter?.parts.find(p => p.partTitle === partTitle) ?? null);
+  
+  // Get part and section numbers from the actual data
+  const partNumber = part?.partNumber ?? 0;
+  const sectionNumber = section?.sectionNumber ?? 0;
+
   const handleSearch = () => {
     if (onSearch && searchQuery.trim()) {
       onSearch(searchQuery);
@@ -96,6 +105,7 @@ const DocumentViewer: FC<IDocumentViewerProps> = ({
     return (
       <div className="h-full flex items-center justify-center">
         <div className="text-center">
+          <Frown size={48} className="mx-auto mb-4 text-muted-foreground" />
           <h2 className="text-2xl font-semibold text-foreground mb-4">
             Select a Section
           </h2>
@@ -108,23 +118,26 @@ const DocumentViewer: FC<IDocumentViewerProps> = ({
   }
 
   // Get section content from markdownContent
-  const sectionContent = Array.isArray(section.markdownContent)
+  const sectionTitleText = sectionTitle ?? section?.sectionTitle ?? "";
+  const rawContent = Array.isArray(section.markdownContent)
     ? section.markdownContent.join("\n")
     : section.markdownContent || "";
+  
+  // Prepend section title to content, seamlessly joined
+  const sectionContent = sectionTitleText 
+    ? `${sectionTitleText}\n${rawContent}`.trim()
+    : rawContent;
 
   return (
     <div className="h-full flex flex-col">
       {/* Header */}
       <div className="mb-6">
         <h1 className="text-2xl font-semibold text-foreground mb-2 capitalize">
-          Chapter {chapter.chapterNumber}: {chapterTitle}
+          Chapter {chapter?.chapterNumber ?? 0}: {chapterTitle ?? chapter?.chapterTitle ?? ""}
         </h1>
         <h2 className="text-base text-foreground/70 mb-4">
-          Part {partNumber}: {partTitle}
+          Part {partNumber}: {partTitle ?? part?.partTitle ?? ""}
         </h2>
-        <h3 className="text-base text-foreground">
-          Section {sectionNumber}: {sectionTitle}
-        </h3>
       </div>
 
       {/* Document Content */}
@@ -138,6 +151,8 @@ const DocumentViewer: FC<IDocumentViewerProps> = ({
                   return <div key={index} className="h-2" />;
                 }
 
+                // Check if this is the first paragraph (section title)
+                const isFirstParagraph = index === 0;
                 // Check for different types of content
                 const isSectionTitle = /^\d+\.\s+/.test(paragraph.trim());
                 const isSubPointA = /^[A-Z]\.\s+/.test(paragraph.trim());
@@ -151,28 +166,30 @@ const DocumentViewer: FC<IDocumentViewerProps> = ({
                     <div className="flex-1">
                       <p
                         className={`text-foreground leading-relaxed ${
-                          isSectionTitle
-                            ? "font-bold text-lg mb-3 text-muted-foreground"
-                            : isSubPointA
-                              ? "font-semibold text-base mb-2 ml-4"
-                              : isSubPointB
-                                ? "text-base mb-1 ml-8"
-                                : isSubPointC
-                                  ? "text-sm mb-1 ml-12"
-                                  : isIndented
-                                    ? "text-base ml-4"
-                                    : "text-base"
+                          isFirstParagraph
+                            ? "text-sm mb-1"
+                            : isSectionTitle
+                              ? "font-bold text-sm mb-0 text-muted-foreground"
+                              : isSubPointA
+                                ? "font-semibold text-sm mb-1 ml-4"
+                                : isSubPointB
+                                  ? "text-sm mb-0 ml-8"
+                                  : isSubPointC
+                                    ? "text-sm mb-0 ml-12"
+                                    : isIndented
+                                      ? "text-sm ml-4"
+                                      : "text-sm"
                         }`}
                       >
                         {paragraph}
                       </p>
                     </div>
-                    <button className="cursor-pointer flex-shrink-0 p-1 hover:bg-lightgrey rounded transition-colors">
+                    {/* <button className="cursor-pointer flex-shrink-0 p-1 hover:bg-lightgrey rounded transition-colors">
                       <Link
                         size={16}
                         className="text-muted-foreground hover:text-foreground"
                       />
-                    </button>
+                    </button> */}
                   </div>
                 );
               })}
@@ -202,7 +219,7 @@ const DocumentViewer: FC<IDocumentViewerProps> = ({
             <ChevronLeft size={16} className="flex-shrink-0" />
             <div className="text-left leading-tight flex-1">
               <span className="text-sm opacity-50 block">Previous</span>
-              <p className="text-sm line-clamp-2">
+              <p className="text-sm line-clamp-1">
                 Section {previousSectionNumber}: {previousSectionTitle}
               </p>
             </div>
@@ -223,8 +240,11 @@ const DocumentViewer: FC<IDocumentViewerProps> = ({
           >
             <div className="text-right leading-tight flex-1">
               <span className="text-sm opacity-50 block">Next</span>
-              <p className="text-sm line-clamp-2">
-                Section {nextSectionNumber}: {nextSectionTitle}
+              <p className="text-sm line-clamp-1">
+                {
+                  nextSectionNumber > 0 ? `Section ${nextSectionNumber}: ` : ""
+                }
+                {nextSectionTitle}
               </p>
             </div>
             <ChevronRight size={16} className="flex-shrink-0" />

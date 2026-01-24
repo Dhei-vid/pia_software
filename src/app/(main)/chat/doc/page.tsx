@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useTransition } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { ChevronLeft } from "lucide-react";
 
@@ -14,45 +14,19 @@ import {
 } from "@/api/documents/document-types";
 import useAuth from "@/hooks/useAuth";
 
-/**
- * Resolve a section and its context safely
- */
-function resolveSectionContext(
-  chapters: DocumentChapter[] | null | undefined,
-  sectionId: string | null
-): {
-  part: DocumentChapter["parts"][number];
-  sectionIndex: number;
-  totalSections: number;
-} | null {
-  if (!sectionId || !Array.isArray(chapters)) return null;
-
-  for (const chapter of chapters) {
-    if (!Array.isArray(chapter?.parts)) continue;
-
-    for (const part of chapter.parts) {
-      if (!Array.isArray(part?.sections)) continue;
-
-      const index = part.sections.findIndex((s) => s?.id === sectionId);
-
-      if (index !== -1) {
-        return {
-          part,
-          sectionIndex: index,
-          totalSections: part.sections.length,
-        };
-      }
-    }
-  }
-
-  return null;
-}
 
 export default function Page() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const [isPending, startTransition] = useTransition();
   const sectionId = searchParams.get("sectionId");
+  const chapterTitle = searchParams.get("chapterTitle");
+  const partTitle = searchParams.get("partTitle");
   const { user } = useAuth();
+
+  console.log('section ID', sectionId)
+  console.log('Chapter title ', chapterTitle)
+  console.log('Part title ', partTitle)
 
   const [documentContent, setDocumentContent] =
     useState<DocumentContent | null>(null);
@@ -95,14 +69,35 @@ export default function Page() {
   /**
    * Resolve section context
    */
-  const resolved = useMemo(
-    () => resolveSectionContext(documentContent?.chapters, sectionId),
-    [documentContent?.chapters, sectionId]
-  );
+  const resolved = useMemo(() => {
+    if (!sectionId || !documentContent?.chapters) return null;
 
-  console.log("Resolved ", resolved);
+    for (const chapter of documentContent.chapters) {
+      if (!Array.isArray(chapter?.parts)) continue;
+
+      for (const part of chapter.parts) {
+        if (!Array.isArray(part?.sections)) continue;
+
+        const index = part.sections.findIndex((s) => s?.id === sectionId);
+
+        if (index !== -1) {
+          return {
+            part,
+            chapter,
+            section: part.sections[index],
+            sectionIndex: index,
+            totalSections: part.sections.length,
+          };
+        }
+      }
+    }
+
+    return null;
+  }, [documentContent?.chapters, sectionId]);
 
   const part = resolved?.part ?? null;
+  const chapter = resolved?.chapter ?? null;
+  const section = resolved?.section ?? null;
   const currentSectionIndex = resolved?.sectionIndex ?? 0;
   const totalSections = resolved?.totalSections ?? 0;
 
@@ -144,20 +139,34 @@ export default function Page() {
    * Navigation handlers
    */
   const handlePreviousSection = () => {
-    if (!part || currentSectionIndex <= 0) return;
+    if (!part || !chapter || currentSectionIndex <= 0) return;
 
     const target = part.sections[currentSectionIndex - 1];
     if (target?.id) {
-      router.push(`/chat/doc?sectionId=${target.id}`);
+      startTransition(() => {
+        const params = new URLSearchParams({
+          sectionId: target.id,
+          partTitle: part.partTitle,
+          chapterTitle: chapter.chapterTitle,
+        });
+        router.push(`/chat/doc?${params.toString()}`);
+      });
     }
   };
 
   const handleNextSection = () => {
-    if (!part || currentSectionIndex >= part.sections.length - 1) return;
+    if (!part || !chapter || currentSectionIndex >= part.sections.length - 1) return;
 
     const target = part.sections[currentSectionIndex + 1];
     if (target?.id) {
-      router.push(`/chat/doc?sectionId=${target.id}`);
+      startTransition(() => {
+        const params = new URLSearchParams({
+          sectionId: target.id,
+          partTitle: part.partTitle,
+          chapterTitle: chapter.chapterTitle,
+        });
+        router.push(`/chat/doc?${params.toString()}`);
+      });
     }
   };
 
@@ -189,9 +198,9 @@ export default function Page() {
       <DocumentViewer
         documentContent={documentContent}
         sectionId={sectionId}
-        // chapterTitle={chapterTitle}
-        // partTitle={partTitle}
-        // sectionTitle={sectionTitle}
+        chapterTitle={chapter?.chapterTitle ?? chapterTitle ?? null}
+        partTitle={part?.partTitle ?? partTitle ?? null}
+        sectionTitle={section?.sectionTitle ?? null}
         previousSectionTitle={previousSectionTitle}
         nextSectionTitle={nextSectionTitle}
         previousSectionNumber={previousSectionNumber}

@@ -109,7 +109,10 @@ export const LeftSideBar: FC<ILeftSideBarProps> = ({
       </div>
 
       {/* Table of Content */}
-      <NewTableOfContent onSectionSelect={() => onSectionSelect} />
+      <NewTableOfContent 
+        searchQuery={searchQuery}
+        onSectionSelect={() => onSectionSelect} 
+      />
 
       {/* Fixed Footer Section */}
       <div className="w-full flex-shrink-0 p-6 border-t border-lightgrey">
