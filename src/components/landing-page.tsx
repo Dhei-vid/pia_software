@@ -71,7 +71,7 @@ const LandingPage = () => {
 
       <div className="container text-right p-4 2xl:px-2">
         <p className="text-base lg:text-lg text-green font-bold">
-          Powered by Saidu Aliyu Mohammed
+          Powered by Eng. Saidu Aliyu Mohammed
         </p>
       </div>
 
