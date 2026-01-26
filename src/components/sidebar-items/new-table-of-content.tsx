@@ -308,7 +308,7 @@ const NewTableOfContent: FC<NewTableOfContentProps> = ({ searchQuery = "", onSec
         })) : (
           <div className="px-2 py-4">
             <p className="text-xs text-muted-foreground text-center">
-              No chapters or parts found matching "{searchQuery}"
+              No chapters or parts found matching &quot;{searchQuery}&quot;
             </p>
           </div>
         )}
