@@ -371,7 +371,7 @@ const DocumentPart: FC<IDocumentPart> = ({
           className="cursor-pointer text-left hover:bg-lightgrey w-full space-y-1 p-2 rounded-md transition-colors"
         >
           <p className="text-xs text-muted-foreground">
-            Section {section?.sectionNumber}
+            Section {index + 1}
           </p>
           <p className="text-xs text-foreground line-clamp-1">
             {keepLettersAndSpaces(section?.sectionTitle)}

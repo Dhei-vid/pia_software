@@ -220,7 +220,7 @@ const DocumentViewer: FC<IDocumentViewerProps> = ({
             <div className="text-left leading-tight flex-1">
               <span className="text-sm opacity-50 block">Previous</span>
               <p className="text-sm line-clamp-1">
-                Section {previousSectionNumber}: {previousSectionTitle}
+                Section {nextSectionNumber === 0 ? currentSectionIndex + 2 : currentSectionIndex}: {previousSectionTitle}
               </p>
             </div>
           </button>
@@ -231,7 +231,7 @@ const DocumentViewer: FC<IDocumentViewerProps> = ({
           {/* Next button */}
           <button
             onClick={onNextSection}
-            disabled={currentSectionIndex === totalSections - 1}
+            disabled={currentSectionIndex === currentSectionIndex - 1}
             className={cn(
               "cursor-pointer flex items-center gap-2 w-1/2 justify-end px-4 h-20 text-foreground/70 hover:text-foreground hover:bg-lightgrey",
               currentSectionIndex === totalSections - 1 &&
@@ -240,9 +240,10 @@ const DocumentViewer: FC<IDocumentViewerProps> = ({
           >
             <div className="text-right leading-tight flex-1">
               <span className="text-sm opacity-50 block">Next</span>
+              {/* made changes here */}
               <p className="text-sm line-clamp-1">
                 {
-                  nextSectionNumber > 0 ? `Section ${nextSectionNumber}: ` : ""
+                  nextSectionNumber > 0 ? `Section ${currentSectionIndex + 2}: ` : ""
                 }
                 {nextSectionTitle}
               </p>
