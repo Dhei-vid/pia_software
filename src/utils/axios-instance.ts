@@ -4,8 +4,10 @@ import { host } from "./helpers";
 import { getCookie } from "cookies-next";
 import { performLogout } from "./helpers";
 
-const fallbackURL = "http://localhost:8000";
+const fallbackURL = "https://wrightenergy.onrender.com";
 const baseURL = host || process.env.NEXT_PUBLIC_API_URL || fallbackURL;
+
+console.log("Axios Base URL:", baseURL);
 
 const axiosInstance = axios.create({
   baseURL,
@@ -52,7 +54,7 @@ axiosInstance.interceptors.response.use(
         toast.error(
           "Endpoint not found. Please check your backend configuration."
         );
-        console.error(`404 → ${method} ${url}`);
+        // console.error(`404 → ${method} ${url}`);
         break;
 
       default:
@@ -65,7 +67,7 @@ axiosInstance.interceptors.response.use(
         }
     }
 
-    console.error(`[${method}] ${url} → ${status || "N/A"} | ${message}`);
+    console.log(`[${method}] ${url} → ${status || "N/A"} | ${message}`);
     return Promise.reject(error);
   }
 );

@@ -1,6 +1,6 @@
 "use client";
 
-import { FC } from "react";
+import { FC, useCallback, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Search as SearchIcon } from "lucide-react";
 import { Searches } from "@/api/documents/document-types";
@@ -10,14 +10,71 @@ import { Spinner } from "../ui/spinner";
 interface IHistoryList {
   history: Searches[];
   isLoading: boolean;
+  isLoadingMore?: boolean;
   error?: string;
+  hasMore?: boolean;
+  onLoadMore?: () => void;
 }
 
-const HistoryList: FC<IHistoryList> = ({ history, isLoading, error }) => {
+const HistoryList: FC<IHistoryList> = ({ history, isLoading, error,  isLoadingMore = false, hasMore = false, onLoadMore }) => {
   const router = useRouter();
+  const observerRef = useRef<IntersectionObserver | null>(null);
+  const loadMoreRef = useRef<HTMLDivElement>(null);
   //  router.push(`/chat/compliance-report?comparisonId=${response.data.comparisonId}`);
 
-  if (isLoading) {
+  const handleObserver = useCallback((entries: IntersectionObserverEntry[]) => {
+    const [target] = entries;
+    if (target.isIntersecting && hasMore && !isLoadingMore && onLoadMore) {
+      onLoadMore();
+    }
+  }, [hasMore, isLoading, onLoadMore]);
+
+  // useEffect(() => {
+  //   if (!loadMoreRef.current) return;
+
+  //   observerRef.current = new IntersectionObserver(handleObserver, {
+  //     root: null,
+  //     rootMargin: "100px",
+  //     threshold: 0.1,
+  //   });
+
+  //   if (loadMoreRef.current) {
+  //     observerRef.current.observe(loadMoreRef.current);
+  //   }
+
+  //   return () => {
+  //     if (observerRef.current) {
+  //       observerRef.current.disconnect();
+  //     }
+  //   };
+  // }, [handleObserver, history.length]); 
+
+  useEffect(() => {
+    // Disconnect previous observer
+    if (observerRef.current) {
+      observerRef.current.disconnect();
+    }
+
+    // Create new observer
+    observerRef.current = new IntersectionObserver(handleObserver, {
+      root: null,
+      rootMargin: "100px",
+      threshold: 0.1,
+    });
+
+    // Observe the load more element
+    if (loadMoreRef.current) {
+      observerRef.current.observe(loadMoreRef.current);
+    }
+
+    return () => {
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+      }
+    };
+  }, [handleObserver, history.length]); 
+
+  if (isLoading  && history.length === 0) {
     return (
       <div className="flex flex-row gap-2 items-center justify-center py-8">
         <Spinner className="w-4 h-4" />
@@ -39,7 +96,8 @@ const HistoryList: FC<IHistoryList> = ({ history, isLoading, error }) => {
       {/* History List */}
       <div className="space-y-2">
         {history && history.length > 0 ? (
-          history.map((item) => (
+          <>
+          {history.map((item) => (
             <button
               onClick={() =>
                 router.push(`/chat/compliance-report?comparisonId=${item.id}`)
@@ -58,7 +116,22 @@ const HistoryList: FC<IHistoryList> = ({ history, isLoading, error }) => {
                 </div>
               </div>
             </button>
-          ))
+          ))}
+
+           <div ref={loadMoreRef} className="py-4">
+              {isLoadingMore && (
+                <div className="flex flex-row gap-2 items-center justify-center">
+                  <Spinner className="w-4 h-4" />
+                  <p className="text-xs text-muted-foreground">Loading more...</p>
+                </div>
+              )}
+              {!hasMore && history.length > 0 && !isLoadingMore && (
+                <p className="text-xs text-muted-foreground text-center">
+                  No more history items
+                </p>
+              )}
+            </div>
+          </>
         ) : (
           <div className="text-center py-8">
             <SearchIcon className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
