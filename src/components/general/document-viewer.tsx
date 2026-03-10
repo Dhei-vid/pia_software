@@ -254,7 +254,7 @@ const DocumentViewer: FC<IDocumentViewerProps> = ({
       </div>
 
       {/* Search Input */}
-      <div className="border border-lightgrey rounded-xl bg-dark">
+      {/* <div className="border border-lightgrey rounded-xl bg-dark">
         <div className="p-4">
           <Input
             value={searchQuery}
@@ -283,7 +283,7 @@ const DocumentViewer: FC<IDocumentViewerProps> = ({
             />
           </Button>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };
