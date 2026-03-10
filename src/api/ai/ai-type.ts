@@ -17,6 +17,42 @@ export interface SearchDataResponse {
   searchId: string;
 }
 
+export interface TaxReference {
+  note: string;
+  section: string;
+}
+
+export interface TaxBreakdown {
+  description: string;
+  amount: number;
+  rate: string;
+}
+
+export interface TaxCalculation {
+  amount?: number;
+  eligible?: boolean;
+  breakdown?: TaxBreakdown[];
+  effectiveRate?: number;
+}
+
+export interface TaxResult {
+  answer: string;
+  confidence: string;
+  references?: TaxReference[];
+  taxCalculation?: TaxCalculation;
+  message?: string;
+}
+
+export interface TaxQueryResponse {
+  success: boolean;
+  message: string;
+  data?: TaxResult;
+  result?: TaxResult;
+}
+
+export type APIResponse = SearchResponse | TaxQueryResponse;
+
+
 export interface SearchResponse {
   data: SearchDataResponse;
   message: string;

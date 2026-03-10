@@ -139,6 +139,7 @@ export interface DocumentSection {
   section: string;
   sectionNumber: number;
   sectionTitle: string;
+  title:string
 }
 
 export interface DocumentParts {
@@ -202,9 +203,12 @@ export interface Searches {
   document: {
     id: string;
     title: string;
+    filename?: string;
   };
   id: string;
   query: string;
   userId: string;
-  results: Array<SearchResults>;
+  results: Array<SearchResults> | any;
+  type?: string;
+  displayTitle?: string;
 }

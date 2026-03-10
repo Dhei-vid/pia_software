@@ -21,6 +21,10 @@ export interface User {
   phone?: string | null;
   avatar?: string | null;
   location: string;
+  documents: Array<{  
+    id: string;
+    title: string;
+  }>;
   documentId: string;
   documentTitle: string;
   createdAt: string;

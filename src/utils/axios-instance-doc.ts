@@ -4,8 +4,10 @@ import { host } from "./helpers";
 import { getCookie } from "cookies-next";
 import { performLogout } from "./helpers";
 
-const fallbackURL = "http://localhost:8000";
+const fallbackURL = "https://wrightenergy.onrender.com";
 const baseURL = host || process.env.NEXT_PUBLIC_API_URL || fallbackURL;
+
+console.log("Axios Base URL:", baseURL);
 
 const axiosInstanceDoc = axios.create({
   baseURL,

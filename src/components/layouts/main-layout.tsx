@@ -23,7 +23,6 @@ const MainLayout = ({ children }: MainLayoutProps) => {
 
   return (
     <div className="h-full flex overflow-hidden">
-      {/* Left Sidebar - Navigation */}
       <div className="w-80 flex-shrink-0 h-full overflow-hidden">
         <LeftSideBar
           searchQuery={searchQuery}
@@ -37,7 +36,7 @@ const MainLayout = ({ children }: MainLayoutProps) => {
           ) => {
             // Navigate to docs page with section info when a section is selected
             router.push(
-              `/chat/doc?sectionId=${section.id}&partId=${partId}&chapterTitle=${encodeURIComponent(chapterTitle)}&partTitle=${encodeURIComponent(partTitle)}&sectionTitle=${encodeURIComponent(section.title)}`
+              `/chat/doc?sectionId=${section.id}&partId=${partId}&chapterTitle=${encodeURIComponent(chapterTitle)}&partTitle=${encodeURIComponent(partTitle)}&sectionTitle=${encodeURIComponent(section.sectionTitle)}`
             );
           }}
         />

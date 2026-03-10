@@ -9,6 +9,7 @@ import {
   SearchResponse,
   UploadResponse,
   DocumentApiResponse,
+  Searches,
 } from "./document-types";
 
 export const DocumentService = {
@@ -18,6 +19,7 @@ export const DocumentService = {
       const response = await axiosInstance.get(
         `/api/v1/documents/${documentId}`
       );
+      console.log("Document response:", response);
       return response.data.data;
     } catch (error) {
       const errorMessage = extractErrorMessage(error);
@@ -26,12 +28,26 @@ export const DocumentService = {
   },
 
   // Get search history: {{baseURL}}/api/v1/documents/search-history
-  getSearchHistory: async (): Promise<HistoryResponse> => {
+  getSearchHistory: async (page: number = 1, limit: number = 10): Promise<HistoryResponse> => {
     try {
       const response = await axiosInstance.get(
-        `/api/v1/documents/search-history`
+        `/api/v1/documents/search-history?page=${page}&limit=${limit}`
       );
       return response.data;
+    } catch (error) {
+      const errorMessage = extractErrorMessage(error);
+      throw new Error(errorMessage);
+    }
+  },
+
+  getSearchHistoryItem: async (id: string): Promise<{ success: boolean; data: Searches }> => {
+    try {
+      const response = await axiosInstance.get(`/api/v1/documents/search-history/${id}`);
+      console.log("Search history item response:", response); 
+      return {
+        success: response.data.success,
+        data: response.data.data.searchHistory
+      };
     } catch (error) {
       const errorMessage = extractErrorMessage(error);
       throw new Error(errorMessage);
@@ -148,6 +164,7 @@ export const DocumentService = {
       const response = await axiosInstance.get(
         `/api/v1/documents/${documentId}/content?format=${format}`
       );
+      console.log("Document content response:", response);
       return response.data;
     } catch (error) {
       const errorMessage = extractErrorMessage(error);
