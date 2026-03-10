@@ -8,13 +8,13 @@ const Header = () => {
       <div className="flex items-center gap-2">
         <Image
           src="/logo.png"
-          alt="Wright PIA Logo"
+          alt="Wright LAW Logo"
           width={25}
           height={25}
           className="object-contain"
         />
         <h1 className="text-base 2xl:text-lg text-foreground/70">
-          Wright PIA Software
+          Wright LAW Software
         </h1>
       </div>
     </div>

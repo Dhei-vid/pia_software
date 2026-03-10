@@ -65,7 +65,7 @@ const UserPreferencesPage = () => {
               Appearance
             </h3>
             <p className="text-muted-foreground">
-              How Wright PIA Software looks on your device
+              How Wright LAW Software looks on your device
             </p>
           </div>
 
@@ -138,7 +138,7 @@ const UserPreferencesPage = () => {
               Reference Search
             </h3>
             <p className="text-muted-foreground">
-              Allow Wright PIA Software reference previous search when answering
+              Allow Wright LAW Software reference previous search when answering
               a query.
             </p>
           </div>

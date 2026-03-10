@@ -93,7 +93,7 @@ const SignInPage = () => {
               <div className="w-12 h-12 rounded-xl flex items-center justify-center">
                 <Image
                   src="/logo.png"
-                  alt="Wright PIA Logo"
+                  alt="Wright LAW Logo"
                   width={40}
                   height={40}
                   className="object-contain"

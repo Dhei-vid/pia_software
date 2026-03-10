@@ -16,8 +16,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Wright PIA Software",
-  description: "AI ChatGPT Like App",
+  title: "Wright LAW Software",
+  description: "AI application that interprets the Petroleum Act Law (PIA) in Nigeria",
 };
 
 export default function RootLayout({

@@ -140,9 +140,9 @@ const RightSideBar: FC<RightSideBarProps> = ({ tools }) => {
     }
 
     try {
-      await createNote({
+      const response = await createNote({
         body: newNote.trim(),
-        documentId: user?.documentId,
+        documentId: user?.documents[0]?.id,
       });
 
       // Clear the note input and force modal re-render

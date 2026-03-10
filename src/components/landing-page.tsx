@@ -15,7 +15,7 @@ const LandingPage = () => {
             <div className={"flex items-center space-x-3"}>
               <Image src={"/logo.png"} alt={"Logo"} width={40} height={40} />
               <h1 className={"text-xl font-semibold text-foreground/70"}>
-                WRIGHT PIA
+                WRIGHT LAW
               </h1>
             </div>
 
@@ -39,20 +39,20 @@ const LandingPage = () => {
           <div className="relative container mx-auto px-6 text-center">
             <div className="max-w-4xl mx-auto">
               <h1 className="text-2xl lg:text-5xl 2xl:text-5xl font-bold text-white mb-6 leading-tight">
-                Transform Nigeria&apos;s Petroleum Law into Your Digital
+                Transform Nigeria&apos;s Law Act into Your Digital
                 Advantage.
               </h1>
 
               <p className="text-sm lg:text-base 2xl:text-xl text-white/70 mb-12 leading-relaxed max-w-3xl mx-auto">
                 Navigate the complexities of the Petroleum Industry Act (PIA)
-                2021 with an AI-powered platform. Search, verify, and draft
+                2021/ Nigerian Tax Act with an AI-powered platform. Search, verify, and draft
                 legal documents with unparalleled speed and accuracy.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
                 <Link href={"/signup"}>
                   <Button className="bg-green hover:bg-green/90 text-white px-8 py-4">
-                    Request a Demo
+                    Sign up
                   </Button>
                 </Link>
                 <Link href={"/chat"}>
