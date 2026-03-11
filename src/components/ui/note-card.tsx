@@ -46,22 +46,26 @@ const NoteCard: FC<NoteCardProps> = ({
   };
 
   return (
-    <div className={`bg-lightgrey rounded-xl p-6 space-y-4 ${className}`}>
+    <div
+      className={`bg-muted dark:bg-lightgrey rounded-xl p-6 space-y-4 ${className}`}
+    >
       {/* Linked Section Header */}
       {linkedSection && (
-        <div className="flex items-start justify-between bg-dark p-4">
+        <div className="flex items-start justify-between bg-card dark:bg-dark border border-border dark:border-transparent rounded-lg p-4">
           <div className="flex-1">
-            <p className="text-sm font-semibold text-white mb-1">
+            <p className="text-sm font-semibold text-foreground dark:text-white mb-1">
               Linked to: {linkedSection.title}
             </p>
             {excerpt && (
-              <p className="text-sm text-gray-400 leading-relaxed">{excerpt}</p>
+              <p className="text-sm text-muted-foreground dark:text-gray-400 leading-relaxed">
+                {excerpt}
+              </p>
             )}
           </div>
           {linkedSection.href && (
             <button
               onClick={handleViewLinked}
-              className="ml-3 p-1 text-gray-400 hover:text-white transition-colors"
+              className="ml-3 p-1 text-muted-foreground hover:text-foreground dark:text-gray-400 dark:hover:text-white transition-colors"
               title="View linked section"
             >
               <ArrowUpRight size={18} />
@@ -72,10 +76,12 @@ const NoteCard: FC<NoteCardProps> = ({
 
       {/* Note Content */}
       <div className="space-y-3">
-        <p className="text-gray-300 leading-relaxed">{content}</p>
+        <p className="text-foreground/90 dark:text-gray-300 leading-relaxed">
+          {content}
+        </p>
 
         {/* Timestamp */}
-        <p className="text-sm text-gray-400">
+        <p className="text-sm text-muted-foreground dark:text-gray-400">
           Added on: {dayjs(timestamp).format("DD/MM/YYYY")} at{" "}
           {dayjs(timestamp).format("hh:mm A")}
         </p>
@@ -84,10 +90,10 @@ const NoteCard: FC<NoteCardProps> = ({
       {/* Action Buttons */}
       <div className="flex items-center justify-end space-x-3 pt-2">
         <Button
-          variant={"outline"}
+          variant="outline"
           size="sm"
           onClick={handleEdit}
-          className="text-gray-50/50 hover:text-white bg-transparent border border-gray-50/50 hover:bg-gray-700/50 p-2"
+          className="text-foreground border-border hover:bg-muted dark:text-gray-50/50 dark:hover:text-white dark:bg-transparent dark:border-gray-50/50 dark:hover:bg-gray-700/50 p-2"
         >
           <Edit3 size={16} className="mr-2" />
           Edit Note

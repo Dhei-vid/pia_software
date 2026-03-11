@@ -104,11 +104,17 @@ export default function Page() {
   return (
     <div className="space-y-8">
       <div>
-        <Button onClick={() => router.back()}>Back</Button>
+        <Button
+          onClick={() => router.back()}
+          variant="outline"
+          className="text-foreground border-border hover:bg-muted dark:border-gray-700 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-700/50"
+        >
+          Back
+        </Button>
       </div>
 
       <div className="mb-6">
-        <h1 className="text-2xl sm:text-3xl font-serif text-white">
+        <h1 className="text-2xl sm:text-3xl font-serif text-foreground dark:text-white">
           Saved Notes
         </h1>
       </div>
@@ -120,7 +126,7 @@ export default function Page() {
       )}
 
       {loading && notes.length === 0 && (
-        <div className="text-center text-gray-400 py-4">
+        <div className="text-center text-muted-foreground dark:text-gray-400 py-4">
           <div className="flex items-center justify-center gap-2">
             <LoadingSpinner size="sm" />
             <p>Loading notes...</p>
@@ -134,7 +140,7 @@ export default function Page() {
           placeholder="Search your notes"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="bg-transparent border-gray-700 text-white placeholder:text-gray-400 focus:border-yellow-400 h-12"
+          className="h-12 dark:bg-transparent dark:border-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-yellow-400"
         />
 
         <DateFilter timeFilter={timeFilter} setTimeFilter={setTimeFilter} />
@@ -158,8 +164,8 @@ export default function Page() {
             />
           ))
         ) : (
-          <div className="bg-dark border border-gray-700 rounded-xl p-6 text-center">
-            <p className="text-gray-400">
+          <div className="bg-muted dark:bg-dark border border-border dark:border-gray-700 rounded-xl p-6 text-center">
+            <p className="text-muted-foreground dark:text-gray-400">
               {searchQuery
                 ? "No notes found matching your search"
                 : "No notes available for the selected time period"}

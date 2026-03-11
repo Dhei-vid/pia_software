@@ -47,7 +47,7 @@ const GeneralAlertDialog: FC<IGeneralAlertDialog> = ({
             <Check />
             <p>Continue</p>
           </AlertDialogAction>
-          <AlertDialogCancel className="flex flex-row items-center gap-2 bg-transparent text-white">
+          <AlertDialogCancel className="flex flex-row items-center gap-2 bg-transparent text-foreground hover:bg-muted border border-border dark:text-white dark:hover:bg-transparent dark:border-transparent">
             <X />
             <p>Cancel</p>
           </AlertDialogCancel>

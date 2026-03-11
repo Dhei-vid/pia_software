@@ -50,8 +50,8 @@ const GenericDrawer: React.FC<GenericDrawerProps> = ({
 
   const positionClasses =
     position === "left"
-      ? "left-80 border-r border-lightgrey"
-      : "right-65 border-l border-lightgrey";
+      ? "left-80 border-r border-border dark:border-lightgrey"
+      : "right-65 border-l border-border dark:border-lightgrey";
 
   const slideVariants = {
     hidden: {
@@ -90,7 +90,8 @@ const GenericDrawer: React.FC<GenericDrawerProps> = ({
           {/* Drawer */}
           <motion.div
             className={cn(
-              `fixed top-0 ${positionClasses} h-full w-80 bg-grey z-50 flex flex-col`,
+              "fixed top-0 h-full w-80 z-50 flex flex-col bg-card dark:bg-grey",
+              positionClasses,
               className
             )}
             variants={slideVariants}
@@ -108,13 +109,12 @@ const GenericDrawer: React.FC<GenericDrawerProps> = ({
             <div
               className={cn(
                 position === "right" ? "flex-row-reverse" : "",
-                "flex items-center justify-between p-4 border-b border-lightgrey flex-shrink-0"
+                "flex items-center justify-between p-4 border-b border-border dark:border-lightgrey flex-shrink-0"
               )}
             >
               <h2
                 className={cn(
-                  headerStyle ? headerStyle : "text-base font-semibold",
-                  "",
+                  headerStyle ?? "text-base font-semibold",
                   "!text-foreground"
                 )}
               >
@@ -123,13 +123,13 @@ const GenericDrawer: React.FC<GenericDrawerProps> = ({
               {isHeaderArrow && (
                 <button
                   onClick={onArrowClick || onClose}
-                  className="cursor-pointer p-2 rounded-md hover:bg-[#3a3a3a] transition-colors"
+                  className="cursor-pointer p-2 rounded-md hover:bg-muted dark:hover:bg-[#3a3a3a] transition-colors"
                 >
                   {isHeaderArrow && (
                     <ChevronRight
                       className={cn(
                         position === "right" && "rotate-180",
-                        "w-5 h-5 text-gray-400"
+                        "w-5 h-5 text-muted-foreground dark:text-gray-400"
                       )}
                     />
                   )}

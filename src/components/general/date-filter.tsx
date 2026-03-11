@@ -17,7 +17,7 @@ interface IDateFilter {
 const DateFilter: FC<IDateFilter> = ({ timeFilter, setTimeFilter }) => {
   return (
     <Select value={timeFilter} onValueChange={setTimeFilter}>
-      <SelectTrigger className="bg-transparent border-gray-700 text-white !h-12">
+      <SelectTrigger className="!h-12 dark:bg-transparent dark:border-gray-700 dark:text-white">
         <SelectValue placeholder="Time filter" />
       </SelectTrigger>
       <SelectContent>

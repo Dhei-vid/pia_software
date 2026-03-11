@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import DateFilter from "@/components/general/date-filter";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import ChecklistCard from "@/components/ui/checklist-card";
 import LoadingSpinner from "@/components/ui/loading";
 import { DeleteConfirmationDialog } from "@/components/modals/delete-confirmation-dialog";
@@ -36,11 +37,13 @@ export default function Page() {
     deleteChecklist,
   } = useChecklists();
 
+  console.log("Checlklist ", checklists)
+
   useEffect(() => {
     (async () => {
       if (!user) return;
 
-      await fetchChecklists(user?.documentId);
+      await fetchChecklists(user?.documents[0]?.id,);
     })();
   }, [user, fetchChecklists]);
 
@@ -103,11 +106,6 @@ export default function Page() {
     }
   };
 
-  const handleAddNote = (id: string) => {
-    // TODO: Implement add note functionality
-    toast.info("Add note functionality coming soon");
-  };
-
   const handleDelete = (id: string) => {
     setDeleteChecklistId(id);
   };
@@ -134,9 +132,19 @@ export default function Page() {
 
   return (
     <div className="space-y-8">
+      <div>
+        <Button
+          onClick={() => router.back()}
+          variant="outline"
+          className="text-foreground border-border hover:bg-muted dark:border-gray-700 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-700/50"
+        >
+          Back
+        </Button>
+      </div>
+
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-2xl sm:text-3xl font-serif text-white">
+        <h1 className="text-2xl sm:text-3xl font-serif text-foreground dark:text-white">
           Checklist
         </h1>
       </div>
@@ -150,7 +158,7 @@ export default function Page() {
 
       {/* Loading indicator */}
       {loading && checklists.length === 0 && (
-        <div className="text-center text-gray-400 py-4">
+        <div className="text-center text-muted-foreground dark:text-gray-400 py-4">
           <div className="flex items-center justify-center gap-2">
             <LoadingSpinner size="sm" />
             <p>Loading checklists...</p>
@@ -164,7 +172,7 @@ export default function Page() {
           placeholder="Search your checklists"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="bg-transparent border-gray-700 text-white placeholder:text-gray-400 focus:border-yellow-400 h-12"
+          className="h-12 dark:bg-transparent dark:border-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-yellow-400"
         />
 
         <DateFilter timeFilter={timeFilter} setTimeFilter={setTimeFilter} />
@@ -184,14 +192,13 @@ export default function Page() {
               timestamp={checklist.createdAt}
               onToggle={handleToggle}
               onEdit={handleEdit}
-              onAddNote={handleAddNote}
               onDelete={handleDelete}
               onViewLinked={handleViewLinked}
             />
           ))
         ) : (
-          <div className="bg-dark border border-gray-700 rounded-xl p-6 text-center">
-            <p className="text-gray-400">
+          <div className="bg-muted dark:bg-dark border border-border dark:border-gray-700 rounded-xl p-6 text-center">
+            <p className="text-muted-foreground dark:text-gray-400">
               {searchQuery
                 ? "No checklists found matching your search"
                 : "No checklists available"}

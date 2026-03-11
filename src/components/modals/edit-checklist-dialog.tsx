@@ -51,10 +51,12 @@ export const EditChecklistDialog: React.FC<EditChecklistDialogProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[550px] bg-grey border-gray-700">
+      <DialogContent className="sm:max-w-[550px] bg-card border-border dark:bg-grey dark:border-gray-700">
         <DialogHeader>
-          <DialogTitle className="text-white">Edit Checklist</DialogTitle>
-          <DialogDescription className="text-gray-400">
+          <DialogTitle className="text-foreground dark:text-white">
+            Edit Checklist
+          </DialogTitle>
+          <DialogDescription className="text-muted-foreground dark:text-gray-400">
             Update your checklist title below
           </DialogDescription>
         </DialogHeader>
@@ -64,7 +66,7 @@ export const EditChecklistDialog: React.FC<EditChecklistDialogProps> = ({
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Enter checklist title..."
-            className="bg-lightgrey border-gray-600 text-white placeholder:text-gray-500 focus:border-yellow-400"
+            className="dark:bg-lightgrey dark:border-gray-600 dark:text-white dark:placeholder:text-gray-500 dark:focus:border-yellow-400"
             disabled={isSaving}
           />
         </div>
@@ -74,7 +76,7 @@ export const EditChecklistDialog: React.FC<EditChecklistDialogProps> = ({
             variant="outline"
             onClick={onClose}
             disabled={isSaving}
-            className="border-gray-600 text-gray-300 hover:bg-gray-700"
+            className="border-border text-foreground hover:bg-muted dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
           >
             Cancel
           </Button>

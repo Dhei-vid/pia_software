@@ -3,7 +3,7 @@
 import { FC } from "react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Edit3, Trash2, FileText, ArrowUpRight } from "lucide-react";
+import { Edit3, Trash2, ArrowUpRight } from "lucide-react";
 
 interface ChecklistCardProps {
   id: string;
@@ -18,7 +18,6 @@ interface ChecklistCardProps {
   timestamp: string | Date;
   onToggle?: (id: string) => void;
   onEdit?: (id: string) => void;
-  onAddNote?: (id: string) => void;
   onDelete?: (id: string) => void;
   onViewLinked?: (documentId: string) => void;
   className?: string;
@@ -33,7 +32,6 @@ const ChecklistCard: FC<ChecklistCardProps> = ({
   // timestamp,
   onToggle,
   onEdit,
-  onAddNote,
   onDelete,
   onViewLinked,
   className = "",
@@ -44,10 +42,6 @@ const ChecklistCard: FC<ChecklistCardProps> = ({
 
   const handleEdit = () => {
     onEdit?.(id);
-  };
-
-  const handleAddNote = () => {
-    onAddNote?.(id);
   };
 
   const handleDelete = () => {
@@ -61,11 +55,15 @@ const ChecklistCard: FC<ChecklistCardProps> = ({
   };
 
   return (
-    <div className={`bg-lightgrey rounded-xl p-6 space-y-4 ${className}`}>
+    <div
+      className={`bg-muted dark:bg-lightgrey rounded-xl p-6 space-y-4 ${className}`}
+    >
       {/* Header with Title and Checkbox */}
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1">
-          <h3 className="text-base font-medium text-white">{title}</h3>
+          <h3 className="text-base font-medium text-foreground dark:text-white">
+            {title}
+          </h3>
         </div>
         <Checkbox
           id={id}
@@ -77,18 +75,20 @@ const ChecklistCard: FC<ChecklistCardProps> = ({
 
       {/* Linked Document Section - Only shown when linked */}
       {document && (
-        <div className="bg-grey p-3 rounded-lg">
+        <div className="bg-card dark:bg-grey border border-border dark:border-transparent p-3 rounded-lg">
           <div className="flex items-start justify-between gap-3">
             <div className="flex-1">
-              <p className="text-sm text-gray-400 mb-1">Linked to:</p>
-              <p className="text-sm font-medium text-white">
+              <p className="text-sm text-muted-foreground dark:text-gray-400 mb-1">
+                Linked to:
+              </p>
+              <p className="text-sm font-medium text-foreground dark:text-white">
                 {document.section ? `${document.section}: ` : ""}
                 {document.title}
               </p>
             </div>
             <button
               onClick={handleViewLinked}
-              className="p-1 text-gray-400 hover:text-white transition-colors"
+              className="p-1 text-muted-foreground hover:text-foreground dark:text-gray-400 dark:hover:text-white transition-colors"
               title="View linked section"
             >
               <ArrowUpRight size={18} />
@@ -98,12 +98,12 @@ const ChecklistCard: FC<ChecklistCardProps> = ({
       )}
 
       {/* Action Buttons */}
-      <div className="flex items-center justify-end gap-2 pt-4 border-t border-gray-100/20">
+      <div className="flex items-center justify-end gap-2 pt-4 border-t border-border dark:border-gray-100/20">
         <Button
           variant="outline"
           size="sm"
           onClick={handleEdit}
-          className="border-gray-600 text-gray-300 hover:bg-gray-700"
+          className="border-border text-foreground hover:bg-muted dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
         >
           <Edit3 size={14} />
           Edit Checklist
@@ -112,18 +112,8 @@ const ChecklistCard: FC<ChecklistCardProps> = ({
         <Button
           variant="outline"
           size="sm"
-          onClick={handleAddNote}
-          className="border-gray-600 text-gray-300 hover:bg-gray-700"
-        >
-          <FileText size={14} />
-          Add Note
-        </Button>
-
-        <Button
-          variant="outline"
-          size="sm"
           onClick={handleDelete}
-          className="border-red-500/60 text-red-400 hover:!bg-destructive"
+          className="border-red-500/60 text-red-400 hover:!bg-destructive dark:border-red-500/60"
         >
           <Trash2 size={14} />
           Delete Checklist

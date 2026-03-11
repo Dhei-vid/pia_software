@@ -12,11 +12,13 @@ const CheckList = () => {
   const { checklists, fetchChecklists, loading, error } = useChecklists();
   const [items, setItems] = useState<Checklist[]>(checklists);
 
+  console.log(checklists)
+
   useEffect(() => {
     if (!user) return;
 
     (async () => {
-      const response = await fetchChecklists(user?.documentId);
+      const response = await fetchChecklists(user?.documents[0]?.id,);
       setItems(response.checklist);
     })();
   }, [user, fetchChecklists]);
@@ -34,7 +36,9 @@ const CheckList = () => {
       <div className="flex items-center justify-center py-8">
         <div className="flex items-center gap-2">
           <LoadingSpinner size="sm" />
-          <div className="text-gray-400 text-sm">Loading checklist...</div>
+          <div className="text-muted-foreground dark:text-gray-400 text-sm">
+            Loading checklist...
+          </div>
         </div>
       </div>
     );
@@ -43,7 +47,7 @@ const CheckList = () => {
   if (error) {
     return (
       <div className="flex items-center justify-center py-8">
-        <div className="text-red-400 text-sm">
+        <div className="text-destructive dark:text-red-400 text-sm">
           Error loading checklist: {error}
         </div>
       </div>
@@ -63,8 +67,10 @@ const CheckList = () => {
           />
         ))
       ) : (
-        <div className={"flex items-center justify-center pt-5"}>
-          <p className="text-sm text-grey">No checklists found.</p>
+        <div className="flex items-center justify-center pt-5">
+          <p className="text-sm text-muted-foreground dark:text-grey">
+            No checklists found.
+          </p>
         </div>
       )}
     </div>

@@ -30,17 +30,17 @@ export const DeleteConfirmationDialog: React.FC<
 
   return (
     <AlertDialog open={open} onOpenChange={onClose}>
-      <AlertDialogContent className="bg-dark border-gray-700">
+      <AlertDialogContent className="dark:bg-dark dark:border-gray-700">
         <AlertDialogHeader>
-          <AlertDialogTitle className="text-white">{title}</AlertDialogTitle>
-          <AlertDialogDescription className="text-gray-400">
+          <AlertDialogTitle className="dark:text-white">{title}</AlertDialogTitle>
+          <AlertDialogDescription className="dark:text-gray-400">
             {description}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter className="gap-2">
           <AlertDialogCancel
             disabled={isLoading}
-            className="border-gray-600 text-gray-300 hover:bg-gray-700"
+            className="dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
           >
             Cancel
           </AlertDialogCancel>

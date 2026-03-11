@@ -8,6 +8,7 @@ import ModalX from "../modals/modalx";
 import ModalComponents from "../general/alert-modal";
 import { FileText, SquareCheck } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 import DraftDocumentModal from "../modals/draft-document-modal";
 import { toast } from "sonner";
@@ -100,7 +101,7 @@ const RightSideBar: FC<RightSideBarProps> = ({ tools }) => {
           value={newNote}
           onChange={(e) => setNewNote(e.target.value)}
           placeholder="Type your note here"
-          className="min-h-32 !bg-transparent text-white placeholder:text-gray-400 resize-none border-none !overflow-y-auto"
+          className="min-h-32 bg-input/50 border border-input text-foreground placeholder:text-muted-foreground dark:bg-dark dark:border-lightgrey dark:text-white dark:placeholder:text-gray-400 resize-none rounded-md overflow-y-auto focus-visible:ring-ring/50 focus-visible:ring-[1px] dark:focus-visible:ring-0"
         />
       </div>
     </div>
@@ -110,24 +111,24 @@ const RightSideBar: FC<RightSideBarProps> = ({ tools }) => {
   const createChecklistContent = (
     <div className="space-y-6">
       <div className="text-center">
-        <h3 className="text-lg font-semibold text-white mb-2">
+        <h3 className="text-lg font-semibold text-foreground dark:text-white mb-2">
           Create New Checklist
         </h3>
-        <p className="text-gray-400 text-sm">
+        <p className="text-muted-foreground dark:text-gray-400 text-sm">
           Create a new checklist for your current section
         </p>
       </div>
 
       <div className="space-y-3">
-        <label className="block text-sm font-medium text-white">
+        <label className="block text-sm font-medium text-foreground dark:text-white">
           Checklist Name
         </label>
-        <input
+        <Input
           type="text"
           value={newChecklistName}
           onChange={(e) => setNewChecklistName(e.target.value)}
           placeholder="Enter checklist name..."
-          className="w-full px-3 py-2 bg-dark border border-lightgrey rounded-md text-white placeholder:text-gray-400 focus:border-lightgrey focus:outline-none"
+          className="w-full bg-input/50 border-input dark:bg-dark dark:border-lightgrey dark:text-white dark:placeholder:text-gray-400"
         />
       </div>
     </div>
@@ -166,7 +167,7 @@ const RightSideBar: FC<RightSideBarProps> = ({ tools }) => {
     try {
       await createChecklist({
         name: newChecklistName.trim(),
-        documentId: user?.documentId,
+        documentId: user?.documents[0]?.id,
       });
 
       // Clear the checklist name input and force modal re-render

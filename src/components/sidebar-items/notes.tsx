@@ -28,7 +28,9 @@ const SavedNotes = () => {
       <div className="flex items-center justify-center py-8">
         <div className="flex items-center gap-2">
           <LoadingSpinner size="sm" />
-          <div className="text-gray-400 text-sm">Loading notes...</div>
+          <div className="text-muted-foreground dark:text-gray-400 text-sm">
+            Loading notes...
+          </div>
         </div>
       </div>
     );
@@ -37,7 +39,9 @@ const SavedNotes = () => {
   if (error) {
     return (
       <div className="flex items-center justify-center py-8">
-        <div className="text-red-400 text-sm">Error loading notes: {error}</div>
+        <div className="text-destructive dark:text-red-400 text-sm">
+          Error loading notes: {error}
+        </div>
       </div>
     );
   }
@@ -45,7 +49,9 @@ const SavedNotes = () => {
   if (notes.length === 0) {
     return (
       <div className="flex items-center justify-center py-8">
-        <div className="text-gray-400 text-sm">No notes found</div>
+        <div className="text-muted-foreground dark:text-gray-400 text-sm">
+          No notes found
+        </div>
       </div>
     );
   }
@@ -82,7 +88,7 @@ const NotesSideBarItems: FC<INotesSideBarItems> = ({ note, onDelete }) => {
   };
 
   return (
-    <div className="text-left flex flex-row gap-5 justify-between hover:bg-lightgrey cursor-pointer transition-all duration-200 ease-in-out rounded-md group">
+    <div className="text-left flex flex-row gap-5 justify-between hover:bg-muted dark:hover:bg-lightgrey cursor-pointer transition-all duration-200 ease-in-out rounded-md group">
       <div className="flex-1" onClick={handleNoteClick}>
         <p className="text-sm text-foreground truncate text-wrap line-clamp-2">
           {note.body}
@@ -96,7 +102,7 @@ const NotesSideBarItems: FC<INotesSideBarItems> = ({ note, onDelete }) => {
           variant="ghost"
           size="sm"
           onClick={handleDelete}
-          className="h-6 w-6 p-0 text-gray-400 hover:text-red-400"
+          className="h-6 w-6 p-0 text-muted-foreground hover:text-destructive dark:text-gray-400 dark:hover:text-red-400"
         >
           <Trash2 size={12} />
         </Button>
