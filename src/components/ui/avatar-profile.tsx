@@ -44,9 +44,10 @@ export function AvatarProfile({
     <Avatar className={cn(sizeClasses[size], className)}>
       {imageUrl && (
         <AvatarImage
-          src={imageUrl}
+          src={imageUrl ?? ""}
           alt={`${name}'s avatar`}
           className="object-cover"
+          crossOrigin="anonymous"
         />
       )}
       <AvatarFallback className="bg-gray-300 text-primary font-medium">

@@ -13,6 +13,7 @@ import AuthService from "@/api/auth/auth";
 import { UserService } from "@/api/user/user";
 import { extractErrorMessage } from "@/common/helpers";
 import { SupportDialog } from "@/components/modals/support-modal";
+import { getAvatarUrl } from "@/common/helpers";
 
 const UserProfilePage = () => {
   const params = useParams();
@@ -71,14 +72,15 @@ const UserProfilePage = () => {
     setIsUploadingAvatar(true);
     try {
       const response = await UserService.uploadAvatar(file);
-      const {data} = response
+      const avatarPath = response?.data?.user?.avatar;
+      const avatarUrl = getAvatarUrl(avatarPath);
 
-      if (data) {
-        setProfileImage(data?.user?.avatar);
-        setUser({ ...user, avatar: data?.user?.avatar });
+      console.log(avatarUrl)
+
+      if (avatarUrl) {
+        setProfileImage(avatarUrl);  
+        setUser({ ...user, avatar: avatarPath });  
         toast.success("Profile picture updated!");
-      } else {
-        toast.error("Upload succeeded but no avatar URL returned.");
       }
     } catch (error) {
       const message = extractErrorMessage(error);
@@ -98,9 +100,8 @@ const UserProfilePage = () => {
   const removeProfileImage = async () => {
     if (!isOwnProfile || !user) return;
     try {
-      const updatedUser = { ...user, avatar: undefined };
-      await UserService.updateUser(updatedUser);
-      setUser(updatedUser);
+      await UserService.deleteAvatar();
+      setUser({ ...user, avatar: undefined });
       setProfileImage(null);
       toast.success("Profile picture removed!");
     } catch (error) {
@@ -197,7 +198,7 @@ const UserProfilePage = () => {
             <AvatarProfile
               name={`${firstName} ${lastName}`}
               size={"xl"}
-              imageUrl={profileImage || undefined}
+              imageUrl={getAvatarUrl(profileImage)}
             />
             {profileImage && (
               <button

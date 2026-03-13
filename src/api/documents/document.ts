@@ -164,7 +164,6 @@ export const DocumentService = {
       const response = await axiosInstance.get(
         `/api/v1/documents/${documentId}/content?format=${format}`
       );
-      console.log("Document content response:", response);
       return response.data;
     } catch (error) {
       const errorMessage = extractErrorMessage(error);

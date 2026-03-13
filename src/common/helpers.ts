@@ -141,3 +141,13 @@ export function keepLettersOnly(message: string): string {
 export function keepLettersAndSpaces(message: string): string {
   return message.replace(/[^a-zA-Z\s]/g, "");
 }
+
+const apiBaseUrl = process.env.NEXT_PUBLIC_BASE_URL
+
+
+export function getAvatarUrl(path: string | null | undefined): string | null {
+  if (!path || typeof path !== "string") return null;
+  if (path.startsWith("http://") || path.startsWith("https://")) return path;
+  const base = apiBaseUrl?.replace(/\/$/, "") ?? "";
+  return base ? `${base}${path.startsWith("/") ? path : `/${path}`}` : path;
+}
