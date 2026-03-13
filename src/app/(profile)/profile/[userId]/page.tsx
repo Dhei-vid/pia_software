@@ -71,15 +71,11 @@ const UserProfilePage = () => {
     setIsUploadingAvatar(true);
     try {
       const response = await UserService.uploadAvatar(file);
-      // Adjust path if your API returns e.g. response.data.data.avatar
-      const avatarUrl =
-        typeof response?.avatar === "string"
-          ? response.avatar
-          : (response as { data?: { avatar?: string } })?.data?.avatar ?? null;
+      const {data} = response
 
-      if (avatarUrl) {
-        setProfileImage(avatarUrl);
-        setUser({ ...user, avatar: avatarUrl });
+      if (data) {
+        setProfileImage(data?.user?.avatar);
+        setUser({ ...user, avatar: data?.user?.avatar });
         toast.success("Profile picture updated!");
       } else {
         toast.error("Upload succeeded but no avatar URL returned.");

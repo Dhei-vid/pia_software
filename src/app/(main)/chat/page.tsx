@@ -16,10 +16,8 @@ import FileUploader from "@/components/ui/file-uploader";
 import { Separator } from "@/components/ui/separator";
 import { SelectedFIleUI } from "@/components/ui/selected-file";
 import { AIService } from "@/api/ai/ai";
-import { SearchResponse } from "@/api/ai/ai-type";
 import { ComplianceDocument } from "@/api/compliance/compliance";
 import { DocumentService } from "@/api/documents/document";
-import { DocumentSection } from "@/api/documents/document-types";
 import TaxResultCard from "@/components/ui/tax-result-card";
 
 // Document types
@@ -56,16 +54,6 @@ const ChatPage = () => {
     doc.title.toLowerCase().includes('tax') || 
     doc.title.includes('NIGERIA TAX ACT')
   );
-
-  // Log user data
-  useEffect(() => {
-    if (user) {
-      console.log("=== USER DATA ===");
-      console.log("User object:", user);
-      console.log("PIA Document:", piaDocument);
-      console.log("NTA Document:", ntaDocument);
-    }
-  }, [user, piaDocument, ntaDocument]);
 
   const handleSearch = async () => {
   if (!searchQuery.trim()) {
