@@ -30,10 +30,11 @@ const UserProfilePage = () => {
 
   const [firstName, setFirstName] = useState(firstname);
   const [lastName, setLastName] = useState(lastname);
-  const [isEmailVerified, setIsEmailVerified] = useState(true);
+  const [isEmailVerified, setIsEmailVerified] = useState<boolean>(true);
   const [profileImage, setProfileImage] = useState<string | null>(
     user?.avatar || null
   );
+  const [isUploadingAvatar, setIsUploadingAvatar] = useState<boolean>(false);
 
   const [openSupportModal, setOpenSupportModal] = useState<boolean>(false);
   const [mail, setMail] = useState<string | null>("info@wrightenergytech.com");
@@ -60,29 +61,56 @@ const UserProfilePage = () => {
   };
 
   // Handling Image upload
-  const handleFile = (file: File) => {
-    if (file.type.startsWith("image/")) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setProfileImage(e.target?.result as string);
-        toast.success("Profile picture updated!");
-      };
-      reader.readAsDataURL(file);
-    } else {
+  const handleFile = async (file: File) => {
+    if (!file.type.startsWith("image/")) {
       toast.error("Please select an image file");
+      return;
+    }
+    if (!isOwnProfile || !user) return;
+
+    setIsUploadingAvatar(true);
+    try {
+      const response = await UserService.uploadAvatar(file);
+      // Adjust path if your API returns e.g. response.data.data.avatar
+      const avatarUrl =
+        typeof response?.avatar === "string"
+          ? response.avatar
+          : (response as { data?: { avatar?: string } })?.data?.avatar ?? null;
+
+      if (avatarUrl) {
+        setProfileImage(avatarUrl);
+        setUser({ ...user, avatar: avatarUrl });
+        toast.success("Profile picture updated!");
+      } else {
+        toast.error("Upload succeeded but no avatar URL returned.");
+      }
+    } catch (error) {
+      const message = extractErrorMessage(error);
+      toast.error(message || "Failed to upload profile picture.");
+    } finally {
+      setIsUploadingAvatar(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
     }
   };
 
   const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      handleFile(e.target.files[0]);
-    }
+    const file = e.target.files?.[0];
+    if (file) handleFile(file);
   };
 
-  // Remove selected image
-  const removeProfileImage = () => {
-    setProfileImage(null);
-    toast.success("Profile picture removed!");
+  // Remove profile image and persist via API
+  const removeProfileImage = async () => {
+    if (!isOwnProfile || !user) return;
+    try {
+      const updatedUser = { ...user, avatar: undefined };
+      await UserService.updateUser(updatedUser);
+      setUser(updatedUser);
+      setProfileImage(null);
+      toast.success("Profile picture removed!");
+    } catch (error) {
+      const message = extractErrorMessage(error);
+      toast.error(message || "Failed to remove profile picture.");
+    }
   };
 
   // Contact Support
@@ -150,10 +178,11 @@ const UserProfilePage = () => {
             <Button
               size={"lg"}
               variant="outline"
+              disabled={isUploadingAvatar}
               onClick={() => fileInputRef.current?.click()}
               className="bg-transparent text-foreground/70 hover:bg-lightgrey"
             >
-              Change Profile Picture
+              {isUploadingAvatar ? "Uploading..." : "Change Profile Picture"}
             </Button>
 
             {/* Hidden file input */}
@@ -177,7 +206,8 @@ const UserProfilePage = () => {
             {profileImage && (
               <button
                 onClick={removeProfileImage}
-                className="cursor-pointer absolute -top-2 -right-1 w-6 h-6 bg-red-500 hover:bg-red-600 text-foreground/70 rounded-full flex items-center justify-center transition-colors"
+                disabled={isUploadingAvatar}
+                className="cursor-pointer absolute -top-2 -right-1 w-6 h-6 bg-red-500 hover:bg-red-600 text-foreground/70 rounded-full flex items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <X size={12} />
               </button>

@@ -32,4 +32,40 @@ export const UserService = {
       throw new Error(errorMessage);
     }
   },
+
+  uploadAvatar: async (file: File) => {
+    try {
+      const formData = new FormData();
+      formData.append("avatar", file);
+      const response = await axiosInstance.post(
+        "/api/v1/users/avatar",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      const errorMessage = extractErrorMessage(error);
+      throw new Error(errorMessage);
+    }
+  },
+
+  getAvatar: async () => {
+    try {
+      const response = await axiosInstance.get("/api/v1/users/avatar/me");
+      return response.data;
+    } catch (error) {
+      const errorMessage = extractErrorMessage(error);
+      throw new Error(errorMessage);
+    }
+  },
+
+  deleteAvatar: async () => {
+    try{
+      await axiosInstance.delete("/api/v1/users/avatar");
+    }catch(error){}
+  }
 };
