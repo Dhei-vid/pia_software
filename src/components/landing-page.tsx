@@ -15,7 +15,7 @@ const LandingPage = () => {
             <div className={"flex items-center space-x-3"}>
               <Image src={"/logo.png"} alt={"Logo"} width={40} height={40} />
               <h1 className={"text-xl font-semibold text-foreground/70"}>
-                WRIGHT LAW
+                WRIGHT LAW ACT
               </h1>
             </div>
 
