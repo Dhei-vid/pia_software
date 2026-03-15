@@ -54,6 +54,13 @@
 }
 
 :root {
+  /* Fonts: system stack so build does not require Google Fonts fetch */
+  --font-geist-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol";
+  --font-geist-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+    "Liberation Mono", monospace;
+
   /* Light theme (default) - custom colors */
   --dark: #fafafa;
   --grey: #f0f0f0;

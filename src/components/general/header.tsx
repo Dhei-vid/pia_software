@@ -14,7 +14,7 @@ const Header = () => {
           className="object-contain"
         />
         <h1 className="text-base 2xl:text-lg text-foreground/70">
-          Wright LAW Software
+          Wright LAW ACT Software
         </h1>
       </div>
     </div>

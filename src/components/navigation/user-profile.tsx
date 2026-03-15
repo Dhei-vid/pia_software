@@ -9,11 +9,14 @@ import { UserService } from "@/api/user/user";
 import { userResponse } from "@/api/user/user-type";
 import { extractErrorMessage } from "@/common/helpers";
 import LoadingSpinner from "../ui/loading";
+import { getAvatarUrl } from "@/common/helpers";
 
 const UserProfile = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [userData, setUserData] = useState<User>();
+
+  console.log("User Data ", userData)
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -49,7 +52,7 @@ const UserProfile = () => {
           className="justify-start text-left cursor-pointer hover:!bg-lightgrey p-8 w-full rounded-lg border border-foreground/30"
         >
           <div className="flex items-center space-x-3">
-            <AvatarProfile name={`${firstName} ${lastName}`} size="md" />
+            <AvatarProfile imageUrl={getAvatarUrl(userData?.avatar)} name={`${firstName} ${lastName}`} size="md" />
             <div>
               <p className="text-sm font-medium text-foreground/70">
                 {firstName} {lastName}

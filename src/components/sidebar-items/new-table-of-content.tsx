@@ -2,7 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useState, useMemo } from "react";
 import { ChevronRight, ChevronDown } from "lucide-react";
 
 import useAuth from "@/hooks/useAuth";
@@ -10,8 +10,12 @@ import { GenericDrawer } from "@/components/ui/generic-drawer";
 import { keepLettersAndSpaces } from "@/common/helpers";
 
 import { DocumentService } from "@/api/documents/document";
-import { DocumentContent } from "@/api/documents/document-types";
-import { DocumentSection } from "@/api/documents/document-types";
+import {
+  DocumentContent,
+  DocumentSection,
+  DocumentChapter,
+  DocumentParts,
+} from "@/api/documents/document-types";
 
 interface NewTableOfContentProps {
   searchQuery?: string;
@@ -96,6 +100,95 @@ const NewTableOfContent: FC<NewTableOfContentProps> = ({ searchQuery = "", onSec
     fetchAllDocuments();
   }, [user]);
 
+  // Filter by search query. Targets: document title, chapter title, part title; chapters (e.g. "chapter", "chapter 1"); parts (e.g. "part", "part 2")
+  const query = searchQuery.trim().toLowerCase();
+  const filteredDocumentList = useMemo(() => {
+    if (!user?.documents) return [];
+    if (!query) {
+      return user.documents.map((doc) => {
+        const content = documents[doc.id];
+        const chapters = (content?.chapters ?? []).map((chapter) => ({
+          chapter,
+          parts: chapter.parts,
+        }));
+        return { doc, content, chapters };
+      });
+    }
+    // Match "chapter 1", "chapter1" -> chapterNumber 1; "part 2", "part2" -> partNumber 2
+    const chapterNumMatch = query.match(/^chapter\s*(\d+)$/);
+    const partNumMatch = query.match(/^part\s*(\d+)$/);
+    const targetChapterNum = chapterNumMatch ? parseInt(chapterNumMatch[1], 10) : null;
+    const targetPartNum = partNumMatch ? parseInt(partNumMatch[1], 10) : null;
+
+    const result: Array<{
+      doc: { id: string; title: string };
+      content: DocumentContent | undefined;
+      chapters: Array<{ chapter: DocumentChapter; parts: DocumentParts[] }>;
+    }> = [];
+    user.documents.forEach((doc) => {
+      const content = documents[doc.id];
+      if (!content?.chapters) {
+        // Target: document title
+        const docTitleMatch = doc.title?.toLowerCase().includes(query) || content?.title?.toLowerCase().includes(query);
+        if (docTitleMatch) {
+          result.push({ doc, content, chapters: [] });
+        }
+        return;
+      }
+      const filteredChapters: Array<{ chapter: DocumentChapter; parts: DocumentParts[] }> = [];
+      content.chapters.forEach((chapter) => {
+        // Target: chapter title, and chapters by label/number (e.g. "chapter", "chapter 1")
+        const chapterTitleMatch = chapter.chapterTitle?.toLowerCase().includes(query);
+        const chapterNumberMatch =
+          targetChapterNum != null && chapter.chapterNumber === targetChapterNum;
+        const chapterLabelMatch =
+          targetChapterNum == null &&
+          `chapter ${chapter.chapterNumber}`.toLowerCase().includes(query);
+        const matchingParts: DocumentParts[] = chapter.parts.filter((part) => {
+          // Target: part title, and parts by label/number (e.g. "part", "part 2")
+          const partTitleMatch = part.partTitle?.toLowerCase().includes(query);
+          const partNumberMatch =
+            targetPartNum != null && part.partNumber === targetPartNum;
+          const partLabelMatch =
+            targetPartNum == null &&
+            `part ${part.partNumber}`.toLowerCase().includes(query);
+          return partTitleMatch || partNumberMatch || partLabelMatch;
+        });
+        const chapterMatches =
+          chapterTitleMatch ||
+          chapterNumberMatch ||
+          chapterLabelMatch ||
+          matchingParts.length > 0;
+        if (chapterMatches) {
+          filteredChapters.push({
+            chapter,
+            parts: matchingParts.length > 0 ? matchingParts : chapter.parts,
+          });
+        }
+      });
+      // Target: document title
+      const docTitleMatch = doc.title?.toLowerCase().includes(query) || content.title?.toLowerCase().includes(query);
+      if (docTitleMatch || filteredChapters.length > 0) {
+        result.push({ doc, content, chapters: filteredChapters });
+      }
+    });
+    return result;
+  }, [user?.documents, documents, query]);
+
+  // Auto-expand documents and chapters when search has matches
+  useEffect(() => {
+    if (query && filteredDocumentList.length > 0) {
+      const docIds = new Set<string>();
+      const chapterIds = new Set<string>();
+      filteredDocumentList.forEach(({ doc, chapters }) => {
+        docIds.add(doc.id);
+        chapters.forEach(({ chapter }) => chapterIds.add(chapter.id));
+      });
+      setExpandedDocuments((prev) => new Set([...prev, ...docIds]));
+      setExpandedChapters((prev) => new Set([...prev, ...chapterIds]));
+    }
+  }, [query, filteredDocumentList]);
+
   // Handle document toggle
   const handleDocumentClick = (documentId: string) => {
     setExpandedDocuments((prev) => {
@@ -153,9 +246,8 @@ const NewTableOfContent: FC<NewTableOfContentProps> = ({ searchQuery = "", onSec
 
   return (
     <div className="space-y-4 flex-1 px-6 pb-6 overflow-y-auto scrollbar-width">
-      {/* Render each document */}
-      {user.documents.map((doc) => {
-        const documentContent = documents[doc.id];
+      {/* Render each document (filtered by search when query is set) */}
+      {filteredDocumentList.map(({ doc, content: documentContent, chapters: chaptersToShow }) => {
         const isLoading = loading[doc.id];
         const isDocumentExpanded = expandedDocuments.has(doc.id);
 
@@ -190,10 +282,10 @@ const NewTableOfContent: FC<NewTableOfContentProps> = ({ searchQuery = "", onSec
               </div>
             </button>
 
-            {/* Document Chapters (shown when expanded) */}
+            {/* Document Chapters (shown when expanded; filtered when search is active) */}
             {isDocumentExpanded && documentContent && (
               <div className="ml-3 space-y-1 border-l-2 border-lightgrey pl-3">
-                {documentContent.chapters.map((chapter, index) => (
+                {chaptersToShow.map(({ chapter, parts }, index) => (
                   <div key={chapter.id || index} className="space-y-1">
                     {/* Chapter Title */}
                     <button
@@ -223,15 +315,15 @@ const NewTableOfContent: FC<NewTableOfContentProps> = ({ searchQuery = "", onSec
                     {/* Expanded parts */}
                     {expandedChapters.has(chapter.id) && (
                       <div className="ml-3 space-y-1">
-                        {chapter.parts.map((part, index) => (
-                          <div key={part.id || index}>
+                        {parts.map((part, partIndex) => (
+                          <div key={part.id || partIndex}>
                             <button
                               onClick={() =>
                                 handlePartClick(
                                   part.id,
                                   part.partTitle,
                                   part.partNumber,
-                                  doc.id, // This is the key - passing the document ID
+                                  doc.id,
                                   chapter.chapterTitle
                                 )
                               }
@@ -250,11 +342,23 @@ const NewTableOfContent: FC<NewTableOfContentProps> = ({ searchQuery = "", onSec
                     )}
                   </div>
                 ))}
+                {query && chaptersToShow.length === 0 && (
+                  <p className="text-xs text-muted-foreground py-2">
+                    No chapters or parts match &quot;{searchQuery.trim()}&quot;
+                  </p>
+                )}
               </div>
             )}
           </div>
         );
       })}
+      {query && filteredDocumentList.length === 0 && (
+        <div className="py-4 px-2 text-center">
+          <p className="text-sm text-muted-foreground">
+            No documents match &quot;{searchQuery.trim()}&quot;
+          </p>
+        </div>
+      )}
 
       {/* Document sections Drawer */}
       <GenericDrawer

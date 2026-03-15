@@ -91,14 +91,23 @@ const ChatPage = () => {
 
     if (response.success) {
       setIsQueryResult(true);
-      
-      // Handle different response structures
+
       if (selectedDocumentType === DOCUMENT_TYPES.NTA) {
-        // For tax responses, structure might be different
         setSearchResults(response.data || response);
       } else {
-        // For PIA responses
-        setSearchResults(response.data?.results || response.data);
+        // PIA: normalize so we always have { answer, chunks } (data structure may vary)
+        const data = response.data ?? response;
+        const rawResults = data?.results ?? data;
+        const chunksArray = Array.isArray(rawResults)
+          ? rawResults
+          : (rawResults?.chunks ?? data?.chunks ?? []);
+        const answer = typeof rawResults?.answer === "string"
+          ? rawResults.answer
+          : (data?.answer ?? "");
+        setSearchResults({
+          answer,
+          chunks: Array.isArray(chunksArray) ? chunksArray : [],
+        });
       }
       setSearchQuery("");
     } else {
