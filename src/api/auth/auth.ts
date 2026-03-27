@@ -36,6 +36,28 @@ const AuthService = {
     }
   },
 
+  forgotPassword: async (email: string): Promise<{ success: boolean; message: string }> => {
+    try {
+      const response = await axiosInstance.post(`/api/v1/auth/forgot-password`, { email });
+      return response.data;
+    } catch (error) {
+      const errorMessage = extractErrorMessage(error);
+      console.error("Forgot password error:", errorMessage);
+      throw new Error(errorMessage);
+    }
+  },
+
+  verifyResetCode: async (email: string, code: string): Promise<{ success: boolean; message: string }> => {
+    try {
+      const response = await axiosInstance.post(`/api/v1/auth/verify-code`, { email, code });
+      return response.data;
+    } catch (error) {
+      const errorMessage = extractErrorMessage(error);
+      console.error("Verify reset code error:", errorMessage);
+      throw new Error(errorMessage);
+    }
+  },
+
   logout: async (router: AppRouterInstance): Promise<void> => {
     performLogout(router);
   },
